@@ -1,0 +1,123 @@
+[
+  {
+    "outputFileName": "wwwroot/js/private/rendicontazionePagamenti.js",
+    "inputFiles": [
+      "wwwroot/js/private/RendicontazionePagamenti.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/private/addUser.js",
+    "inputFiles": [
+      "wwwroot/js/private/AddUser.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/private/richiesteEsitate.js",
+    "inputFiles": [
+      "wwwroot/js/private/RichiesteEsitate.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/private/richiesteInAttesa.js",
+    "inputFiles": [
+      "wwwroot/js/private/RichiesteInAttesa.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/private/storicoOperazioni.js",
+    "inputFiles": [
+      "wwwroot/js/private/StoricoOperazioni.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/private/home.js",
+    "inputFiles": [
+      "wwwroot/js/private/Home.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/private/iuvsingolo/generabollettino.js",
+    "inputFiles": [
+      "wwwroot/js/private/IuvSingolo/GeneraBollettino.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/private/iuvsingolo/generaiuv.js",
+    "inputFiles": [
+      "wwwroot/js/private/IuvSingolo/GeneraIuv.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/private/IuvMultiplo/generabollettino.js",
+    "inputFiles": [
+      "wwwroot/js/private/IuvMultiplo/GeneraBollettino.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/private/IuvMultiplo/generabollettinostep2.js",
+    "inputFiles": [
+      "wwwroot/js/private/IuvMultiplo/GeneraBollettinoStep2.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/private/IuvMultiplo/generaiuv.js",
+    "inputFiles": [
+      "wwwroot/js/private/IuvMultiplo/GeneraIuv.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]

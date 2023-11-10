@@ -1,0 +1,68 @@
+﻿.radius(@rad) {
+    -webkit-border-radius: @rad;
+    -moz-border-radius: @rad;
+    -ms-border-radius: @rad;
+    border-radius: @rad;
+}
+
+.uppercase{
+    text-transform:uppercase;
+}
+
+.gradient-o(@startColor: #555, @endColor: #333) {
+    background-color: @endColor;
+    background-image: -moz-linear-gradient(left, @startColor, @endColor); // FF 3.6+
+    background-image: -webkit-gradient(linear, 0 0, 100% 0, from(@startColor), to(@endColor)); // Safari 4+, Chrome 2+
+    background-image: -webkit-linear-gradient(left, @startColor, @endColor); // Safari 5.1+, Chrome 10+
+    background-image: -o-linear-gradient(left, @startColor, @endColor); // Opera 11.10
+    background-image: linear-gradient(to right, @startColor, @endColor); // Standard, IE10
+    background-repeat: repeat-x;
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",argb(@startColor),argb(@endColor))); // IE9 and down
+}
+
+.gradient-v(@startColor: #555, @endColor: #333, @colorStop: 100%) {
+    background-color: mix(@startColor, @endColor, 60%);
+    background-image: -moz-linear-gradient(top, @startColor, @endColor @colorStop); // FF 3.6+
+    background-image: -ms-linear-gradient(top, @startColor, @endColor @colorStop); // IE10
+    background-image: -webkit-gradient(linear, 0 0, 0 @colorStop, from(@startColor), to(@endColor)); // Android 2.3, Safari 4+, Chrome 2+
+    background-image: -webkit-linear-gradient(top, @startColor, @endColor @colorStop); // Safari 5.1+, Chrome 10+
+    background-image: -o-linear-gradient(top, @startColor, @endColor @colorStop); // Opera 11.10
+    background-image: linear-gradient(top, @startColor, @endColor @colorStop); // The standard
+}
+    
+
+.default-properties-w-f-m-p(@width: 100%,@float: left,@margin: 0,@padding: 0) {
+    width: @width;
+    float: @float;
+    margin: @margin;
+    padding: @padding;
+}
+.default-properties-w-f(@width: 100%,@float: left) {
+    width: @width;
+    float: @float;
+}
+
+.placeholder-color (@color) {
+    &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+        color: @color;
+    }
+
+    &::-moz-placeholder { /* Firefox 19+ */
+        color: @color;
+    }
+
+    &:-ms-input-placeholder { /* IE 10+ */
+        color: @color;
+    }
+
+    &:-moz-placeholder { /* Firefox 18- */
+        color: @color;
+    }
+}
+
+.animation-keyframe(@name,@duration, @count) {
+    -webkit-animation: @name @duration @count;
+    -moz-animation: @name @duration @count; 
+    -o-animation: @name @duration @count; 
+    animation: @name @duration @count;
+}

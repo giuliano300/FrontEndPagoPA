@@ -1,0 +1,150 @@
+﻿@using FrontEndPagoPA.Models;
+@using FrontEndPagoPA.Service;
+@using System.IdentityModel.Tokens.Jwt;
+@using Newtonsoft.Json;
+@inject IHttpContextAccessor _contextAccessor;
+
+<!DOCTYPE html>
+<html>
+@{
+    TokenDto token = new();
+    var tp = new TokenProvider(_contextAccessor);
+    Globals g = new(tp);
+    token = g.GetDeserializedToken();
+}
+<head>
+    <meta http-equiv="Content-Type" charset="utf-8" content="text/html"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyPagoPA - @ViewBag.Title</title>
+
+
+    <link rel="stylesheet" type="text/css" href="~/css/Style.css?ver=1.4">   
+    
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/basic.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/bootstrap.css" type="text/css" />
+    <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link rel="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.js"></script>
+</head>
+<body>
+    <div class="visible-mobile text-center">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 fade-in">
+                    <div class="not-supported">
+                        <i class="lar la-frown"></i>
+                        <h1>Dispositivo non supportato</h1>
+                        <p>Easy PagoPA è compatibile con dispositivi desktop che hanno una risoluzione minima di <strong>1280x800px</strong> </p>
+                        <img src="/images/Logo_2.png" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="visible-desktop">
+        <div class="container-fluid">
+            <header class="header">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="header__logo">
+                            <a href="/Home/Dashboard"><img src="/images/Logo_2.png" alt="PagoPA" /></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                            <div class="header_nav_user">
+                                <a onclick="OpenMenuUser()">@token.name</a>
+                                <div class="user-avatar">
+                                    <i class='bx bxs-user-circle'></i>
+                                </div>
+                                <ul>
+                                    <li><a href="/User/PersonalArea"><i class='bx bxs-user'></i> Modifica Dati</a></li>
+                                    <li><a href="/Home/Logout"><i class='bx bxs-log-out'></i> Logout</a></li>
+                                </ul>
+                            </div>
+                    </div>
+                </div>
+            </header>
+            <div class="row">
+                <div class="col-md-2 col-sm-3 p-0">
+                    <nav class="nav">
+                        <ul>
+                            <li><i class='bx bxs-dashboard'></i><a href="/Home/Dashboard"> Dashboard</a></li>
+                            <li><i class="las la-user-friends"></i><a href="/User/UsersList"> Utenti</a></li>
+                            <li>
+                                <i class='bx bx-euro'></i><span> Nuova posizione debitoria  <i class='bx bx-chevron-down'></i></span>
+                                <div class="nav--sub">
+                                    <ul>
+                                        <li><a href="/IuvSingolo/">Singola</a></li>
+                                        <li><a href="/IuvMultiplo/">Multipla</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <i class='bx bx-list-ul'></i><span> Archivio richieste  <i class='bx bx-chevron-down'></i></span>
+                                <div class="nav--sub">
+                                    <ul>
+                                        <li><a href="/Action/RichiesteInAttesa">Richieste in attesa</a></li>
+                                        <li><a href="/Action/RichiesteEsitate">Richieste esitate</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li><i class='bx bx-archive'></i> <a href="/Action/StoricoOperazioni"> Storico operazioni</a></li>
+                            <li><i class="las la-piggy-bank"></i><a href="/Action/RendicontazionePagamenti"> Rendicontazione pagamenti</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-md-10 col-sm-9">
+                    <main class="main">
+                        @RenderBody()
+                    </main>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        © 2023 <strong>Easy PagoPA</strong>. All Rights Reserved. |  Powered by <a href="https://easyway.technology" target="_blank">Easyway Technology</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class='bx bx-x' style="font-size:1.3rem"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                   
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a data-bs-toggle="modal" data-bs-target="#exampleModal" class="open-modal"></a>
+
+    <!-- Add your JavaScript references here -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="~/js/less.min.js"></script>
+    <script type="text/javascript" src="~/js/site.js"></script>
+    @Html.RenderUnobtrusiveAjaxScript()
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+

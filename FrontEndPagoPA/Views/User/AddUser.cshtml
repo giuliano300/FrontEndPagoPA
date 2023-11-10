@@ -1,0 +1,171 @@
+﻿@model FrontEndPagoPA.Models.SenderUserDto
+
+@{
+    ViewBag.Title = "AddUser";
+}
+
+<style>
+    .dropdown-checklist {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-checklist .select-box {
+        width: 200px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+    }
+
+    .dropdown-checklist .select-box::after {
+        content: "\25BC"; /* Down arrow character */
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .dropdown-checklist .options {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        max-height: 150px;
+        overflow-y: auto;
+        width: 200px;
+    }
+
+    .dropdown-checklist .options.show {
+        display: block;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-30 fade-in">
+            <div class="row">
+                <div class="col-md-2 col-sm-3">
+                    <div class="nav-personal-area">
+                        <ul>
+                            <li>
+                                <a href="/User/PersonalArea">Utenza principale <i class='bx bx-chevron-right'></i></a>
+                            </li>
+                            <li>
+                                <a href="/User/UsersList">Lista utenti <i class='bx bx-chevron-right'></i></a>
+                            </li>
+                            <li>
+                                @if (Model.id.ToString() == "0")
+                                {
+                                    <text>Aggiungi utente <i class='bx bx-chevron-right'></i></text>
+                                    
+                                }
+                                else
+                                {
+                                    <text><a href="/User/AddUser">Aggiungi utente <i class='bx bx-chevron-right'></i></a></text>
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-10 col-sm-9">
+                    <div class="row">
+                        <form method="post" action="/User/SaveUser" enctype="multipart/form-data">
+                            <div class="form-site">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h3 class="pb-20 textsize-4"><i class='bx bxs-user'></i> @ViewBag.type utente</h3>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label>Nome Azienda</label>
+                                                <input type="text" name="businessName" required value="@Model.businessName" />
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label>Codice Fiscale</label>
+                                                <input type="text" name="cod_fisc" required value="@Model.identificativoDominio" />
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label>Identificativo BU</label>
+                                                <input type="text" name="identificativoBU" required value="@Model.identificativoBU" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <label>Indirizzo</label>
+                                                <input type="text" name="address" required value="@Model.address" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Cap</label>
+                                                <input type="number" name="cap" maxlength="5" required value="@Model.cap" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <label>Città</label>
+                                                <input type="text" name="city" required value="@Model.city" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Provincia</label>
+                                                <input type="text" name="province" maxlength="2" required value="@Model.province" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @if (Model.id > 0)
+                                                {
+                                                    <div class="logo-ente"><img src="../../@Model.logo" style="width:100px;"></div>
+                                                    <label>Modifica logo</label>
+                                                    <input type="file" name="logo" />
+                                                }
+                                                else
+                                                {
+                                                    <label>Aggiungi un logo</label>
+                                                    <input type="file" name="logo" required />
+                                                }
+                                            </div>
+                                            <div class="col-md-6 pb-20">
+                                                <input type="checkbox" name="contoPostale" id="contoPostale" checked="@Model.contoPoste" />
+                                                <label for="contoPostale" class="label-pay">Conto Corrente Postale</label>
+                                            </div>
+                                            <div class="col-md-6 pb-20">
+                                                <input type="checkbox" name="contoBanca" id="contoBanca" checked="@Model.contoBanca" />
+                                                <label for="contoBanca" class="label-pay">Conto Corrente Bancario</label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label>Seleziona un tipo</label>
+                                                <select class="multiple-select" multiple required style="min-height:150px" name="operationTypeId">
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                               </div>
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-4"></div>
+                                    <div class="col-md-4 col-sm-4">
+                                        <div class="row">
+                                            <div class="col-md-3 col-sm-3"></div>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input type="submit" value="@ViewBag.type.ToUpper() UTENTE" name="edit"/>
+                                            </div>
+                                            <div class="col-md-3 col-sm-3"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4"></div>
+                                </div>
+                            </div>
+                            <input type="hidden" value="@Model.id" name="id" />
+                            <input type="hidden" value="@Model.logo" name="fileOld" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let operationTypesId = @ViewBag.operationTypesId
+</script>
+<script src="~/js/private/AddUser.js" asp-append-version="true"></script>

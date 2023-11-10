@@ -1,0 +1,169 @@
+﻿@{
+    ViewBag.Title = "Genera Bollettino";
+}
+
+<div class="row fade-in">
+    <div class="col-md-6 col-sm-6">
+        <h4>Generazione posizione debitoria singola</h4>
+        <h1>Genera documento con bollettino</h1>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <div class="icn-top-main">
+            <img src="/images/icn-iuv-document.png" style="max-width:100px;" />
+        </div>
+    </div>
+</div>
+
+<div class="row fade-in">
+    <div class="preload"><i class='bx bx-loader-alt bx-spin'></i></div>
+    <div class="col-md-12">
+        <div class="card generate-iuv">
+            @using (Html.AjaxBeginForm("RegisterOperation", new AjaxOptions
+             {
+                 HttpMethod = "post",
+                 OnBegin = "GetPreload()",
+                 OnSuccess = "GetResult(data)",
+
+             }, new { @class = "form", enctype = "multipart/form-data" }))
+            {
+                <div class="form-site p-0">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Inserisci la descrizione della nuova posizione debitoria</h5>
+                            <p>Nell'eventuale bollettino sarà riportato in alto affianco al logo</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 pt-10">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <input type="text" name="title" required maxlength="350" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="divider"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Seleziona l'untente con cui generare la posizione debitoria</h5>
+                            <p>Seleziona successivamente il tipo di IUV da generare</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-12 pt-10">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <label>Utente</label>
+                                        <select class="user" name="senderUserId" required onchange="GetOperationType($(this).val())">
+                                            <option value="">Seleziona un utente</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4">
+                                        <label>Tipo</label>
+                                        <select class="operationType" name="operationTypeId" required>
+                                            <option value="">Seleziona un tipo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="divider"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Inserisci i dati del destinatario e carica il file pdf</h5>
+                            <p>Compila i campi del destinatario dell’avviso di pagamento e carica il file .pdf con la lettera di accompagnamento.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-12 pt-10">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label>Nominativo</label>
+                                        <input type="text" name="name" required maxlength="35" />
+                                    </div>
+                                    <div class="col-md-3 col-sm-3">
+                                        <label>Codice fiscale</label>
+                                        <input type="text" name="fiscalCode" required maxlength="18" pattern="^[a-zA-Z]{6}[0-9]{2}[a-zA-Z][0-9]{2}[a-zA-Z][0-9]{3}[a-zA-Z]$" />
+                                    </div>
+                                    <div class="col-md-4 col-sm-4">
+                                        <label>File</label>
+                                        <div class="border-input">
+                                            <input type="file" name="file" required accept="application/pdf" style="margin:0!important;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="divider"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Inserisci i dati dell’avviso di pagamento</h5>
+                            <p>Compila i campi e inserisci gli importi a debito.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 pt-10">
+                            <div class="row">
+                                <div class="col-md-5 col-sm-5">
+                                    <label>Importo Totale (€)</label>
+                                    <input type="number" name="amount" required />
+                                </div>
+                                <div class="col-md-4 col-sm-4">
+                                    <label>Scadenza pagamento RATA UNICA</label>
+                                    <input type="date" name="expirationDate" required />
+                                </div>
+                                <div class="col-md-3 col-sm-3">
+                                    <label>Rateizza importo (numero di rate)</label>
+                                    <select id="rate-select" onchange="CreateRatei($(this).val())">
+                                        <option value="0" selected>NO</option>
+                                        @for (var i = 2; i < 13; i++)
+                                        {
+                                            <option value="@i">@i</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" id="rate-list">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="divider"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4"></div>
+                        <div class="col-md-4 col-sm-4">
+                            <input type="submit" value="GENERA IUV" name="genera_iuv" />
+                        </div>
+                        <div class="col-md-4 col-sm-4"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <a href="/IuvSingolo/index" class="back-page"><i class='bx bx-left-arrow-alt'></i> TORNA INDIETRO</a>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="bollettino" value="1">
+            }
+        </div>
+    </div>
+</div>
+<script src="~/js/private/iuvsingolo/generabollettino.js" asp-append-version="true"></script>

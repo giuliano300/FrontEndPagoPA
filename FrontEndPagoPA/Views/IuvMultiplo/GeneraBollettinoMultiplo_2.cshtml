@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "Genera BollettinoMultiplo Upload ZIP";
+}
+
+<div class="row fade-in">
+    <div class="col-md-6 col-sm-6">
+        <h4>Generazione posizione debitoria multipla</h4>
+        <h1>Genera documento multiplo con bollettino</h1>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <div class="icn-top-main">
+            <img src="/images/icn-iuv-document.png" style="max-width:100px;" />
+        </div>
+    </div>
+</div>
+<form action="/IuvMultiplo/RegisterOperation" method="post">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card generate-iuv form-site fade-in">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Carica documenti in formato ZIP</h5>
+                        <p>
+                            Carica i file in formato ZIP ricordando di usare precisamente i nomi usati nel csv in precedenza.
+                        </p>
+                    </div>
+                </div>
+                <div class="row pt-10 pb-30 single-file-upload">
+                    <div class="col-md-12">
+                        <label>Carica file ZIP</label>
+                        <div class="dropzone" id="dropzone-form" name="mainFileUploader">
+                            <div class="fallback">
+                                <input asp-for="File" type="file" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <span class="progress">
+                            <span class="progress-bar">0%</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="csv-list" style="display:none;">
+                            <p class="text-center">Di seguito la lista delle posizioni debitorie contenute nel csv</p>
+
+                            <!--List header-->
+                            <ul class="csv-list__header">
+                                <li>Nominativo</li>
+                                <li>Codice fiscale</li>
+                                <li>Importo</li>
+                                <li class="text-center">Numero rate</li>
+                                <li>Stato</li>
+                                <li>Messaggio</li>
+                            </ul>
+                            <span class="csv-list-body"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-4"></div>
+                    <div class="col-md-4 col-sm-4">
+                        <input type="submit" value="GENERA IUV MULTIPLO" name="genera_iuv_multiplo" class="btn-submit" />
+                    </div>
+                    <div class="col-md-4 col-sm-4"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <a href="/IuvMultiplo/GeneraBollettinoMultiplo" class="back-page"><i class='bx bx-left-arrow-alt'></i> TORNA INDIETRO</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="~/js/private/IuvMultiplo/generabollettinostep2.js" asp-append-version="true"></script>

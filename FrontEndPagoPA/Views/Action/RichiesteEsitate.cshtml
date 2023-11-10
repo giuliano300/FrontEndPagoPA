@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "Richieste Esitate";
+    var today = DateTime.Today.ToString("yyyy-MM-dd");
+}
+
+<div class="row">
+    <div class="col-lg-12 fade-in">
+        <h4>Archivio richieste</h4>
+        <h1>Richieste Esitate</h1>
+    </div>
+</div>
+
+<div class="row fade-in">
+    <div class="col-md-12">
+        <div class="card request-archive">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>Filtra lista per:</h5>
+                </div>
+            </div>
+            <div class="row form-site p-0">
+                <form class="pt-10">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-2">
+                                    <label>
+                                        Data inizio
+                                        <input type="date" name="dataInizio" id="dataInizio" value="@today" />
+                                    </label>
+                                </div>
+                                <div class="col-md-2 col-sm-2">
+                                    <label>
+                                        Data fine
+                                        <input type="date" name="dataFine" id="dataFine" />
+                                    </label>
+                                </div>
+                                <div class="col-md-2 col-sm-2">
+                                    <label>
+                                        Codice Fiscale
+                                        <input type="text" name="codiceFiscale" id="codiceFiscale" />
+                                    </label>
+                                </div>
+                                <div class="col-md-2 col-sm-2">
+                                    <label>
+                                        IUV
+                                        <input type="text" name="iuv" id="iuv" />
+                                    </label>
+                                </div>
+                                <div class="col-md-1 col-sm-1">
+                                    <input type="button" id="filtraRichieste" value="CERCA" name="cerca" class="btn_filter" onclick="FiltraRichieste()" />
+                                </div>
+                                <div class="col-md-1 col-sm-1">
+                                    <input type="button" id="svuota" value="SVUOTA" name="svuota" class="btn_filter" onclick="EliminaFiltro()" />
+                                </div>
+                                <div class="col-md-2 col-sm-2">
+                                    <input type="button" value="SCARICA LISTA IN CSV" name="download_list" class="btn_filter btn-download-list" onclick="DownloadList()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <!--archive list header-->
+                    <ul class="archive-list-accepted__header">
+                        <li>Id</li>
+                        <li>IUV</li>
+                        <li>Codice fiscale</li>
+                        <li>Importo</li>
+                        <li>Rata</li>
+                        <li>Data scadenza</li>
+                        <li>Stato</li>
+@*                        <li>Scarica documento</li>
+*@                    </ul>
+                    <!--end archive list header-->
+                    <div class="archive-list-accepted">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="divider"></div>
+                    <div class="pagination">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/private/richiesteEsitate.js" asp-append-version="true"></script>
