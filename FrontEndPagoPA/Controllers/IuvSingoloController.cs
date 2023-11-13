@@ -150,8 +150,9 @@ namespace FrontEndPagoPA.Controllers
 
             var dbs = new List<DebtPositionDto>();
 
-
+            //CARICA FILE
             var fileName = "";
+            String? b = null;
             if(data.Files.Count > 0) { 
                 var upload = data.Files[0];
                 if (upload != null && upload.Length > 0)
@@ -163,22 +164,32 @@ namespace FrontEndPagoPA.Controllers
                     {
                         await upload.CopyToAsync(fileSrteam);
                     }
+
+                    //TRASFORMA FILE BASE 64
+                    b = Globals.ConvertFileToBase64(webRootPath + Globals.FolderUniqueFile + fileName);
+
+                    //ELIMINO FILE CARICATO
+                    System.IO.File.Delete(directory);
+
                 }
             }
+
 
 
             var db = new DebtPositionDto()
             {
                 title = title!,
-                anagraficaPagatore = name!, 
+                anagraficaPagatore = name!,
                 codiceIdentificativoUnivocoPagatore = fiscalCode!,
                 expirationInstallmentDate = installmentDate!,
                 importoTotaleDaVersare = Convert.ToDecimal(amount),
-                installmentNumber = installmentNumber, 
+                installmentNumber = installmentNumber,
                 uniqueInstallementExpirationDate = Convert.ToDateTime(expirationDate),
                 tipoIdentificativoUnivocoPagatore = "F",
                 bollettino = bul,
-                nomeFile = Globals.FolderUniqueFile + fileName
+                nomeFile = fileName,
+                inputBase64File = b!,
+                outputBase64File = string.Empty
             };
 
             dbs.Add(db);

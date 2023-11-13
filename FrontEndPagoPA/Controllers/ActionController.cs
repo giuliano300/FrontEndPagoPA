@@ -1,4 +1,5 @@
-﻿using CsvHelper;
+﻿using AutoMapper;
+using CsvHelper;
 using CsvHelper.Configuration;
 using FrontEndPagoPA.Models;
 using FrontEndPagoPA.Service;
@@ -29,13 +30,15 @@ namespace FrontEndPagoPA.Controllers
         private readonly IMemoryCache _cache;
         private static readonly ILog _logger = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IMapper _mapper;
 
 
-        public ActionController(TokenProvider tokenProvider, ActionService actionService, IMemoryCache cache, IWebHostEnvironment webHostEnvironment)
+        public ActionController(TokenProvider tokenProvider, ActionService actionService, IMemoryCache cache, IWebHostEnvironment webHostEnvironment, IMapper mapper)
         {
             _tokenProvider = tokenProvider;
             _actionService = actionService;
             _cache = cache;
+            _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -124,9 +127,10 @@ namespace FrontEndPagoPA.Controllers
 
                     var l = (List<CsvDtoOut>)_cache.Get("list")!;
 
-                    var newList = new List<CsvDtoOut>();
+                    var newList = new List<CsvDtoIn>();
                     foreach(var c in l)
                     {
+                        var nc = _mapper.Map<CsvDtoIn>(c);
                         var last = r.FirstOrDefault(a => a.Contains(c.nomeFile!) || a == c.nomeFile);
                         if (last == null)
                         {
@@ -134,10 +138,20 @@ namespace FrontEndPagoPA.Controllers
                             c.message = "Nessun file collegato a questo nominativo";
                         }
                         else
-                            c.nomeFile = last;
+                        {
+                            nc.nomeFile = c.nomeFile;
 
-                        newList.Add(c);
+                            //CONVERTE IN BASE 64
+                            nc.inputBase64File = Globals.ConvertFileToBase64(webRootPath + last);
+
+                        }
+
+                        newList.Add(nc);
                     }
+
+                    //ELIMINA FILE ZIP
+                    System.IO.File.Delete(directory);
+                    System.IO.File.Delete(directory.Replace(".zip",""));
 
                     _cache.Set("list", newList);
 

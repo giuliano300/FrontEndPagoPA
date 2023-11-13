@@ -40,7 +40,7 @@ namespace FrontEndPagoPA.Models
             return JsonConvert.DeserializeObject<TokenDto>(p)!;
         }
 
-        public static string GetExpirationInstallmentDate(CsvDtoOut c)
+        public static string GetExpirationInstallmentDate(CsvDtoIn c)
         {
             var i = "";
             if (c.dataScadenzaRata1 != null && c.dataScadenzaRata1 != "")
@@ -91,6 +91,14 @@ namespace FrontEndPagoPA.Models
             File.WriteAllBytes(path, bytes);
 
             return path;
+        }
+
+        public static string ConvertFileToBase64(string path)
+        {
+            Byte[] bytes = File.ReadAllBytes(path);
+            String file = Convert.ToBase64String(bytes);
+
+            return file;
         }
 
     }

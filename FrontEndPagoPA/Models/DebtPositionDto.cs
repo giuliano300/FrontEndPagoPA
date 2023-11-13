@@ -14,5 +14,7 @@
         public string nomeFile { get; set; }
         public bool? bollettino { get; set; }
         public string title { get; set; }
+        public string inputBase64File { get; set; }
+        public string outputBase64File { get; set; }
     }
 }

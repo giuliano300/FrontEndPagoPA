@@ -7,6 +7,8 @@ using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Hosting;
 using AspNetCore.Unobtrusive.Ajax;
+using AutoMapper;
+using FrontEndPagoPA;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.LoginPath = "/Home/index";
     options.AccessDeniedPath = "/auth/AccessDenied";
 });
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -43,6 +46,11 @@ builder.Services.AddScoped<HomeService>();
 builder.Services.AddScoped<IuvService>();
 
 builder.Services.AddUnobtrusiveAjax();
+
+//Automapper creation and configuration for adding it to Services.
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

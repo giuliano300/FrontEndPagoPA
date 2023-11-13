@@ -1,4 +1,5 @@
-﻿using FrontEndPagoPA.Models;
+﻿using AutoMapper;
+using FrontEndPagoPA.Models;
 using FrontEndPagoPA.Service;
 using FrontEndPagoPA.ViewModel;
 using log4net;
@@ -20,11 +21,15 @@ namespace FrontEndPagoPA.Controllers
         private readonly IMemoryCache _cache;
         private static readonly ILog _logger = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
         private readonly IuvService _iuvService;
+        private readonly IMapper _mapper;
+
+
         // GET: IuvMultiplo
-        public IuvMultiploController(IMemoryCache cache, TokenProvider tokenProvider, IuvService iuvService) 
+        public IuvMultiploController(IMemoryCache cache, TokenProvider tokenProvider, IuvService iuvService, IMapper mapper)
         {
             _cache = cache;
             _tokenProvider = tokenProvider;
+            _mapper = mapper;
             _iuvService = iuvService;
         }
         public ActionResult Index()
@@ -87,7 +92,7 @@ namespace FrontEndPagoPA.Controllers
 
             var dbs = new List<DebtPositionDto>();
 
-            var csv = (List<CsvDtoOut>)_cache.Get("list")!;
+            var csv = (List<CsvDtoIn>)_cache.Get("list")!;
             foreach (var c in csv.Where(a => a.valid == true))
             {
                 var db = new DebtPositionDto()
@@ -101,7 +106,9 @@ namespace FrontEndPagoPA.Controllers
                     uniqueInstallementExpirationDate = Convert.ToDateTime(c.dataScadenzaRataUnica),
                     installmentNumber = Convert.ToInt32(c.numeroRatei),
                     nomeFile = c.nomeFile!,
-                    expirationInstallmentDate = Globals.GetExpirationInstallmentDate(c)
+                    expirationInstallmentDate = Globals.GetExpirationInstallmentDate(c),
+                    inputBase64File = c.inputBase64File!,
+                    outputBase64File = string.Empty
                 };
 
                 dbs.Add(db);
@@ -136,6 +143,7 @@ namespace FrontEndPagoPA.Controllers
             var dbs = new List<DebtPositionDto>();
             foreach (var c in csv.Where(a => a.valid == true))
             {
+                var cIn = _mapper.Map<CsvDtoIn>(c);
                 var db = new DebtPositionDto()
                 {
                     anagraficaPagatore = c.nominativo,
@@ -147,7 +155,7 @@ namespace FrontEndPagoPA.Controllers
                     uniqueInstallementExpirationDate = Convert.ToDateTime(c.dataScadenzaRataUnica),
                     installmentNumber = Convert.ToInt32(c.numeroRatei),
                     nomeFile = c.nomeFile!,
-                    expirationInstallmentDate = Globals.GetExpirationInstallmentDate(c)
+                    expirationInstallmentDate = Globals.GetExpirationInstallmentDate(cIn)
                 };
 
                 dbs.Add(db);

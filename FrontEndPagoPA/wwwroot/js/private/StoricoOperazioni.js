@@ -83,8 +83,12 @@ function GetRichieste(r) {
                 if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null) {
                     li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
                 }
-                else
-                    li += "<li class='text-center' title='documento disponibile' onclick='GetZipFile(" + r[i].operationId + ")'><i class='las la-file-archive active-btn'></i></li>";
+                else {
+                    if (r[i].downloadableFile)
+                        li += "<li class='text-center' title='documento disponibile' onclick='GetZipFile(" + r[i].operationId + ")'><i class='las la-file-archive active-btn'></i></li>";
+                    else
+                        li += "<li class='text-center' title='documento non ancora disponibile'><i class='las la-file-archive not-active'></i></li>";
+               }
             }
             else {
                 li += "<li class='text-center' title='documento non ancora disponibile'><i class='bx bx-qr not-active'></i></li>";
