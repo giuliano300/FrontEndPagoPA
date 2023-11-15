@@ -1,7 +1,7 @@
 ﻿@model FrontEndPagoPA.Models.SenderUserDto
 
 @{
-    ViewBag.Title = "AddUser";
+    ViewBag.Title = "Utenti";
 }
 
 <style>
@@ -124,13 +124,21 @@
                                                     <input type="file" name="logo" required />
                                                 }
                                             </div>
-                                            <div class="col-md-6 pb-20">
-                                                <input type="checkbox" name="contoPostale" id="contoPostale" checked="@Model.contoPoste" />
+                                            <div class="col-md-6 pt-30">
+                                                <input type="checkbox" name="contoPostale" id="contoPostale" checked="@Model.contoPoste"  />
                                                 <label for="contoPostale" class="label-pay">Conto Corrente Postale</label>
                                             </div>
                                             <div class="col-md-6 pb-20">
+                                                <label class="label-pay">Numero Conto Postale</label>
+                                                <input type="text" name="numeroContoPoste" id="numeroContoPoste" value="@Model.numeroContoPoste" readonly required />
+                                            </div>
+                                            <div class="col-md-6 pt-30">
                                                 <input type="checkbox" name="contoBanca" id="contoBanca" checked="@Model.contoBanca" />
                                                 <label for="contoBanca" class="label-pay">Conto Corrente Bancario</label>
+                                            </div>
+                                            <div class="col-md-6 pb-20">
+                                                <label class="label-pay">CBILL</label>
+                                                <input type="text" name="CBILL" id="CBILL" value="@Model.CBILL" readonly required />
                                             </div>
                                         </div>
                                         <div class="row">

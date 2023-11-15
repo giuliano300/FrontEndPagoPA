@@ -11,6 +11,7 @@
         public string cap { get; set; }
         public string province { get; set; }
         public string address { get; set; }
-
+        public string CBILL { get; set; }
+        public string numeroContoPoste { get; set; }
     }
 }

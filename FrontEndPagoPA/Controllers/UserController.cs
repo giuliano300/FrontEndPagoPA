@@ -132,6 +132,9 @@ namespace FrontEndPagoPA.Controllers
                     var ccP = model["contoPostale"].ToString();
                     var ccB = model["contoBanca"].ToString();
 
+                    var CBILL = model["CBILL"].ToString();
+                    var numeroContoPoste = model["numeroContoPoste"].ToString();
+
                     bool contoPosta = false;
                     if (ccP == "on")
                         contoPosta = true;
@@ -174,7 +177,9 @@ namespace FrontEndPagoPA.Controllers
                         userId = token.sub,
                         contoBanca = contoBanca,
                         contoPoste = contoPosta,
-                        logo = name
+                        logo = name,
+                        numeroContoPoste = numeroContoPoste,
+                        CBILL = CBILL
                     };
                     var response = new ResponseDto();
 

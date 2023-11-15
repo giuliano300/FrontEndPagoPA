@@ -16,5 +16,7 @@ namespace FrontEndPagoPA.Models
         public string logo { get; set; }
         public bool? contoPoste { get; set; }
         public bool? contoBanca { get; set; }
+        public string CBILL { get; set; }
+        public string numeroContoPoste { get; set; }
     }
 }
