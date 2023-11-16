@@ -108,7 +108,11 @@ namespace FrontEndPagoPA.Controllers
                     nomeFile = c.nomeFile!,
                     expirationInstallmentDate = Globals.GetExpirationInstallmentDate(c),
                     inputBase64File = c.inputBase64File!,
-                    outputBase64File = string.Empty
+                    outputBase64File = string.Empty,
+                    indirizzoPagatore = c.indirizzo,
+                    capPagatore = c.cap,
+                    comunePagatore = c.comune,
+                    provinciaPagatore = c.provincia
                 };
 
                 dbs.Add(db);
@@ -155,7 +159,11 @@ namespace FrontEndPagoPA.Controllers
                     uniqueInstallementExpirationDate = Convert.ToDateTime(c.dataScadenzaRataUnica),
                     installmentNumber = Convert.ToInt32(c.numeroRatei),
                     nomeFile = c.nomeFile!,
-                    expirationInstallmentDate = Globals.GetExpirationInstallmentDate(cIn)
+                    expirationInstallmentDate = Globals.GetExpirationInstallmentDate(cIn),
+                    indirizzoPagatore  = c.indirizzo, 
+                    capPagatore = c.cap,
+                    comunePagatore = c.comune,
+                    provinciaPagatore = c.provincia
                 };
 
                 dbs.Add(db);

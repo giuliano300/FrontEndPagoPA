@@ -40,5 +40,9 @@ namespace FrontEndPagoPA.Models
         public string? dataScadenzaRata12 { get; set; }
         public string? nomeFile { get; set; }
 
+        public string indirizzo { get; set; }
+        public string cap { get; set; }
+        public string provincia { get; set; }
+        public string comune { get; set; }
     }
 }

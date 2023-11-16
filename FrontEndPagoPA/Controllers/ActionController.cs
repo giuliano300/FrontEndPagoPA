@@ -432,7 +432,11 @@ namespace FrontEndPagoPA.Controllers
                     dataScadenzaRata8 = r.dataScadenzaRata8,
                     dataScadenzaRata9 = r.dataScadenzaRata9,
                     dataScadenzaRataUnica = r.dataScadenzaRataUnica,
-                    nomeFile = r.nomeFile
+                    nomeFile = r.nomeFile,
+                    cap = r.cap,
+                    indirizzo = r.indirizzo,
+                    comune = r.comune,
+                    provincia = r.provincia
                 };
                 try
                 {

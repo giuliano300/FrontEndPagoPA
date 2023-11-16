@@ -43,6 +43,11 @@ namespace FrontEndPagoPA.Models
         public string? message { get; set; }
         public string? inputBase64File { get; set; }
 
+        public string indirizzo { get; set; }
+        public string cap { get; set; }
+        public string provincia { get; set; }
+        public string comune { get; set; }
+
         public CsvDtoIn()
         {
             valid = false;

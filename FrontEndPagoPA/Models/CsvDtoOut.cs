@@ -42,6 +42,11 @@ namespace FrontEndPagoPA.Models
         public bool? valid { get; set; }
         public string? message { get; set; }
 
+        public string indirizzo { get; set; }
+        public string cap { get; set; }
+        public string provincia { get; set; }
+        public string comune { get; set; }
+
         public CsvDtoOut()
         {
             valid = false;

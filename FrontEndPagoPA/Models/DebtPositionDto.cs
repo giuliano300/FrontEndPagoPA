@@ -16,5 +16,9 @@
         public string title { get; set; }
         public string inputBase64File { get; set; }
         public string outputBase64File { get; set; }
+        public string indirizzoPagatore { get; set; }
+        public string capPagatore { get; set; }
+        public string provinciaPagatore { get; set; }
+        public string comunePagatore { get; set; }
     }
 }

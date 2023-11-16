@@ -136,6 +136,10 @@ namespace FrontEndPagoPA.Controllers
 
             var name = data["name"];
             var fiscalCode = data["fiscalCode"];
+            var indirizzoPagatore = data["indirizzoPagatore"];
+            var capPagatore = data["capPagatore"];
+            var provinciaPagatore = data["provinciaPagatore"];
+            var comunePagatore = data["comunePagatore"];
 
             var amount = data["amount"];
             var expirationDate = data["expirationDate"];
@@ -189,7 +193,11 @@ namespace FrontEndPagoPA.Controllers
                 bollettino = bul,
                 nomeFile = fileName,
                 inputBase64File = b!,
-                outputBase64File = string.Empty
+                outputBase64File = string.Empty,
+                indirizzoPagatore = indirizzoPagatore!,
+                capPagatore = capPagatore!,
+                provinciaPagatore = provinciaPagatore!,
+                comunePagatore = comunePagatore!
             };
 
             dbs.Add(db);
