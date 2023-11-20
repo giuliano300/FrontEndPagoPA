@@ -704,7 +704,7 @@ h6 {
 }
 .header__logo img {
   width: 100%;
-  max-width: 144px;
+  max-width: 70px;
 }
 .header_nav_user {
   height: 40px;
@@ -1085,7 +1085,7 @@ a.back-page:hover {
   padding: 60px;
 }
 .login__logo {
-  width: 140px;
+  width: 110px;
 }
 .panel-pwd {
   display: none;

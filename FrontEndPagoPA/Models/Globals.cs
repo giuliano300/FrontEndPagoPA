@@ -44,29 +44,29 @@ namespace FrontEndPagoPA.Models
         {
             var i = "";
             if (c.dataScadenzaRata1 != null && c.dataScadenzaRata1 != "")
-                i += c.dataScadenzaRata1 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata1).ToShortDateString() + ";";
             if (c.dataScadenzaRata2 != null && c.dataScadenzaRata2 != "")
-                i += c.dataScadenzaRata2 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata2).ToShortDateString() + ";";
             if (c.dataScadenzaRata3 != null && c.dataScadenzaRata3 != "")
-                i += c.dataScadenzaRata3 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata3).ToShortDateString() + ";";
             if (c.dataScadenzaRata4 != null && c.dataScadenzaRata4 != "")
-                i += c.dataScadenzaRata4 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata4).ToShortDateString() + ";";
             if (c.dataScadenzaRata5 != null && c.dataScadenzaRata5 != "")
-                i += c.dataScadenzaRata5 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata5).ToShortDateString() + ";";
             if (c.dataScadenzaRata6 != null && c.dataScadenzaRata6 != "")
-                i += c.dataScadenzaRata6 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata6).ToShortDateString() + ";";
             if (c.dataScadenzaRata7 != null && c.dataScadenzaRata7 != "")
-                i += c.dataScadenzaRata7 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata7).ToShortDateString() + ";";
             if (c.dataScadenzaRata8 != null && c.dataScadenzaRata8 != "")
-                i += c.dataScadenzaRata8 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata8).ToShortDateString() + ";";
             if (c.dataScadenzaRata9 != null && c.dataScadenzaRata9 != "")
-                i += c.dataScadenzaRata9 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata9).ToShortDateString() + ";";
             if (c.dataScadenzaRata10 != null && c.dataScadenzaRata10 != "")
-                i += c.dataScadenzaRata10 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata10).ToShortDateString() + ";";
             if (c.dataScadenzaRata11 != null && c.dataScadenzaRata11 != "")
-                i += c.dataScadenzaRata11 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata11).ToShortDateString() + ";";
             if (c.dataScadenzaRata12 != null && c.dataScadenzaRata12 != "")
-                i += c.dataScadenzaRata12 + ";";
+                i += Convert.ToDateTime(c.dataScadenzaRata12).ToShortDateString() + ";";
 
             if(i != "")
                 i = i.Substring(0 , i.Length - 1);
