@@ -120,6 +120,8 @@ namespace FrontEndPagoPA.Controllers
 
             ov.debtPositions = dbs;
 
+            var j = JsonConvert.SerializeObject(ov);
+
             var response = await _iuvService.InsertOperation(ov);
 
             if (response == null)

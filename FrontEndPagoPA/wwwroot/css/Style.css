@@ -1219,6 +1219,7 @@ a.back-page:hover {
 
 .select-iuv section {
   padding: 0 15px;
+  width:75%;
 }
 .select-iuv h5 {
   font-size: 1.1rem;

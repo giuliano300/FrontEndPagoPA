@@ -134,8 +134,8 @@ namespace FrontEndPagoPA.Controllers
                         var last = r.FirstOrDefault(a => a.Contains(c.nomeFile!) || a == c.nomeFile);
                         if (last == null)
                         {
-                            c.valid = false;
-                            c.message = "Nessun file collegato a questo nominativo";
+                            nc.valid = false;
+                            nc.message = "Nessun file collegato a questo nominativo";
                         }
                         else
                         {

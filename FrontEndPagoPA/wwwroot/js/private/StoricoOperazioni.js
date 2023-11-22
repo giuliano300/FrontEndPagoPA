@@ -59,51 +59,54 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.operations-history').empty();
-    if (r.length > 0) {
-        for (var i = 0; i < r.length; i++) {
-            let date = new Date(r[i].date);
-            let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-            let insDateString = date.toLocaleDateString('it-IT', options);
-            var li = "<ul>" +
-                "<li>" + r[i].title + "</li>" +
-                "<li class='text-center'>" + insDateString + "</li>" +
-                "<li class='text-center'>" + r[i].operationType + "</li>";
+    if(r != null)
+        if (r.length > 0) {
+            for (var i = 0; i < r.length; i++) {
+                let date = new Date(r[i].date);
+                let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                let insDateString = date.toLocaleDateString('it-IT', options);
+                var li = "<ul>" +
+                    "<li>" + r[i].title + "</li>" +
+                    "<li class='text-center'>" + insDateString + "</li>" +
+                    "<li class='text-center'>" + r[i].operationType + "</li>";
 
-            if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null)
-                li += "<li class='text-center'>IUV</li>";
-            else
-                li += "<li class='text-center'>IUV + Bollettino</li>";
+                if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null)
+                    li += "<li class='text-center'>IUV</li>";
+                else
+                    li += "<li class='text-center'>IUV + Bollettino</li>";
 
-            li += "<li class='text-center'><div class='progress-bar'>" +
-                "<div style='width:100%; position:absolute; z-index:200; text-align:center; color:#FFF; font-weight:600;'>" + r[i].workedInstallmentsPercentage + "%</div>" +
-                "<span style='width:" + r[i].workedInstallmentsPercentage + "%'></span></div></li>";
-            if (r[i].workedInstallmentsPercentage == 100) {
-                li += "<li class='text-center' title='documento disponibile' onclick='GetCsv(" + r[i].operationId + ")'><i class='bx bx-qr active-btn'></i></li>";
+                li += "<li class='text-center'><div class='progress-bar'>" +
+                    "<div style='width:100%; position:absolute; z-index:200; text-align:center; color:#FFF; font-weight:600;'>" + r[i].workedInstallmentsPercentage + "%</div>" +
+                    "<span style='width:" + r[i].workedInstallmentsPercentage + "%'></span></div></li>";
+                if (r[i].workedInstallmentsPercentage == 100) {
+                    li += "<li class='text-center' title='documento disponibile' onclick='GetCsv(" + r[i].operationId + ")'><i class='bx bx-qr active-btn'></i></li>";
 
-                if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null) {
-                    li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
+                    if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null) {
+                        li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
+                    }
+                    else {
+                        if (r[i].downloadableFile)
+                            li += "<li class='text-center' title='documento disponibile' onclick='GetZipFile(" + r[i].operationId + ")'><i class='las la-file-archive active-btn'></i></li>";
+                        else
+                            li += "<li class='text-center' title='documento non ancora disponibile'><i class='las la-file-archive not-active'></i></li>";
+                   }
                 }
                 else {
-                    if (r[i].downloadableFile)
-                        li += "<li class='text-center' title='documento disponibile' onclick='GetZipFile(" + r[i].operationId + ")'><i class='las la-file-archive active-btn'></i></li>";
+                    li += "<li class='text-center' title='documento non ancora disponibile'><i class='bx bx-qr not-active'></i></li>";
+
+                    if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null) {
+                        li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
+                    }
                     else
                         li += "<li class='text-center' title='documento non ancora disponibile'><i class='las la-file-archive not-active'></i></li>";
-               }
-            }
-            else {
-                li += "<li class='text-center' title='documento non ancora disponibile'><i class='bx bx-qr not-active'></i></li>";
-
-                if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null) {
-                    li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
                 }
-                else
-                    li += "<li class='text-center' title='documento non ancora disponibile'><i class='las la-file-archive not-active'></i></li>";
-            }
-            li += "</ul>";
+                li += "</ul>";
 
-            $('.operations-history').append(li);
+                $('.operations-history').append(li);
+            }
         }
-    }
+        else
+            $('.operations-history').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
     else
         $('.operations-history').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
 }
