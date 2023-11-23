@@ -407,6 +407,46 @@ namespace FrontEndPagoPA.Controllers
             return l;
         }
 
+        private bool CheckDate(string date)
+        {
+            try
+            {
+                var split = date.Split('-');
+                if(split.Length < 3)
+                    return false;
+                
+                var year = split[0];
+                var month = split[1];
+                var day = split[2];
+                
+                if (year.Length < 4)
+                    return false;
+
+                if(Convert.ToInt32(year) < 1920)
+                    return false;
+
+                if (month.Length < 2)
+                    return false;
+
+                if (Convert.ToInt32(month) > 12)
+                    return false;
+
+                if (day.Length < 2)
+                    return false;
+
+                if (Convert.ToInt32(day) > 31)
+                    return false;
+
+
+                return true;
+            }
+            catch (Exception e)
+            {
+
+            }
+            return false;
+        }
+
 
         public List<CsvDtoOut> CheckRecords(List<CsvDto> records, bool bollettino)
         {
@@ -449,8 +489,17 @@ namespace FrontEndPagoPA.Controllers
                         case 1:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!)) 
+                                { 
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
                             }
                             catch
                             {
@@ -460,9 +509,29 @@ namespace FrontEndPagoPA.Controllers
                         case 2:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                var d2 = Convert.ToDateTime(r.dataScadenzaRata2);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata2!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata2);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
                             }
                             catch
                             {
@@ -472,10 +541,43 @@ namespace FrontEndPagoPA.Controllers
                         case 3:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                var d2 = Convert.ToDateTime(r.dataScadenzaRata2);
-                                var d3 = Convert.ToDateTime(r.dataScadenzaRata3);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata2!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata2);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+                                
+                                if (CheckDate(r.dataScadenzaRata3!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata3);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+
                             }
                             catch
                             {
@@ -485,11 +587,54 @@ namespace FrontEndPagoPA.Controllers
                         case 4:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                var d2 = Convert.ToDateTime(r.dataScadenzaRata2);
-                                var d3 = Convert.ToDateTime(r.dataScadenzaRata3);
-                                var d4 = Convert.ToDateTime(r.dataScadenzaRata4);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata2!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata2);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata3!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata3);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata4!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata4);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
                             }
                             catch
                             {
@@ -499,12 +644,65 @@ namespace FrontEndPagoPA.Controllers
                         case 5:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                var d2 = Convert.ToDateTime(r.dataScadenzaRata2);
-                                var d3 = Convert.ToDateTime(r.dataScadenzaRata3);
-                                var d4 = Convert.ToDateTime(r.dataScadenzaRata4);
-                                var d5 = Convert.ToDateTime(r.dataScadenzaRata5);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata2!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata2);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata3!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata3);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata4!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata4);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata5!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata5);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
                             }
                             catch
                             {
@@ -514,13 +712,77 @@ namespace FrontEndPagoPA.Controllers
                         case 6:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                var d2 = Convert.ToDateTime(r.dataScadenzaRata2);
-                                var d3 = Convert.ToDateTime(r.dataScadenzaRata3);
-                                var d4 = Convert.ToDateTime(r.dataScadenzaRata4);
-                                var d5 = Convert.ToDateTime(r.dataScadenzaRata5);
-                                var d6 = Convert.ToDateTime(r.dataScadenzaRata6);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata2!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata2);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata3!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata3);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata4!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata4);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata5!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata5);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata6!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata6);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
                             }
                             catch
                             {
@@ -530,14 +792,89 @@ namespace FrontEndPagoPA.Controllers
                         case 7:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                var d2 = Convert.ToDateTime(r.dataScadenzaRata2);
-                                var d3 = Convert.ToDateTime(r.dataScadenzaRata3);
-                                var d4 = Convert.ToDateTime(r.dataScadenzaRata4);
-                                var d5 = Convert.ToDateTime(r.dataScadenzaRata5);
-                                var d6 = Convert.ToDateTime(r.dataScadenzaRata6);
-                                var d7 = Convert.ToDateTime(r.dataScadenzaRata7);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata2!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata2);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata3!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata3);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata4!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata4);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata5!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata5);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata6!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata6);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata7!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata7);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
                             }
                             catch
                             {
@@ -547,15 +884,101 @@ namespace FrontEndPagoPA.Controllers
                         case 8:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                var d2 = Convert.ToDateTime(r.dataScadenzaRata2);
-                                var d3 = Convert.ToDateTime(r.dataScadenzaRata3);
-                                var d4 = Convert.ToDateTime(r.dataScadenzaRata4);
-                                var d5 = Convert.ToDateTime(r.dataScadenzaRata5);
-                                var d6 = Convert.ToDateTime(r.dataScadenzaRata6);
-                                var d7 = Convert.ToDateTime(r.dataScadenzaRata7);
-                                var d8 = Convert.ToDateTime(r.dataScadenzaRata8);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata2!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata2);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata3!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata3);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata4!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata4);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata5!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata5);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata6!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata6);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata7!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata7);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata8!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata8);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
                             }
                             catch
                             {
@@ -565,16 +988,113 @@ namespace FrontEndPagoPA.Controllers
                         case 9:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                var d2 = Convert.ToDateTime(r.dataScadenzaRata2);
-                                var d3 = Convert.ToDateTime(r.dataScadenzaRata3);
-                                var d4 = Convert.ToDateTime(r.dataScadenzaRata4);
-                                var d5 = Convert.ToDateTime(r.dataScadenzaRata5);
-                                var d6 = Convert.ToDateTime(r.dataScadenzaRata6);
-                                var d7 = Convert.ToDateTime(r.dataScadenzaRata7);
-                                var d8 = Convert.ToDateTime(r.dataScadenzaRata8);
-                                var d9 = Convert.ToDateTime(r.dataScadenzaRata9);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata2!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata2);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata3!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata3);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata4!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata4);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata5!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata5);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata6!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata6);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata7!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata7);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata8!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata8);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata9!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata9);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
                             }
                             catch
                             {
@@ -584,17 +1104,125 @@ namespace FrontEndPagoPA.Controllers
                         case 10:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                var d2 = Convert.ToDateTime(r.dataScadenzaRata2);
-                                var d3 = Convert.ToDateTime(r.dataScadenzaRata3);
-                                var d4 = Convert.ToDateTime(r.dataScadenzaRata4);
-                                var d5 = Convert.ToDateTime(r.dataScadenzaRata5);
-                                var d6 = Convert.ToDateTime(r.dataScadenzaRata6);
-                                var d7 = Convert.ToDateTime(r.dataScadenzaRata7);
-                                var d8 = Convert.ToDateTime(r.dataScadenzaRata8);
-                                var d9 = Convert.ToDateTime(r.dataScadenzaRata9);
-                                var d10 = Convert.ToDateTime(r.dataScadenzaRata10);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata2!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata2);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata3!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata3);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata4!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata4);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata5!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata5);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata6!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata6);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata7!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata7);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata8!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata8);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata9!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata9);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata10!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata10);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
                             }
                             catch
                             {
@@ -604,18 +1232,137 @@ namespace FrontEndPagoPA.Controllers
                         case 11:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                var d2 = Convert.ToDateTime(r.dataScadenzaRata2);
-                                var d3 = Convert.ToDateTime(r.dataScadenzaRata3);
-                                var d4 = Convert.ToDateTime(r.dataScadenzaRata4);
-                                var d5 = Convert.ToDateTime(r.dataScadenzaRata5);
-                                var d6 = Convert.ToDateTime(r.dataScadenzaRata6);
-                                var d7 = Convert.ToDateTime(r.dataScadenzaRata7);
-                                var d8 = Convert.ToDateTime(r.dataScadenzaRata8);
-                                var d9 = Convert.ToDateTime(r.dataScadenzaRata9);
-                                var d10 = Convert.ToDateTime(r.dataScadenzaRata10);
-                                var d11 = Convert.ToDateTime(r.dataScadenzaRata11);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata2!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata2);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata3!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata3);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata4!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata4);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata5!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata5);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata6!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata6);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata7!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata7);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata8!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata8);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata9!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata9);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata10!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata10);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata11!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata11);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
                             }
                             catch
                             {
@@ -625,19 +1372,149 @@ namespace FrontEndPagoPA.Controllers
                         case 12:
                             try
                             {
-                                var d = Convert.ToDateTime(r.dataScadenzaRata1);
-                                var d2 = Convert.ToDateTime(r.dataScadenzaRata2);
-                                var d3 = Convert.ToDateTime(r.dataScadenzaRata3);
-                                var d4 = Convert.ToDateTime(r.dataScadenzaRata4);
-                                var d5 = Convert.ToDateTime(r.dataScadenzaRata5);
-                                var d6 = Convert.ToDateTime(r.dataScadenzaRata6);
-                                var d7 = Convert.ToDateTime(r.dataScadenzaRata7);
-                                var d8 = Convert.ToDateTime(r.dataScadenzaRata8);
-                                var d9 = Convert.ToDateTime(r.dataScadenzaRata9);
-                                var d10 = Convert.ToDateTime(r.dataScadenzaRata10);
-                                var d11 = Convert.ToDateTime(r.dataScadenzaRata11);
-                                var d12 = Convert.ToDateTime(r.dataScadenzaRata12);
-                                nr.valid = true;
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata1);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata2!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata2);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata3!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata3);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata4!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata4);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata5!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata5);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata6!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata6);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata7!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata7);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata8!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata8);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata9!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata9);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata10!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata10);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata11!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata11);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
+
+                                if (CheckDate(r.dataScadenzaRata12!))
+                                {
+                                    var d = Convert.ToDateTime(r.dataScadenzaRata12);
+                                    nr.valid = true;
+                                }
+                                else
+                                {
+                                    nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                                    nr.valid = false;
+                                    break;
+                                }
                             }
                             catch
                             {
@@ -660,7 +1537,18 @@ namespace FrontEndPagoPA.Controllers
 
                 try
                 {
-                    Convert.ToDateTime(r.dataScadenzaRataUnica);
+                    if (CheckDate(r.dataScadenzaRataUnica!))
+                    {
+                        var d = Convert.ToDateTime(r.dataScadenzaRataUnica);
+                        nr.valid = true;
+                    }
+                    else
+                    {
+                        nr.message = "Data scadenza deve essere scritta nel tipo yyyy-MM-dd";
+                        nr.valid = false;
+                        break;
+                    }
+
                 }
                 catch
                 {
