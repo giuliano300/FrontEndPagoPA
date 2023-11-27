@@ -1,7 +1,8 @@
 ﻿let itemsPerPage = 100;
 
 function FiltraRichieste() {
-    let data = {
+    $('.preload').show();
+   let data = {
         dataInizio: $('#dataInizio').val(),
         dataFine: $('#dataFine').val(),
         worked: $('#worked').val(),
@@ -36,11 +37,15 @@ function GetRichiestePerPage(p, first) {
         GetRichieste(r.Result);
         if (first)
             CreatePaginations(r.Message);
+
+        $('.preload').hide();
+
     })
 }
 
 
 $(function () {
+    $('.preload').show();
     GetRichiestePerPage(1, true);
 });
 
@@ -63,6 +68,7 @@ function CreatePaginations(totItems) {
 }
 
 function EliminaFiltro() {
+    $('.preload').show();
     let dataI = $('#dataInizio');
     let dataF = $('#dataFine');
     let nominativo = $('#nominativo');
@@ -80,32 +86,40 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.archive-payments').empty();
-    if (r.length > 0) {
-        for (var i = 0; i < r.length; i++) {
-            let rata = "Rata unica";
-            let expDate = new Date(r[i].installment.expirationDate);
-            let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-            let expDateString = expDate.toLocaleDateString('it-IT', options);
-            if (r[i].installment.numeroRata != 0)
-                rata = r[i].installment.numeroRata;
-            var li = "<ul>" +
-                "<li>" + r[i].debtPosition.anagraficaPagatore + "</li>" +
-                "<li>" + r[i].debtPosition.codiceIdentificativoUnivocoPagatore + "</li>" +
-                "<li>" + r[i].installment.iuv + "</li>" +
-                "<li>" + r[i].installment.price + "€</li>" +
-                "<li class='text-center'>" + rata + "</li>" +
-                "<li>" + expDateString + "</li>";
+    if(r != null)
+        if (r.length > 0) {
+            for (var i = 0; i < r.length; i++) {
+                let rata = "Rata unica";
+                let expDate = new Date(r[i].installment.expirationDate);
+                let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                let expDateString = expDate.toLocaleDateString('it-IT', options);
+                if (r[i].installment.numeroRata != 0)
+                    rata = r[i].installment.numeroRata;
+                var li = "<ul>" +
+                    "<li>" + r[i].debtPosition.anagraficaPagatore + "</li>" +
+                    "<li>" + r[i].debtPosition.codiceIdentificativoUnivocoPagatore + "</li>" +
+                    "<li>" + r[i].installment.iuv + "</li>" +
+                    "<li>" + r[i].installment.price + "€</li>" +
+                    "<li class='text-center'>" + rata + "</li>" +
+                    "<li>" + expDateString + "</li>";
 
-            if (r[i].installment.paid == true && r[i].installment.valid == true && r[i].installment.worked == true)
-                li += "<li class='text-center'><a href='#'><i class='bx bxs-check-square'></i></a></li>";
-            else
-                li += "<li class='text-center'><a href='#'><i class='bx bx-x'></i></a></li>";
+                if (r[i].installment.paid == true && r[i].installment.valid == true && r[i].installment.worked == true)
+                    li += "<li class='text-center'><a href='#'><i class='bx bxs-check-square'></i></a></li>";
+                else
+                    li += "<li class='text-center'><a href='#'><i class='bx bx-x'></i></a></li>";
 
-            li += "</ul>";
+                li += "</ul>";
 
-            $('.archive-payments').append(li);
+                $('.archive-payments').append(li);
+            }
         }
-    } else {
+        else
+        {
+            $('.archive-payments').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
+        }
+    else
         $('.archive-payments').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
-    }
+
+    $('.preload').hide();
+
 }

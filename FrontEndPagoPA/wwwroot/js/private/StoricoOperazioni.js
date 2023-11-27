@@ -1,6 +1,7 @@
 ﻿let itemsPerPage = 100;
 function FiltraRichieste() {
-    let data = {
+    $('.preload').show();
+   let data = {
         dataInizio: $('#dataInizio').val(),
         dataFine: $('#dataFine').val(),
         page: 1,
@@ -19,6 +20,8 @@ function GetRichiestePerPage(p, first) {
         GetRichieste(r.Result);
         if (first)
             CreatePaginations(r.Message);
+
+        $('.preload').hide();
     })
 }
 
@@ -42,10 +45,12 @@ function CreatePaginations(totItems) {
 
 
 $(function () {
+    $('.preload').show();
     GetRichiestePerPage(1, true);
 });
 
 function EliminaFiltro() {
+    $('.preload').show();
     let dataI = $('#dataInizio');
     let dataF = $('#dataFine');
     $.get("/Action/EliminaFiltroStoricoOperazioni", function (res) {
@@ -109,6 +114,8 @@ function GetRichieste(r) {
             $('.operations-history').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
     else
         $('.operations-history').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
+
+    $('.preload').hide();
 }
 
 function GetCsv(id) {
