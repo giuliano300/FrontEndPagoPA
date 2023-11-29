@@ -50,84 +50,84 @@ namespace FrontEndPagoPA.Controllers
             if (r1 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r1) + ";";
+                installmentDate += r1 + ";";
             }
 
             var r2 = data["rata2"].ToString();
             if (r2 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r2) + ";";
+                installmentDate += r2 + ";";
             }
 
             var r3 = data["rata3"].ToString();
             if (r3 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r3) + ";";
+                installmentDate += r3 + ";";
             }
 
             var r4 = data["rata4"].ToString();
             if (r4 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r4) + ";";
+                installmentDate += r4 + ";";
             }
 
             var r5 = data["rata5"].ToString();
             if (r5 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r5) + ";";
+                installmentDate += r5 + ";";
             }
 
             var r6 = data["rata6"].ToString();
             if (r6 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r6) + ";";
+                installmentDate += r6 + ";";
             }
 
             var r7 = data["rata7"].ToString();
             if (r7 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r7) + ";";
+                installmentDate += r7 + ";";
             }
 
             var r8 = data["rata8"].ToString();
             if (r8 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r8) + ";";
+                installmentDate += r8 + ";";
             }
 
             var r9 = data["rata9"].ToString();
             if (r9 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r9) + ";";
+                installmentDate += r9+ ";";
             }
 
             var r10 = data["rata10"].ToString();
             if (r10 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r10) + ";";
+                installmentDate += r10 + ";";
             }
 
             var r11 = data["rata11"].ToString();
             if (r11 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r11) + ";";
+                installmentDate += r11 + ";";
             }
 
             var r12 = data["rata12"].ToString();
             if (r12 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r12) + ";";
+                installmentDate += r12 + ";";
             }
 
             var senderUserId = data["senderUserId"];
