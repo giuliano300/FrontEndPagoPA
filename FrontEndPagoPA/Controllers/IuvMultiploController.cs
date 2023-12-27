@@ -72,7 +72,7 @@ namespace FrontEndPagoPA.Controllers
                 userId = token.sub,
                 bollettino = bul,
                 senderUserId = Convert.ToInt32(senderUserId),
-                operationType = Convert.ToInt32(operationTypeId),
+                operationTypeId = Convert.ToInt32(operationTypeId),
                 debtPositions = null
             };
 
@@ -144,6 +144,7 @@ namespace FrontEndPagoPA.Controllers
             if (bullettin == "1")
                 bul = true;
 
+
             var csv = ((List<CsvDtoOut>)_cache.Get("list")!).Where(a => a.valid == true).ToList();
 
             var dbs = new List<DebtPositionDto>();
@@ -177,7 +178,7 @@ namespace FrontEndPagoPA.Controllers
                 userId = token.sub,
                 bollettino = bul,
                 senderUserId = Convert.ToInt32(senderUserId),
-                operationType = Convert.ToInt32(operationTypeId),
+                operationTypeId = Convert.ToInt32(operationTypeId),
                 debtPositions = dbs
             };
 

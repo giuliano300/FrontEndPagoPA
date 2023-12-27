@@ -50,84 +50,84 @@ namespace FrontEndPagoPA.Controllers
             if (r1 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r1) + ";";
+                installmentDate += Convert.ToDateTime(r1).ToShortDateString() + ";";
             }
 
             var r2 = data["rata2"].ToString();
             if (r2 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r2) + ";";
+                installmentDate += Convert.ToDateTime(r2).ToShortDateString() + ";";
             }
 
             var r3 = data["rata3"].ToString();
             if (r3 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r3) + ";";
+                installmentDate += Convert.ToDateTime(r3).ToShortDateString() + ";";
             }
 
             var r4 = data["rata4"].ToString();
             if (r4 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r4) + ";";
+                installmentDate += Convert.ToDateTime(r4).ToShortDateString() + ";";
             }
 
             var r5 = data["rata5"].ToString();
             if (r5 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r5) + ";";
+                installmentDate += Convert.ToDateTime(r5).ToShortDateString() + ";";
             }
 
             var r6 = data["rata6"].ToString();
             if (r6 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r6) + ";";
+                installmentDate += Convert.ToDateTime(r6).ToShortDateString() + ";";
             }
 
             var r7 = data["rata7"].ToString();
             if (r7 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r7) + ";";
+                installmentDate += Convert.ToDateTime(r7).ToShortDateString() + ";";
             }
 
             var r8 = data["rata8"].ToString();
             if (r8 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r8) + ";";
+                installmentDate += Convert.ToDateTime(r8).ToShortDateString() + ";";
             }
 
             var r9 = data["rata9"].ToString();
             if (r9 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r9) + ";";
+                installmentDate += Convert.ToDateTime(r9).ToShortDateString() + ";";
             }
 
             var r10 = data["rata10"].ToString();
             if (r10 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r10) + ";";
+                installmentDate += Convert.ToDateTime(r10).ToShortDateString() + ";";
             }
 
             var r11 = data["rata11"].ToString();
             if (r11 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r11) + ";";
+                installmentDate += Convert.ToDateTime(r11).ToShortDateString() + ";";
             }
 
             var r12 = data["rata12"].ToString();
             if (r12 != "")
             {
                 installmentNumber += 1;
-                installmentDate += Convert.ToDateTime(r12) + ";";
+                installmentDate += Convert.ToDateTime(r12).ToShortDateString() + ";";
             }
 
             var senderUserId = data["senderUserId"];
@@ -208,7 +208,7 @@ namespace FrontEndPagoPA.Controllers
                 userId = token.sub,
                 bollettino = bul,
                 senderUserId = Convert.ToInt32(senderUserId),
-                operationType = Convert.ToInt32(operationTypeId),
+                operationTypeId = Convert.ToInt32(operationTypeId),
                 debtPositions = dbs
             };
 

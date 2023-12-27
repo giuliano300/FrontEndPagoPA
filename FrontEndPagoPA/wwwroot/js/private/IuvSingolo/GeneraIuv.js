@@ -44,8 +44,9 @@ function CreateRatei(n) {
     if (n > 0)
         for (var i = 0; i < n; i++) {
             $('#rate-list').append('<div class="col-md-3 col-sm-3">' +
-                '<label>Scadenza RATA ' + (i + 1) + '</label>' +
+                '<label>Scadenza RATA ' + (i + 1) +
                 '<input type="date" name="rata' + (i + 1) + '" required /> ' +
+                '</label>' +
                 '</div>');
         }
 }
