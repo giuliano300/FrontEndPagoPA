@@ -45,32 +45,32 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <label for="cod_fisc">Codice Fiscale</label>
-                                                <input type="text" value="MRORSS80F22F839X" name="cod_fisc" id="cod_fisc" />
+                                                <input type="text" name="cod_fisc" id="cod_fisc" />
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-8">
                                                 <label>
                                                     Indirizzo
-                                                    <input type="text" value="Corso Italia, 11" name="address" />
+                                                    <input type="text" value="" name="address" />
                                                 </label>
                                             </div>
                                             <div class="col-md-4">
                                                 <label>
                                                     Cap
-                                                    <input type="number" value="80144" name="cap" maxlength="5" />
+                                                    <input type="number" name="cap" maxlength="5" />
                                                 </label>
                                             </div>
                                             <div class="col-md-8">
                                                 <label>
                                                     Città
-                                                    <input type="text" value="Napoli" name="city" />
+                                                    <input type="text" name="city" />
                                                 </label>
                                             </div>
                                             <div class="col-md-4">
                                                 <label>
                                                     Provincia
-                                                    <input type="text" value="NA" name="province" maxlength="2" />
+                                                    <input type="text" name="province" maxlength="2" />
                                                 </label>
                                             </div>
                                         </div>
@@ -116,7 +116,7 @@
 </div>
 
 <script>
-    $(document).ready(function () {
+    $(function () {
         $("#personalData").validate({
             rules: {
                 newPassword: {
@@ -152,7 +152,7 @@
             pwd: $('#currentPassword').val()
         }
         $.post("/Home/CheckPwd", data, function (res) {
-            let r = $.parseJSON(res);
+            let r = JSON.parse(res);
             if (!r) {
                 // var cp = $('');
                 // cp.innerHTML("Password diversa da quella attuale");

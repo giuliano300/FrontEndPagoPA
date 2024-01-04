@@ -1,14 +1,16 @@
-﻿$(document).ready(function () {
+﻿$(function () {
     GetUsers();
 });
 
 function GetOperationType(id) {
+    if (id == null || id == "")
+        return;
     $('.operationType').empty();
     $('.operationType').append('<option value="">Seleziona un tipo</option>')
     $.get("/Action/GetOperationTypes", function (res) {
-        let r = $.parseJSON(res);
+        let r = JSON.parse(res);
         $.get("/User/GetOperationTypeSenderUser/" + id, function (resx) {
-            let op = $.parseJSON(resx).map(a => a.operationTypeId);
+            let op = JSON.parse(resx).map(a => a.operationTypeId);
             for (var i = 0; i < r.Result.length; i++) {
                 if (op.indexOf(r.Result[i].id) >= 0)
                     $('.operationType').append('<option value="' + r.Result[i].id + '">' + r.Result[i].typeName + '</option>')
@@ -19,7 +21,7 @@ function GetOperationType(id) {
 
 function GetUsers() {
     $.get("/User/GetUsers", function (res) {
-        var r = $.parseJSON(res);
+        var r = JSON.parse(res);
         for (var i = 0; i < r.length; i++) {
             $('.user').append('<option value="' + r[i].id + '">' + r[i].businessName + '</option>')
         }
@@ -32,7 +34,7 @@ function GetPreload() {
 
 function GetResult(res) {
     $('.preload').hide();
-    var r = $.parseJSON(res);
+    var r = JSON.parse(res);
     if (r)
         location.href = '/Action/RequestComplete';
     else

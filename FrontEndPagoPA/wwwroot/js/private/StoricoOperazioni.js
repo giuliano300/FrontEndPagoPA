@@ -8,7 +8,7 @@ function FiltraRichieste() {
         itemsPerPage: itemsPerPage
     }
     $.post("/Action/FiltraRichiesteStoricoOperazioni", data, function (res) {
-        let r = $.parseJSON(res);
+        let r = JSON.parse(res);
         GetRichieste(r.Result);
         CreatePaginations(r.Message);
     });
@@ -16,7 +16,7 @@ function FiltraRichieste() {
 
 function GetRichiestePerPage(p, first) {
     $.get("/Action/GetStoricoOperazioni?page=" + p + "&itemsPerPage=" + itemsPerPage, function (res) {
-        var r = $.parseJSON(res);
+        var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
             CreatePaginations(r.Message);
@@ -54,7 +54,7 @@ function EliminaFiltro() {
     let dataI = $('#dataInizio');
     let dataF = $('#dataFine');
     $.get("/Action/EliminaFiltroStoricoOperazioni", function (res) {
-        var r = $.parseJSON(res);
+        var r = JSON.parse(res);
         dataI.val('@today');
         dataF.val('');
         GetRichiestePerPage(1, true);

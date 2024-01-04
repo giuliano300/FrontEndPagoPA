@@ -13,7 +13,7 @@ function FiltraRichieste() {
         itemsPerPage: itemsPerPage
     }
     $.post("/Action/FiltraRichieste", data, function (res) {
-        let r = $.parseJSON(res);
+        let r = JSON.parse(res);
         GetRichieste(r.Result);
         CreatePaginations(r.Message);
     });
@@ -33,7 +33,7 @@ function GeneraCsv() {
 
 function GetRichiestePerPage(p, first) {
     $.get("/Action/GetRendicontazionePagamenti?page=" + p + "&itemsPerPage=" + itemsPerPage, function (res) {
-        var r = $.parseJSON(res);
+        var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
             CreatePaginations(r.Message);
@@ -74,7 +74,7 @@ function EliminaFiltro() {
     let nominativo = $('#nominativo');
     let pagato = $('#pagato');
     $.get("/Action/EliminaFiltroRendicontazione", function (res) {
-        var r = $.parseJSON(res);
+        var r = JSON.parse(res);
         dataI.val('@today');
         dataF.val('');
         nominativo.val('');

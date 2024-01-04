@@ -49,7 +49,7 @@ namespace FrontEndPagoPA.Controllers
         }
 
 
-        public async Task<IActionResult> RichiesteInAttesa()
+        public IActionResult RichiesteInAttesa()
         {
             return View();
         }
@@ -96,7 +96,7 @@ namespace FrontEndPagoPA.Controllers
                         await upload.CopyToAsync(fileSrteam);
                     }
 
-                    var r = await ConvertCsv(Globals.FolderCsv + fileName, bulletin);
+                    var r = ConvertCsv(Globals.FolderCsv + fileName, bulletin);
 
                     _cache.Set("list", r);
 
@@ -123,7 +123,7 @@ namespace FrontEndPagoPA.Controllers
                         await upload.CopyToAsync(fileSrteam);
                     }
 
-                    var r = await OpenZipFile(Globals.FolderZip + fileName);
+                    var r = OpenZipFile(Globals.FolderZip + fileName);
 
                     var l = (List<CsvDtoOut>)_cache.Get("list")!;
 
@@ -204,8 +204,7 @@ namespace FrontEndPagoPA.Controllers
         public async Task<string> GetOperationTypes()
         {
             Globals g = new(_tokenProvider);
-            TokenDto token;
-            token = g.GetDeserializedToken();
+            TokenDto token = g.GetDeserializedToken();
             List<OperationTypeDto> l = new();
             string today = DateTime.Today.ToString();
 
@@ -279,7 +278,7 @@ namespace FrontEndPagoPA.Controllers
         }
 
         [HttpGet]
-        public async Task<string> EliminaFiltroRendicontazione()
+        public string EliminaFiltroRendicontazione()
         {
             IEnumerable<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = (IEnumerable<DebtPositionInstallmentViewModel>)_cache.Get("rendicontazionePagamenti")!;
 
@@ -287,7 +286,7 @@ namespace FrontEndPagoPA.Controllers
         }
 
         [HttpGet]
-        public async Task<string> EliminaFiltro()
+        public string EliminaFiltro()
         {
             IEnumerable<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = (IEnumerable<DebtPositionInstallmentViewModel>)_cache.Get("richiesteEsitate")!;
 
@@ -295,7 +294,7 @@ namespace FrontEndPagoPA.Controllers
         }
 
         [HttpGet]
-        public async Task<string> EliminaFiltroInAttesa()
+        public string EliminaFiltroInAttesa()
         {
             IEnumerable<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = (IEnumerable<DebtPositionInstallmentViewModel>)_cache.Get("richiesteInAttesa")!;
 
@@ -303,7 +302,7 @@ namespace FrontEndPagoPA.Controllers
         }
 
 
-        public async Task<List<CsvDtoOut>> ConvertCsv(string pathFile, bool bollettino)
+        public List<CsvDtoOut> ConvertCsv(string pathFile, bool bollettino)
         {
             string webRootPath = _webHostEnvironment.WebRootPath;
             string csvFilePath = webRootPath + pathFile;
@@ -346,7 +345,7 @@ namespace FrontEndPagoPA.Controllers
 
         }
 
-        public string CreateZipFile(List<Dictionary<string, string>> l)
+        public string? CreateZipFile(List<Dictionary<string, string>> l)
         {
             try
             {
@@ -382,7 +381,7 @@ namespace FrontEndPagoPA.Controllers
         }
 
 
-        public async Task<List<string>> OpenZipFile(string pathFile)
+        public List<string> OpenZipFile(string pathFile)
         {
             var l = new List<string>();
             string webRootPath = _webHostEnvironment.WebRootPath;
@@ -399,7 +398,7 @@ namespace FrontEndPagoPA.Controllers
                 foreach (string file in files)
                     l.Add(Globals.FolderZip + nf + "/" + Path.GetFileName(file));
             }
-            catch(Exception e) 
+            catch(Exception) 
             {
                 _logger.Error("  An error occurred in the OpenZipFile in Action Controller  ");
             }
@@ -440,7 +439,7 @@ namespace FrontEndPagoPA.Controllers
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }
@@ -1578,7 +1577,7 @@ namespace FrontEndPagoPA.Controllers
         }
 
 
-        public async Task<IActionResult> RichiesteEsitate()
+        public IActionResult RichiesteEsitate()
         {
             return View();
         }
@@ -1653,7 +1652,7 @@ namespace FrontEndPagoPA.Controllers
         }
 
         [HttpGet]
-        public async Task<string> EliminaFiltroStoricoOperazioni()
+        public string EliminaFiltroStoricoOperazioni()
         {
             IEnumerable<OperationHistoryViewModel> oHViewModels = (IEnumerable<OperationHistoryViewModel>)_cache.Get("richiesteStoricoOperazioni")!;
 
@@ -1799,7 +1798,7 @@ namespace FrontEndPagoPA.Controllers
             var l = new List<Dictionary<string, string>>();
             ResponseDto? response = await _actionService.GetFilesFromOperation(id);
             l = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(response.Result!.ToString()!);
-            return CreateZipFile(l!);
+            return CreateZipFile(l!)!;
         }
     }
 }

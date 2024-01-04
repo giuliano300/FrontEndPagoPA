@@ -1,6 +1,6 @@
 ﻿$(function () {
     $.get("/Action/GetOperationTypes", function (res) {
-        let r = $.parseJSON(res);
+        let r = JSON.parse(res);
         let op = operationTypesId;
         for (var i = 0; i < r.Result.length; i++) {
 
