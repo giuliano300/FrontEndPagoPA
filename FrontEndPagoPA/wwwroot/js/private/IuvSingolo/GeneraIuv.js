@@ -3,6 +3,8 @@
 });
 
 function GetOperationType(id) {
+    if (id == null || id == "")
+        return;
     $('.operationType').empty();
     $('.operationType').append('<option value="">Seleziona un tipo</option>')
     $.get("/Action/GetOperationTypes", function (res) {
@@ -15,6 +17,16 @@ function GetOperationType(id) {
             }
         });
     })
+}
+
+function CheckOperationType() {
+    var selectedOption = $('.operationType').val();
+    if (selectedOption == "3") {
+        $('#rate-select').prop('disabled', true);
+        $('#rate-list').empty();
+
+    } else
+        $('#rate-select').prop('disabled', false);
 }
 
 function GetUsers() {

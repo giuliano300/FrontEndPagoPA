@@ -14,9 +14,19 @@ function GetOperationType(id) {
             for (var i = 0; i < r.Result.length; i++) {
                 if (op.indexOf(r.Result[i].id) >= 0)
                     $('.operationType').append('<option value="' + r.Result[i].id + '">' + r.Result[i].typeName + '</option>')
-            }
+            } 
         });
     })
+}
+
+function CheckOperationType() {
+    var selectedOption = $('.operationType').val();
+    if (selectedOption == "3") {
+        $('#rate-select').prop('disabled', true);
+        $('#rate-list').empty();
+
+    } else
+        $('#rate-select').prop('disabled', false);
 }
 
 function GetUsers() {
