@@ -100,6 +100,16 @@ function GetOperationType(id) {
     })
 }
 
+function CheckOperationType() {
+    var selectedOption = $('.operationType').val();
+    if (selectedOption == "3") {
+        $('#rate-select').prop('disabled', true);
+        $('#rate-list').empty();
+
+    } else
+        $('#rate-select').prop('disabled', false);
+}
+
 function GetUsers() {
     $.get("/User/GetUsers", function (res) {
         var r = JSON.parse(res);
