@@ -2,6 +2,7 @@
     GetUsers();
 });
 
+
 function GetOperationType(id) {
     if (id == null || id == "")
         return;

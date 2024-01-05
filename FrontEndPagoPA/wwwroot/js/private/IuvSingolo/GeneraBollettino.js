@@ -2,6 +2,7 @@
     GetUsers();
 });
 
+
 function GetOperationType(id) {
     if (id == null || id == "")
         return;
@@ -28,6 +29,7 @@ function CheckOperationType() {
     } else
         $('#rate-select').prop('disabled', false);
 }
+
 
 function GetUsers() {
     $.get("/User/GetUsers", function (res) {

@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Genera Iuv";
 }
 
@@ -23,7 +22,7 @@
             {
                 HttpMethod = "post",
                 OnBegin = "GetPreload()",
-                 OnSuccess = "GetResult(data)",
+                OnSuccess = "GetResult(data)",
 
             }, new { @class = "form", enctype = "multipart/form-data" }))
             {
