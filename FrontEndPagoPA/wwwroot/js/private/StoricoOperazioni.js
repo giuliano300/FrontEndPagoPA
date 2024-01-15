@@ -55,7 +55,7 @@ function EliminaFiltro() {
     let dataF = $('#dataFine');
     $.get("/Action/EliminaFiltroStoricoOperazioni", function (res) {
         var r = JSON.parse(res);
-        dataI.val('@today');
+        dataI.val(today);
         dataF.val('');
         GetRichiestePerPage(1, true);
     })

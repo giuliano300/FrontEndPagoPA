@@ -48,21 +48,40 @@ namespace FrontEndPagoPA.Controllers
             return View();
         }
 
-
         public IActionResult RichiesteInAttesa()
         {
             return View();
         }
 
-        public async Task<string> GetRendicontazionePagamenti(int page = 1, int itemsPerPage = 100)
+        public async Task<string> GetRendicontazionePagamenti(int page = 1, int itemsPerPage = 100, bool paid = true, string nominativo = "", string dataInizio = "", string dataFine = "")
         {
             Globals g = new(_tokenProvider);
             TokenDto token;
             token = g.GetDeserializedToken();
             List<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = new();
             string today = DateTime.Today.ToString();
+            var dataI = new DateTime();
+            var dataF = new DateTime();
+            string append = "";
 
-            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, true, true, page, itemsPerPage);
+            if(nominativo != "" && nominativo != null)
+                append += "&nominativo=" + nominativo;
+
+            if (dataInizio != "" && dataInizio != null)
+            {
+                dataI = DateTime.Parse(dataInizio);
+                append += "&dataInizio=" + dataI.ToString("yyyy-MM-dd");
+                today = "";
+            }
+
+            if (dataFine != "" && dataFine != null)
+            {
+                dataF = DateTime.Parse(dataFine);
+                append += "&dataFine=" + dataF.ToString("yyyy-MM-dd");
+                today = "";
+            }
+
+            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, paid, true, page, itemsPerPage, append);
 
             if (response is not null && response.IsSuccess)
             {
@@ -162,15 +181,39 @@ namespace FrontEndPagoPA.Controllers
             List<CsvDto> records = new();
             return JsonConvert.SerializeObject(records);
         }
-        public async Task<string> GetRichiesteEsitate(int page = 1, int itemsPerPage = 100)
+
+        public async Task<string> GetRichiesteEsitate(int page = 1, int itemsPerPage = 100, string codiceFiscale = "", string iuv = "", string dataInizio = "", string dataFine = "")
         {
             Globals g = new(_tokenProvider);
             TokenDto token;
             token = g.GetDeserializedToken();
             string today = DateTime.Today.ToString();
             int skip = (page - 1) * itemsPerPage;
+            string append = "";
+            var dataI = new DateTime();
+            var dataF = new DateTime();
 
-            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, false, true, page, itemsPerPage);
+            if (codiceFiscale != "" && codiceFiscale != null)
+                append += "&codiceFiscale=" + codiceFiscale;
+
+            if (iuv != "" && iuv != null)
+                append += "&iuv=" + iuv;
+
+            if (dataInizio != "" && dataInizio != null)
+            {
+                dataI = DateTime.Parse(dataInizio);
+                append += "&dataInizio=" + dataI.ToString("yyyy-MM-dd");
+                today = "";
+            }
+
+            if (dataFine != "" && dataFine != null)
+            {
+                dataF = DateTime.Parse(dataFine);
+                append += "&dataFine=" + dataF.ToString("yyyy-MM-dd");
+                today = "";
+            }
+
+            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, false, true, page, itemsPerPage, append);
 
             if (response is not null && response.IsSuccess)
                 _cache.Set("richiesteEsitate", JsonConvert.DeserializeObject<List<DebtPositionInstallmentViewModel>>(Convert.ToString(response.Result)!));
@@ -180,15 +223,38 @@ namespace FrontEndPagoPA.Controllers
             return JsonConvert.SerializeObject(response);
         }
 
-        public async Task<string> GetRichiesteInAttesa(int page = 1, int itemsPerPage = 100)
+        public async Task<string> GetRichiesteInAttesa(int page = 1, int itemsPerPage = 100, string codiceFiscale = "", string iuv = "", string dataInizio = "", string dataFine = "")
         {
             Globals g = new(_tokenProvider);
             TokenDto token;
             token = g.GetDeserializedToken();
             List<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = new();
             string today = DateTime.Today.ToString();
+            string append = "";
+            var dataI = new DateTime();
+            var dataF = new DateTime();
 
-            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, false, today, false, false, page, itemsPerPage);
+            if (codiceFiscale != "" && codiceFiscale != null)
+                append += "&codiceFiscale=" + codiceFiscale;
+
+            if (iuv != "" && iuv != null)
+                append += "&iuv=" + iuv;
+
+            if (dataInizio != "" && dataInizio != null)
+            {
+                dataI = DateTime.Parse(dataInizio);
+                append += "&dataInizio=" + dataI.ToString("yyyy-MM-dd");
+                today = "";
+            }
+
+            if (dataFine != "" && dataFine != null)
+            {
+                dataF = DateTime.Parse(dataFine);
+                append += "&dataFine=" + dataF.ToString("yyyy-MM-dd");
+                today = "";
+            }
+
+            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, false, today, false, false, page, itemsPerPage, append);
 
             if (response is not null && response.IsSuccess)
             {
@@ -332,6 +398,8 @@ namespace FrontEndPagoPA.Controllers
             System.IO.File.WriteAllText(filename, csv.ToString());
 
         }
+
+
         public static void WriteCSVRendicontazione(List<DebtPositionInstallmentViewModel> items, string filename)
         {
             var csv = "Nominativo;Codice Fiscale;IUV;Importo;Rata;Data Scadenza;Pagato\n";
@@ -344,6 +412,7 @@ namespace FrontEndPagoPA.Controllers
            System.IO.File.WriteAllText(filename, csv.ToString());
 
         }
+
 
         public string? CreateZipFile(List<Dictionary<string, string>> l)
         {
@@ -405,6 +474,7 @@ namespace FrontEndPagoPA.Controllers
 
             return l;
         }
+
 
         private bool CheckDate(string date)
         {
@@ -1588,6 +1658,7 @@ namespace FrontEndPagoPA.Controllers
             return View();
         }
 
+
         public ActionResult StoricoOperazioni()
         {
             return View();
@@ -1629,6 +1700,7 @@ namespace FrontEndPagoPA.Controllers
 
             return JsonConvert.SerializeObject(response);
         }
+
 
         public async Task<string> GetStoricoOperazioni(int page = 1, int itemsPerPage = 100)
         {

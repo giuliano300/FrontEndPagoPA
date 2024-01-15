@@ -18,14 +18,19 @@ function FiltraRichieste() {
 }
 
 function GetRichiestePerPage(p, first) {
-    $.get("/Action/GetRichiesteInAttesa?page=" + p + "&itemsPerPage=" + itemsPerPage, function (res) {
+
+    let codiceFiscale = $('#codiceFiscale').val();
+    let iuv = $('#iuv').val();
+    let dataInizio = $('#dataInizio').val();
+    let dataFine = $('#dataFine').val();
+    $.get("/Action/GetRichiesteInAttesa?page=" + p + "&itemsPerPage=" + itemsPerPage + "&codiceFiscale=" + codiceFiscale + "&iuv=" + iuv + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
         var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
             CreatePaginations(r.Message);
 
         $('.preload').hide();
- })
+    })
 }
 
 function CreatePaginations(totItems) {

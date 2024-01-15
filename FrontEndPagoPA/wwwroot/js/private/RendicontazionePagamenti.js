@@ -32,21 +32,31 @@ function GeneraCsv() {
 }
 
 function GetRichiestePerPage(p, first) {
-    $.get("/Action/GetRendicontazionePagamenti?page=" + p + "&itemsPerPage=" + itemsPerPage, function (res) {
+
+    let paid = $('#pagato').val();
+    if (paid == "NO")
+        paid = false;
+    else
+        paid = true;
+
+    let nominativo = $('#nominativo').val();
+    let dataInizio = $('#dataInizio').val();
+    let dataFine = $('#dataFine').val();
+
+    $.get("/Action/GetRendicontazionePagamenti?page=" + p + "&itemsPerPage=" + itemsPerPage + "&paid=" + paid + "&nominativo=" + nominativo + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
         var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
             CreatePaginations(r.Message);
 
         $('.preload').hide();
-
     })
 }
 
 
 $(function () {
     $('.preload').show();
-    GetRichiestePerPage(1, true);
+    GetRichiestePerPage(1, true, true);
 });
 
 function CreatePaginations(totItems) {
@@ -79,7 +89,7 @@ function EliminaFiltro() {
         dataF.val('');
         nominativo.val('');
         pagato.val('SI');
-        GetRichiestePerPage(1, true);
+        GetRichiestePerPage(1, true, true);
     })
 };
 
