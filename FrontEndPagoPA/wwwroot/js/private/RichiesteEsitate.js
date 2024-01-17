@@ -51,6 +51,7 @@ function GetRichiestePerPage(p, first) {
 
 
 $(function () {
+    $('.preload').show();
     GetRichiestePerPage(1, true);
 });
 

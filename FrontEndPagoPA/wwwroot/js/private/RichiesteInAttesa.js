@@ -1,4 +1,5 @@
 ﻿let itemsPerPage = 100;
+
 function FiltraRichieste() {
     $('.preload').show();
     let data = {
@@ -53,6 +54,7 @@ function CreatePaginations(totItems) {
 
 
 $(function () {
+    $('.preload').show();
     GetRichiestePerPage(1, true);
 });
 
@@ -65,7 +67,7 @@ function EliminaFiltro() {
     let iuv = $('#iuv');
     $.get("/Action/EliminaFiltroInAttesa", function (res) {
         var r = JSON.parse(res);
-        dataI.val(today);
+        dataI.val('');
         dataF.val('');
         codiceFiscale.val('');
         iuv.val('');
