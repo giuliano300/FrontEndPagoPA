@@ -188,7 +188,6 @@ namespace FrontEndPagoPA.Controllers
             TokenDto token;
             token = g.GetDeserializedToken();
             string today = DateTime.Today.ToString();
-            int skip = (page - 1) * itemsPerPage;
             string append = "";
             var dataI = new DateTime();
             var dataF = new DateTime();
@@ -308,7 +307,7 @@ namespace FrontEndPagoPA.Controllers
             bool valid = Convert.ToBoolean(fc["valid"]!);
             bool? paid = null;
 
-            if (fc["paid"].ToString() != "") { 
+            if (fc["paid"].ToString() != "" && fc["paid"].ToString() != null) { 
                 if (fc["paid"]! == "SI")
                     paid = true;
                 else
@@ -1696,7 +1695,6 @@ namespace FrontEndPagoPA.Controllers
             }
 
             response = await _actionService.GetOperationsByUserId(token.sub, today, Convert.ToInt32(fc["page"]), Convert.ToInt32(fc["itemsPerPage"]), append);
-
 
             return JsonConvert.SerializeObject(response);
         }

@@ -14,7 +14,7 @@ function FiltraRichieste() {
     $.post("/Action/FiltraRichieste", data, function (res) {
         let r = JSON.parse(res);
         GetRichieste(r.Result);
-        CreatePaginations(r.Message);
+        CreatePaginations(data.codiceFiscale, data.iuv, data.dataInizio, data.dataFine);
     });
 }
 
@@ -28,28 +28,34 @@ function GetRichiestePerPage(p, first) {
         var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
-            CreatePaginations(r.Message);
+            CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine);
 
         $('.preload').hide();
     })
 }
 
-function CreatePaginations(totItems) {
-    $('.pagination').empty();
+function CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine) {
+    $.get("/Action/GetRichiesteInAttesa?page=1&itemsPerPage=1000000000&codiceFiscale=" + codiceFiscale + "&iuv=" + iuv + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
+        var r = JSON.parse(res);
 
-    if (totItems > 0) {
+        var totItems = r.Message;
 
-        let a = "<a onclick='GetRichiestePerPage(1)'><i class='las la-angle-left'></i></a>";
+        $('.pagination').empty();
 
-        let nPage = Math.ceil(totItems / itemsPerPage);
+        if (totItems > 0) {
 
-        for (var i = 0; i < nPage; i++)
-            a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")'>" + (i + 1) + "</a>";
+            let a = "<a onclick='GetRichiestePerPage(1)'><i class='las la-angle-left'></i></a>";
 
-        a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
+            let nPage = Math.ceil(totItems / itemsPerPage);
 
-        $('.pagination').append(a);
-    }
+            for (var i = 0; i < nPage; i++)
+                a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")'>" + (i + 1) + "</a>";
+
+            a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
+
+            $('.pagination').append(a);
+        }
+    })
 }
 
 
@@ -78,24 +84,25 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.archive-list-waiting').empty();
-    if(r != null)
+    if (r != null)
+    {
         if (r.length > 0) {
             for (var i = 0; i < r.length; i++) {
                 let rata = "Rata unica";
-                let expDate = new Date(r[i].installment.expirationDate);
+                let expDate = new Date(r[i].expirationDate);
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
                 let expDateString = expDate.toLocaleDateString('it-IT', options);
 
-                if (r[i].installment.numeroRata != 0)
-                    rata = r[i].installment.numeroRata;
+                if (r[i].numeroRata != 0)
+                    rata = r[i].numeroRata;
                 var li = "<ul>" +
-                        "<li>" + r[i].installment.id + "</li>" +
-                        "<li>" + r[i].installment.iuv + "</li>" +
-                        "<li>" + r[i].debtPosition.codiceIdentificativoUnivocoPagatore + "</li>" +
-                        "<li>" + r[i].installment.price + "€</li>" +
-                        "<li>" + rata + "</li>" +
-                        "<li>" + expDateString + "</li>" +
-                        "<li><strong><i class='las la-clock'></i>&nbsp;IN ATTESA DI ESITAZIONE</strong></li>" +
+                    "<li>" + r[i].id + "</li>" +
+                    "<li>" + r[i].iuv + "</li>" +
+                    "<li>" + r[i].codiceIdentificativoUnivocoPagatore + "</li>" +
+                    "<li>" + r[i].price + "€</li>" +
+                    "<li>" + rata + "</li>" +
+                    "<li>" + expDateString + "</li>" +
+                    "<li><strong><i class='las la-clock'></i>&nbsp;IN ATTESA DI ESITAZIONE</strong></li>" +
                     "</ul>";
 
                 $('.archive-list-waiting').append(li);
@@ -103,9 +110,9 @@ function GetRichieste(r) {
         }
         else
             $('.archive-list-waiting').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
+    }
     else
         $('.archive-list-waiting').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
 
     $('.preload').hide();
-
 }
