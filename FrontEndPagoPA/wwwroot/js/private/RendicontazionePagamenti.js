@@ -1,5 +1,9 @@
 ﻿let itemsPerPage = 100;
 
+var currentDate = new Date();
+
+var today = currentDate.toISOString().split('T')[0];
+
 function FiltraRichieste() {
     $('.preload').show();
    let data = {
@@ -104,7 +108,7 @@ function EliminaFiltro() {
     let pagato = $('#pagato');
     $.get("/Action/EliminaFiltroRendicontazione", function (res) {
         var r = JSON.parse(res);
-        dataI.val('');
+        dataI.val(today);
         dataF.val('');
         nominativo.val('');
         pagato.val('SI');

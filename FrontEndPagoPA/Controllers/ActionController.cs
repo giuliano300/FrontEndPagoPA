@@ -70,14 +70,14 @@ namespace FrontEndPagoPA.Controllers
             if (dataInizio != "" && dataInizio != null)
             {
                 dataI = DateTime.Parse(dataInizio);
-                append += "&dataInizio=" + dataI.ToString("yyyy-MM-dd");
+                append += "&dataInizio=" + dataI;
                 today = "";
             }
 
             if (dataFine != "" && dataFine != null)
             {
                 dataF = DateTime.Parse(dataFine);
-                append += "&dataFine=" + dataF.ToString("yyyy-MM-dd");
+                append += "&dataFine=" + dataF;
                 today = "";
             }
 
@@ -201,14 +201,14 @@ namespace FrontEndPagoPA.Controllers
             if (dataInizio != "" && dataInizio != null)
             {
                 dataI = DateTime.Parse(dataInizio);
-                append += "&dataInizio=" + dataI.ToString("yyyy-MM-dd");
+                append += "&dataInizio=" + dataI;
                 today = "";
             }
 
             if (dataFine != "" && dataFine != null)
             {
                 dataF = DateTime.Parse(dataFine);
-                append += "&dataFine=" + dataF.ToString("yyyy-MM-dd");
+                append += "&dataFine=" + dataF;
                 today = "";
             }
 
@@ -242,14 +242,14 @@ namespace FrontEndPagoPA.Controllers
             if (dataInizio != "" && dataInizio != null)
             {
                 dataI = DateTime.Parse(dataInizio);
-                append += "&dataInizio=" + dataI.ToString("yyyy-MM-dd");
+                append += "&dataInizio=" + dataI;
                 today = "";
             }
 
             if (dataFine != "" && dataFine != null)
             {
                 dataF = DateTime.Parse(dataFine);
-                append += "&dataFine=" + dataF.ToString("yyyy-MM-dd");
+                append += "&dataFine=" + dataF;
                 today = "";
             }
 

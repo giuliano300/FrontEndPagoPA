@@ -1,5 +1,8 @@
 ﻿let itemsPerPage = 100;
 
+var currentDate = new Date();
+var today = currentDate.toISOString().split('T')[0];
+
 function DownloadList() {
     let data = {
         dataInizio: $('#dataInizio').val(),
@@ -89,7 +92,7 @@ function EliminaFiltro() {
     let iuv = $('#iuv');
     $.get("/Action/EliminaFiltro", function (res) {
         var r = JSON.parse(res);
-        dataI.val('');
+        dataI.val(today);
         dataF.val('');
         codiceFiscale.val('');
         iuv.val('');
