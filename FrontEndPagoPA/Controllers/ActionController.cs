@@ -212,7 +212,7 @@ namespace FrontEndPagoPA.Controllers
                 today = "";
             }
 
-            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, false, true, page, itemsPerPage, append);
+            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, false, null, page, itemsPerPage, append);
 
             if (response is not null && response.IsSuccess)
                 _cache.Set("richiesteEsitate", JsonConvert.DeserializeObject<List<DebtPositionInstallmentViewModel>>(Convert.ToString(response.Result)!));
@@ -303,8 +303,14 @@ namespace FrontEndPagoPA.Controllers
             string nominativo = fc["nominativo"]!;
             var dataI = new DateTime();
             var dataF = new DateTime();
-            bool worked = Convert.ToBoolean(fc["worked"]!);
-            bool valid = Convert.ToBoolean(fc["valid"]!);
+            bool worked = Convert.ToBoolean(fc["worked"]);
+
+            bool? valid;
+            if (!string.IsNullOrEmpty(fc["valid"]))
+                valid = Convert.ToBoolean(fc["valid"]);
+            else
+                valid = null;
+
             bool? paid = null;
 
             if (fc["paid"].ToString() != "" && fc["paid"].ToString() != null) { 
@@ -313,6 +319,9 @@ namespace FrontEndPagoPA.Controllers
                 else
                     paid = false;
             }
+
+            if (fc["paid"].ToString() == "" || fc["paid"].ToString() == null)
+                paid = false;
 
             if (dataInizio != "" && dataInizio != null)
             {

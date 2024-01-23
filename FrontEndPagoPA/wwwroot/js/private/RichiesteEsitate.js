@@ -25,7 +25,7 @@ function FiltraRichieste() {
         iuv: $('#iuv').val(),
         worked: true,
         page: 1,
-        valid: true,
+        valid: null,
         itemsPerPage: itemsPerPage
     }
     $.post("/Action/FiltraRichieste", data, function (res) {
@@ -121,10 +121,15 @@ function GetRichieste(r) {
                     "<li>" + r[i].codiceIdentificativoUnivocoPagatore + "</li>" +
                     "<li>" + r[i].price + "€</li>" +
                     "<li>" + rata + "</li>" +
-                    "<li>" + expDateString + "</li>" +
-                    "<li><strong><i class='las la-check'></i>&nbsp;ESITATA</strong></li>" +
-                    //"<li><a href='#'><i class='las la-file-alt'></i></a></li>" +
-                    "</ul>";
+                    "<li>" + expDateString + "</li>";
+
+                if (r[i].valid == false || r[i].valid == "" || r[i].valid == null)
+                    li += "<li><strong style='color:#EA5555;'><i class='las la-times'></i>&nbsp;NON VALIDATA</strong></li>";
+
+                else
+                    li += "<li><strong><i class='las la-check'></i>&nbsp;ESITATA</strong></li>";
+
+                li += "</ul>";
 
                 $('.archive-list-accepted').append(li);
             }
