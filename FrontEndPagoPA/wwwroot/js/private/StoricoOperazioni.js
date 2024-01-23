@@ -67,9 +67,12 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.operations-history').empty();
-    if(r != null)
-        if (r.length > 0) {
-            for (var i = 0; i < r.length; i++) {
+    if (r != null)
+    {
+        if (r.length > 0)
+        {
+            for (var i = 0; i < r.length; i++)
+            {
                 let date = new Date(r[i].date);
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
                 let insDateString = date.toLocaleDateString('it-IT', options);
@@ -97,7 +100,7 @@ function GetRichieste(r) {
                             li += "<li class='text-center' title='documento disponibile' onclick='GetZipFile(" + r[i].operationId + ")'><i class='las la-file-archive active-btn'></i></li>";
                         else
                             li += "<li class='text-center' title='documento non ancora disponibile'><i class='las la-file-archive not-active'></i></li>";
-                   }
+                    }
                 }
                 else {
                     li += "<li class='text-center' title='documento non ancora disponibile'><i class='bx bx-qr not-active'></i></li>";
@@ -115,6 +118,7 @@ function GetRichieste(r) {
         }
         else
             $('.operations-history').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
+    }     
     else
         $('.operations-history').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
 

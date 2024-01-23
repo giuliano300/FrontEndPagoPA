@@ -1,6 +1,6 @@
 ﻿let itemsPerPage = 100;
-var currentDate = new Date();
-var today = currentDate.toISOString().split('T')[0];
+let currentDate = new Date();
+let today = currentDate.toISOString().split('T')[0];
 
 function FiltraRichieste() {
     $('.preload').show();
