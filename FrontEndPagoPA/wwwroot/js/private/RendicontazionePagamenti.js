@@ -28,7 +28,7 @@ function FiltraRichieste() {
     $.post("/Action/FiltraRichieste", data, function (res) {
         let r = JSON.parse(res);
         GetRichieste(r.Result);
-        CreatePaginations(paid, nominativo, dataInizio, dataFine);
+        CreatePaginations(paid, nominativo, dataInizio, dataFine, true);
     });
 }
 
@@ -38,11 +38,21 @@ function GeneraCsv() {
         dataFine: $('#dataFine').val(),
         nominativo: $('#nominativo').val(),
         paid: $('#pagato').val()
-    }
+    };
+
+    $('.preload').show();
+
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+
+    document.body.appendChild(iframe);
     $.post("/Action/GeneraRendicontazione", data, function (res) {
-        window.open(res);
+        iframe.src = res;
+    }).done(function () {
+        $('.preload').hide();
     });
 }
+
 
 function GetRichiestePerPage(p, first) {
 
@@ -56,11 +66,14 @@ function GetRichiestePerPage(p, first) {
     let dataInizio = $('#dataInizio').val();
     let dataFine = $('#dataFine').val();
 
+    $('.items').removeClass('selected');
+    $('.item-' + p).addClass('selected');
+
     $.get("/Action/GetRendicontazionePagamenti?page=" + p + "&itemsPerPage=" + itemsPerPage + "&paid=" + paid + "&nominativo=" + nominativo + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
         var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
-            CreatePaginations(paid, nominativo, dataInizio, dataFine);
+            CreatePaginations(paid, nominativo, dataInizio, dataFine, first);
 
         $('.preload').hide();
     })
@@ -72,7 +85,7 @@ $(function () {
     GetRichiestePerPage(1, true);
 });
 
-function CreatePaginations(paid, nominativo, dataInizio, dataFine) {
+function CreatePaginations(paid, nominativo, dataInizio, dataFine, first) {
 
     let url = "/Action/GetRendicontazionePagamenti?page=1&itemsPerPage=1000000000&paid=" + paid + "&nominativo=" + nominativo + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine;
     $.get(url, function (res) {
@@ -89,11 +102,15 @@ function CreatePaginations(paid, nominativo, dataInizio, dataFine) {
             let nPage = Math.ceil(totItems / itemsPerPage);
 
             for (var i = 0; i < nPage; i++)
-                a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")'>" + (i + 1) + "</a>";
+                a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")' class='items item-" + (i + 1) + "'>" + (i + 1) + "</a>";
 
             a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
 
             $('.pagination').append(a);
+            if (first) {
+                $('.items').removeClass('selected');
+                $('.item-1').addClass('selected');
+            }
         }
     })
 }
@@ -117,9 +134,12 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.archive-payments').empty();
-    if (r != null) {
-        if (r.length > 0) {
-            for (var i = 0; i < r.length; i++) {
+    if (r != null)
+    {
+        if (r.length > 0)
+        {
+            for (var i = 0; i < r.length; i++)
+            {
                 let rata = "Rata unica";
                 let expDate = new Date(r[i].expirationDate);
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit' };

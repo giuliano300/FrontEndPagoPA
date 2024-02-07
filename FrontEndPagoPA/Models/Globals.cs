@@ -69,7 +69,7 @@ namespace FrontEndPagoPA.Models
                 i += c.dataScadenzaRata12 + ";";
 
             if (i != "")
-                i = i.Substring(0 , i.Length - 1);
+                i = i.Substring(0, i.Length - 1);
 
             return i;
         }

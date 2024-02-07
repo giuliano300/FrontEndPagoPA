@@ -1368,10 +1368,15 @@ a.back-page:hover {
         color: #595858;
         font-weight: 600;
     }
-.pagination a:hover, .pagination a:link:hover {
-  background: #2da6db;
-  color: #ffffff;
-}
+        .pagination a:hover, .pagination a:link:hover {
+            background: #2da6db;
+            color: #ffffff;
+        }
+
+        .selected {
+            background: #2da6db!important;
+            color: #ffffff!important;
+        }
 .request-archive {
   padding: 30px;
 }

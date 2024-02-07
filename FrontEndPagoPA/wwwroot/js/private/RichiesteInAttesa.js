@@ -16,7 +16,7 @@ function FiltraRichieste() {
     $.post("/Action/FiltraRichieste", data, function (res) {
         let r = JSON.parse(res);
         GetRichieste(r.Result);
-        CreatePaginations(data.codiceFiscale, data.iuv, data.dataInizio, data.dataFine);
+        CreatePaginations(data.codiceFiscale, data.iuv, data.dataInizio, data.dataFine, true);
     });
 }
 
@@ -26,17 +26,21 @@ function GetRichiestePerPage(p, first) {
     let iuv = $('#iuv').val();
     let dataInizio = $('#dataInizio').val();
     let dataFine = $('#dataFine').val();
+
+    $('.items').removeClass('selected');
+    $('.item-' + p).addClass('selected');
+
     $.get("/Action/GetRichiesteInAttesa?page=" + p + "&itemsPerPage=" + itemsPerPage + "&codiceFiscale=" + codiceFiscale + "&iuv=" + iuv + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
         var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
-            CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine);
+            CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine, first);
 
         $('.preload').hide();
     })
 }
 
-function CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine) {
+function CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine, first) {
     $.get("/Action/GetRichiesteInAttesa?page=1&itemsPerPage=1000000000&codiceFiscale=" + codiceFiscale + "&iuv=" + iuv + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
         var r = JSON.parse(res);
 
@@ -51,11 +55,15 @@ function CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine) {
             let nPage = Math.ceil(totItems / itemsPerPage);
 
             for (var i = 0; i < nPage; i++)
-                a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")'>" + (i + 1) + "</a>";
+                a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")' class='items item-" + (i + 1) + "'>" + (i + 1) + "</a>";
 
             a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
 
             $('.pagination').append(a);
+            if (first) {
+                $('.items').removeClass('selected');
+                $('.item-1').addClass('selected');
+            }
         }
     })
 }
@@ -88,8 +96,10 @@ function GetRichieste(r) {
     $('.archive-list-waiting').empty();
     if (r != null)
     {
-        if (r.length > 0) {
-            for (var i = 0; i < r.length; i++) {
+        if (r.length > 0)
+        {
+            for (var i = 0; i < r.length; i++)
+            {
                 let rata = "Rata unica";
                 let expDate = new Date(r[i].expirationDate);
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit' };

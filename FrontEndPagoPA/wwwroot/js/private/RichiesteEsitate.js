@@ -3,6 +3,8 @@ let currentDate = new Date();
 let today = currentDate.toISOString().split('T')[0];
 
 function DownloadList() {
+    $('.preload').show();
+
     let data = {
         dataInizio: $('#dataInizio').val(),
         dataFine: $('#dataFine').val(),
@@ -10,11 +12,20 @@ function DownloadList() {
         iuv: $('#iuv').val(),
         worked: 1,
         type: "RichiesteEsitate"
-    }
+    };
+
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+
+    document.body.appendChild(iframe);
     $.post("/Action/GetIuvInCsv", data, function (res) {
-        window.open(res);
-    });
+        iframe.src = res;
+    })
+        .done(function () {
+            $('.preload').hide();
+        });
 }
+
 
 function FiltraRichieste() {
     $('.preload').show();
@@ -31,8 +42,7 @@ function FiltraRichieste() {
     $.post("/Action/FiltraRichieste", data, function (res) {
         let r = JSON.parse(res);
         GetRichieste(r.Result);
-        
-        CreatePaginations(data.codiceFiscale, data.iuv, data.dataInizio, data.dataFine);
+        CreatePaginations(data.codiceFiscale, data.iuv, data.dataInizio, data.dataFine, true);
     });
 }
 
@@ -42,11 +52,14 @@ function GetRichiestePerPage(p, first) {
     let dataInizio = $('#dataInizio').val();
     let dataFine = $('#dataFine').val();
 
+    $('.items').removeClass('selected');
+    $('.item-' + p).addClass('selected');
+
     $.get("/Action/GetRichiesteEsitate?page=" + p + "&itemsPerPage=" + itemsPerPage + "&codiceFiscale=" + codiceFiscale + "&iuv=" + iuv + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
         var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
-            CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine);
+            CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine, first);
 
         $('.preload').hide();
     })
@@ -58,7 +71,7 @@ $(function () {
     GetRichiestePerPage(1, true);
 });
 
-function CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine) {
+function CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine, first) {
     $.get("/Action/GetRichiesteEsitate?page=1&itemsPerPage=1000000000&codiceFiscale=" + codiceFiscale + "&iuv=" + iuv + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
         var r = JSON.parse(res);
 
@@ -73,11 +86,16 @@ function CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine) {
             let nPage = Math.ceil(totItems / itemsPerPage);
 
             for (var i = 0; i < nPage; i++)
-                a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")'>" + (i + 1) + "</a>";
+                a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")' class='items item-" + (i + 1) + "'>" + (i + 1) + "</a>";
 
             a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
 
             $('.pagination').append(a);
+            if (first)
+            {
+                $('.items').removeClass('selected');
+                $('.item-1').addClass('selected');
+            }
         }
     })
 }
