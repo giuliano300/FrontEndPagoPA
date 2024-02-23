@@ -53,6 +53,11 @@ function CreatePaginations(dataInizio, dataFine, first) {
 
             a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
 
+            if (totItems == 1)
+                a += "<span>  1 Risultato </span>";
+            else
+                a += "<span>" + "  " + totItems + " Risultati</span>";
+
             $('.pagination').append(a);
             if (first) {
                 $('.items').removeClass('selected');
@@ -108,7 +113,7 @@ function GetRichieste(r) {
                 if (r[i].workedInstallmentsPercentage == 100) {
                     li += "<li class='text-center' title='documento disponibile' onclick='GetCsv(" + r[i].operationId + ")'><i class='bx bx-qr active-btn'></i></li>";
 
-                    if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null) {
+                    if (r[i].bollettino != true) {
                         li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
                     }
                     else {
@@ -121,7 +126,7 @@ function GetRichieste(r) {
                 else {
                     li += "<li class='text-center' title='documento non ancora disponibile'><i class='bx bx-qr not-active'></i></li>";
 
-                    if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null) {
+                    if (r[i].bollettino != true) {
                         li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
                     }
                     else

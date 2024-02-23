@@ -25,17 +25,21 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-2 col-sm-2">
+                                <div style="width:160px">
+                                <div>
                                     <label>
                                         Data inizio
                                         <input type="date" name="dataInizio" id="dataInizio" value="@today" />
                                     </label>
                                 </div>
-                                <div class="col-md-2 col-sm-2">
+                                </div>
+                                <div style ="width:160px">
+                                <div>
                                     <label>
                                         Data fine
                                         <input type="date" name="dataFine" id="dataFine" />
                                     </label>
+                                </div>
                                 </div>
                                 <div class="col-md-2 col-sm-2">
                                     <label>
@@ -50,13 +54,29 @@
                                     </label>
                                 </div>
                                 <div class="col-md-1 col-sm-1">
+                                    <label>
+                                        Importo min
+                                        <input type="number" name="importoMinimo" id="importoMinimo" min="0" step="0.01"/>
+                                        
+                                    </label>
+                                </div>
+                                <div class="col-md-1 col-sm-1">
+                                    <label>
+                                        Importo max
+                                        <input type="number" name="importoMassimo" id="importoMassimo" min="0" step="0.01"/>
+                                        
+                                    </label>
+                                </div>
+                                <div class="col-md-1 col-sm-1">
                                     <input type="button" id="filtraRichieste" value="CERCA" name="cerca" class="btn_filter" onclick="FiltraRichieste()" />
                                 </div>
                                 <div class="col-md-1 col-sm-1">
                                     <input type="button" id="svuota" value="SVUOTA" name="svuota" class="btn_filter" onclick="EliminaFiltro()" />
                                 </div>
-                                <div class="col-md-2 col-sm-2">
-                                    <input type="button" value="SCARICA LISTA IN CSV" name="download_list" class="btn_filter btn-download-list" onclick="DownloadList()" />
+                                <div style="width:170px">
+                                    <div>
+                                        <input type="button" value="SCARICA LISTA IN CSV" name="download_list" class="btn_filter btn-download-list" onclick="DownloadList()" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -68,14 +88,14 @@
                     <!--archive list header-->
                     <ul class="archive-list-accepted__header">
                         <li>Id</li>
-                        <li>IUV</li>
                         <li>Codice fiscale</li>
+                        <li>IUV</li>
+                        <li>Tipologia</li>
                         <li>Importo</li>
                         <li>Rata</li>
                         <li>Data scadenza</li>
-                        <li>Stato</li>
-@*                        <li>Scarica documento</li>
-*@                    </ul>
+                        <li class="text-center">Stato</li>
+                    </ul>
                     <!--end archive list header-->
                     <div class="preload preload-mini"><i class='bx bx-loader bx-spin'></i><br /><p>Attendere caricamento in corso...</p></div>
                     <div class="archive-list-accepted">
