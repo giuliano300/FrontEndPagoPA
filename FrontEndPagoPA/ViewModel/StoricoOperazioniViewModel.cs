@@ -5,7 +5,7 @@ namespace FrontEndPagoPA.ViewModel
     public class StoricoOperazioniViewModel
     {
         public string? iuv { get; set; }
-        public DateTime? expirationDate { get; set; }
+        public DateTime expirationDate { get; set; }
         public int? numeroRata { get; set; }
         public string? anagraficaPagatore { get; set; }
         public string? codiceIdentificativoUnivocoPagatore { get; set; }

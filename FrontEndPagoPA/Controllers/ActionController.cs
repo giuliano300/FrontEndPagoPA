@@ -515,7 +515,7 @@ namespace FrontEndPagoPA.Controllers
 
                 csv += item.iuv + ";" +
                 GetOperationTypeString(item.operationTypeId) + ";" +
-                ' ' + item.expirationDate + ";" +
+                ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
                 ' ' + item.price + " €" + ";" +
                 item.anagraficaPagatore + ";" +
                 item.codiceIdentificativoUnivocoPagatore + ";" +
@@ -540,7 +540,7 @@ namespace FrontEndPagoPA.Controllers
                     item.iuv + ";" +
                     ' ' + item.price + " €" + ";" +
                     (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
-                    ' ' + item.expirationDate + ";" +
+                    ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
                     (item.paid == true ? "SI" : "NO") + "\n";
             }
             System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
@@ -558,7 +558,7 @@ namespace FrontEndPagoPA.Controllers
                     GetOperationTypeString(item.operationTypeId) + ";" +
                     ' ' + item.price + " €" + ";" +
                     (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
-                    ' ' + item.expirationDate + ";" +
+                    ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
                     (item.valid == true ? "ESITATA" : "NON VALIDATA") + "\n";
             }
             System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
