@@ -13,8 +13,8 @@ const OperationType = {
 
 
 function FiltraRichieste() {
-   $('.preload').show();
-   let data = {
+    $('.preload').show();
+    let data = {
         dataInizio: $('#dataInizio').val(),
         dataFine: $('#dataFine').val(),
         worked: $('#worked').val(),
@@ -34,15 +34,13 @@ function FiltraRichieste() {
         data.paid = false;
         data.payable = true;
     }
-
-    else {
+    else
         data.paid = true;
-    }
 
     $.post("/Action/FiltraRichieste", data, function (res) {
         let r = JSON.parse(res);
         GetRichieste(r.Result);
-        CreatePaginations(data.paid, data.nominativo, data.dataInizio, data.dataFine, data.codiceFiscale, data.iuv, data.importoMin, data.importoMax, true);
+        CreatePaginations(data.paid, data.nominativo, data.dataInizio, data.dataFine, data.iuv, data.codiceFiscale, data.importoMin, data.importoMax, true);
     });
 }
 
@@ -76,10 +74,16 @@ function GetRichiestePerPage(p, first) {
 
 
     let paid = $('#pagato').val();
-    if (paid == "NO")
+    let payable;
+
+    if (paid == "NO") {
         paid = false;
-    else
+        payable = true;
+    }
+    else {
         paid = true;
+        payable = false;
+    }
 
     let nominativo = $('#nominativo').val();
     let dataInizio = $('#dataInizio').val();
@@ -92,14 +96,14 @@ function GetRichiestePerPage(p, first) {
     $('.items').removeClass('selected');
     $('.item-' + p).addClass('selected');
 
-    $.get("/Action/GetRendicontazionePagamenti?page=" + p + "&itemsPerPage=" + itemsPerPage + "&paid=" + paid + "&nominativo=" + nominativo + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine + "&iuv=" + iuv + "&codiceFiscale=" + codiceFiscale + "&importoMin=" + importoMin + "&importoMax=" + importoMax, function (res) {
+    $.get("/Action/GetRendicontazionePagamenti?page=" + p + "&itemsPerPage=" + itemsPerPage + "&paid=" + paid + "&nominativo=" + nominativo + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine + "&iuv=" + iuv + "&codiceFiscale=" + codiceFiscale + "&importoMin=" + importoMin + "&importoMax=" + importoMax + "&payable=" + payable, function (res) {
         var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
             CreatePaginations(paid, nominativo, dataInizio, dataFine, iuv, codiceFiscale, importoMin, importoMax, first);
 
         $('.preload').hide();
-    })
+    });
 }
 
 
@@ -110,7 +114,12 @@ $(function () {
 
 function CreatePaginations(paid, nominativo, dataInizio, dataFine, iuv, codiceFiscale, importoMin, importoMax, first) {
 
-    let url = "/Action/GetRendicontazionePagamenti?page=1&itemsPerPage=1000000000&paid=" + paid + "&nominativo=" + nominativo + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine + "&iuv=" + iuv + "&codiceFiscale=" + codiceFiscale + "&importoMin=" + importoMin + "&importoMax=" + importoMax;
+    let payable = false;
+
+    if (paid == false)
+        payable = true;
+
+    let url = "/Action/GetRendicontazionePagamenti?page=1&itemsPerPage=1000000000&paid=" + paid + "&nominativo=" + nominativo + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine + "&iuv=" + iuv + "&codiceFiscale=" + codiceFiscale + "&importoMin=" + importoMin + "&importoMax=" + importoMax + "&payable=" + payable;
     $.get(url, function (res) {
         var r = JSON.parse(res);
 
@@ -170,12 +179,9 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.archive-payments').empty();
-    if (r != null)
-    {
-        if (r.length > 0)
-        {
-            for (var i = 0; i < r.length; i++)
-            {
+    if (r != null) {
+        if (r.length > 0) {
+            for (var i = 0; i < r.length; i++) {
                 let rata = "Rata unica";
                 let expDate = new Date(r[i].expirationDate);
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -189,7 +195,7 @@ function GetRichieste(r) {
                     "<li>" + r[i].codiceIdentificativoUnivocoPagatore + "</li>" +
                     "<li>" + r[i].iuv + "</li>" +
                     "<li>" + operationType + "</li>" +
-                    "<li>" + r[i].price + "€</li>";   
+                    "<li>" + r[i].price + "€</li>";
 
                 if (operationType == "Multa")
                     li += "<li>" + r[i].description + "</li>";
