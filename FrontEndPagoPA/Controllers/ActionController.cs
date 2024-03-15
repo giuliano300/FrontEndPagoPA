@@ -48,7 +48,7 @@ namespace FrontEndPagoPA.Controllers
             return View();
         }
 
-        public async Task<string> GetRendicontazionePagamenti(int page = 1, int itemsPerPage = 100, bool paid = true, string nominativo = "", string dataInizio = "", string dataFine = "", string iuv = "", string codiceFiscale = "", string importoMin = "", string importoMax = "")
+        public async Task<string> GetRendicontazionePagamenti(int page = 1, int itemsPerPage = 100, bool paid = true, string nominativo = "", string dataInizio = "", string dataFine = "", string iuv = "", string codiceFiscale = "", string importoMin = "", string importoMax = "", bool payable = false)
         {
             Globals g = new(_tokenProvider);
             TokenDto token;
@@ -86,6 +86,8 @@ namespace FrontEndPagoPA.Controllers
                 append += "&dataFine=" + dataF;
                 today = "";
             }
+
+            append += "&payable=" + payable;
 
             ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, paid, true, page, itemsPerPage, append);
 
@@ -594,6 +596,44 @@ namespace FrontEndPagoPA.Controllers
                     return "COSAP/TOSAP";
                 case 13:
                     return "Tari anno in corso";
+                default:
+                    return "";
+            }
+        }
+
+        public static void WriteCSVRichiesteEsitate(List<GetInstallmentsResult> items, string filename)
+        {
+            var csv = "Iuv;Codice Fiscale;Tipologia;Importo;Rata;Data Scadenza;Stato\n";
+            foreach (var item in items)
+            {
+                csv +=
+                    item.iuv + ";" +
+                    item.codiceIdentificativoUnivocoPagatore + ";" +
+                    GetOperationTypeString(item.operationTypeId) + ";" +
+                    ' ' + item.price + " €" + ";" +
+                    (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
+                    ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
+                    (item.valid == true ? "ESITATA" : "NON VALIDATA") + "\n";
+            }
+            System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
+        }
+
+        private static string GetOperationTypeString(int operationTypeId)
+        {
+            switch (operationTypeId)
+            {
+                case 1:
+                    return "Tari";
+                case 2:
+                    return "Mensa scolastica";
+                case 3:
+                    return "Multa";
+                case 4:
+                    return "Canone unico";
+                case 5:
+                    return "Passo carrabile";
+                case 6:
+                    return "Trasporto scolastico";
                 default:
                     return "";
             }
@@ -1958,13 +1998,20 @@ namespace FrontEndPagoPA.Controllers
             var dataF = new DateTime();
 
             bool? paid = null;
+            bool? payable = null;
 
             if (fc["paid"].ToString() != "")
             {
                 if (fc["paid"]! == "SI")
+                {
                     paid = true;
+                    payable = false;
+                }
                 else
+                {
                     paid = false;
+                    payable = true;
+                }    
             }
 
             if (dataInizio != "" && dataInizio != null)
@@ -1995,6 +2042,8 @@ namespace FrontEndPagoPA.Controllers
 
             if (importoMax != null && importoMax != "")
                 append += "&importoMax=" + importoMax;
+
+            append += "&payable=" + payable;
 
             string webRootPath = _webHostEnvironment.WebRootPath;
             string fileName = Globals.FolderDownloadCsv + DateTime.Now.Ticks + ".csv";

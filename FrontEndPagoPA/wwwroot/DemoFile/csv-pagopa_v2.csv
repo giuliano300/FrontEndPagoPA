@@ -1,3 +1,3 @@
 nominativo;indirizzo;cap;provincia;comune;codicefiscale;totale;dataScadenzaRataUnica;nomeFile;numeroRatei;dataScadenzaRata1;dataScadenzaRata2;dataScadenzaRata3;dataScadenzaRata4;dataScadenzaRata5;dataScadenzaRata6;dataScadenzaRata7;dataScadenzaRata8;dataScadenzaRata9;dataScadenzaRata10;dataScadenzaRata11;dataScadenzaRata12
-Giuseppe Rossi;via toledo 10;80132;Na;Napoli;RSSGPP80A01H501Y;350;01/01/2025;1.pdf;0;;;;;;;;;;;;
-Antonio Verdi;via toledo 10;80132;Na;Napoli;VRDNTN63A01F839L;500;01/01/2025;2.pdf;2;30/04/2024;30/08/2024;;;;;;;;;;
+Giuseppe Rossi;via toledo 10;80132;Na;Napoli;RSSGPP80A01H501Y;350;2025-01-01;test-file-pdf1.pdf;0;;;;;;;;;;;;
+Antonio Verdi;via toledo 10;80132;Na;Napoli;VRDNTN63A01F839L;500;2025-01-01;test-file-pdf2.pdf;2;2024-04-05;2024-05-07;;;;;;;;;;
