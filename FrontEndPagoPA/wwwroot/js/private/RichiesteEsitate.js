@@ -121,8 +121,7 @@ function CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine, importoMin,
                 a += "<span>" + "  " + totItems + " Risultati</span>";
 
             $('.pagination').append(a);
-            if (first)
-            {
+            if (first) {
                 $('.items').removeClass('selected');
                 $('.item-1').addClass('selected');
             }
@@ -154,12 +153,9 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.archive-list-accepted').empty();
-    if (r != null)
-    {
-        if (r.length > 0)
-        {
-            for (var i = 0; i < r.length; i++)
-            {
+    if (r != null) {
+        if (r.length > 0) {
+            for (var i = 0; i < r.length; i++) {
                 let rata = "Rata unica";
                 let expDate = new Date(r[i].expirationDate);
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -175,12 +171,12 @@ function GetRichieste(r) {
                     "<li>" + operationType + "</li>" +
                     "<li>" + r[i].price + "€</li>";
 
-                    if (operationType == "Multa")
-                        li += "<li>" + r[i].description + "</li>";
-                    else
-                        li += "<li>" + rata + "</li>";
+                if (operationType == "Multa")
+                    li += "<li>" + r[i].description + "</li>";
+                else
+                    li += "<li>" + rata + "</li>";
 
-                    li += "<li>" + expDateString + "</li>";
+                li += "<li>" + expDateString + "</li>";
 
                 if (r[i].valid != true)
                     li += "<li><strong style='color:#EA5555;'><i class='las la-times'></i>&nbsp;NON VALIDATA</strong></li>";

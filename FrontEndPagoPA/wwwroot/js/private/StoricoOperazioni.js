@@ -88,14 +88,11 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.operations-history').empty();
-    if (r != null)
-    {
-        if (r.length > 0)
-        {
-            for (var i = 0; i < r.length; i++)
-            {
+    if (r != null) {
+        if (r.length > 0) {
+            for (var i = 0; i < r.length; i++) {
                 let date = new Date(r[i].date);
-                let options = { year: 'numeric', month: '2-digit', day: '2-digit'};
+                let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
                 let insDateString = date.toLocaleDateString('it-IT', options);
                 var li = "<ul>" +
                     "<li>" + r[i].title + "</li>" +
