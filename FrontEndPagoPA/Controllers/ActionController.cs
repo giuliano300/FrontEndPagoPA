@@ -571,7 +571,7 @@ namespace FrontEndPagoPA.Controllers
             switch (operationTypeId)
             {
                 case 1:
-                    return "Tari";
+                    return "Tari anni precedenti";
                 case 2:
                     return "Mensa scolastica";
                 case 3:
@@ -582,6 +582,20 @@ namespace FrontEndPagoPA.Controllers
                     return "Passo carrabile";
                 case 6:
                     return "Trasporto scolastico";
+                case 7:
+                    return "Diritti di segreteria per certificati anagrafici";
+                case 8:
+                    return "Affitti";
+                case 9:
+                    return "Tassa concorso";
+                case 10:
+                    return "Diritti di segreteria e spese di notifica";
+                case 11:
+                    return "Aree Mercatali";
+                case 12:
+                    return "COSAP/TOSAP";
+                case 13:
+                    return "Tari anno in corso";
                 default:
                     return "";
             }
