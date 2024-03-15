@@ -53,6 +53,11 @@ function CreatePaginations(dataInizio, dataFine, first) {
 
             a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
 
+            if (totItems == 1)
+                a += "<span>  1 Risultato </span>";
+            else
+                a += "<span>" + "  " + totItems + " Risultati</span>";
+
             $('.pagination').append(a);
             if (first) {
                 $('.items').removeClass('selected');
@@ -83,14 +88,11 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.operations-history').empty();
-    if (r != null)
-    {
-        if (r.length > 0)
-        {
-            for (var i = 0; i < r.length; i++)
-            {
+    if (r != null) {
+        if (r.length > 0) {
+            for (var i = 0; i < r.length; i++) {
                 let date = new Date(r[i].date);
-                let options = { year: 'numeric', month: '2-digit', day: '2-digit'};
+                let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
                 let insDateString = date.toLocaleDateString('it-IT', options);
                 var li = "<ul>" +
                     "<li>" + r[i].title + "</li>" +
@@ -108,7 +110,7 @@ function GetRichieste(r) {
                 if (r[i].workedInstallmentsPercentage == 100) {
                     li += "<li class='text-center' title='documento disponibile' onclick='GetCsv(" + r[i].operationId + ")'><i class='bx bx-qr active-btn'></i></li>";
 
-                    if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null) {
+                    if (r[i].bollettino != true) {
                         li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
                     }
                     else {
@@ -121,7 +123,7 @@ function GetRichieste(r) {
                 else {
                     li += "<li class='text-center' title='documento non ancora disponibile'><i class='bx bx-qr not-active'></i></li>";
 
-                    if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null) {
+                    if (r[i].bollettino != true) {
                         li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
                     }
                     else

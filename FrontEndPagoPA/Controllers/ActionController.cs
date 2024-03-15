@@ -3,7 +3,9 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using FrontEndPagoPA.Models;
 using FrontEndPagoPA.Service;
+using FrontEndPagoPA.ViewModel;
 using log4net;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -46,7 +48,7 @@ namespace FrontEndPagoPA.Controllers
             return View();
         }
 
-        public async Task<string> GetRendicontazionePagamenti(int page = 1, int itemsPerPage = 100, bool paid = true, string nominativo = "", string dataInizio = "", string dataFine = "")
+        public async Task<string> GetRendicontazionePagamenti(int page = 1, int itemsPerPage = 100, bool paid = true, string nominativo = "", string dataInizio = "", string dataFine = "", string iuv = "", string codiceFiscale = "", string importoMin = "", string importoMax = "")
         {
             Globals g = new(_tokenProvider);
             TokenDto token;
@@ -56,8 +58,20 @@ namespace FrontEndPagoPA.Controllers
             var dataF = new DateTime();
             string append = "";
 
-            if(nominativo != "" && nominativo != null)
+            if (nominativo != "" && nominativo != null)
                 append += "&nominativo=" + nominativo;
+
+            if (iuv != "" && iuv != null)
+                append += "&iuv=" + iuv;
+
+            if (codiceFiscale != "" && codiceFiscale != null)
+                append += "&codiceFiscale=" + codiceFiscale;
+
+            if (importoMin != null && importoMin != "")
+                append += "&importoMin=" + importoMin;
+
+            if (importoMax != null && importoMax != "")
+                append += "&importoMax=" + importoMax;
 
             if (dataInizio != "" && dataInizio != null)
             {
@@ -88,7 +102,7 @@ namespace FrontEndPagoPA.Controllers
             var bollettino = HttpContext.Request.Query["bollettino"].ToString();
 
             bool bulletin = true;
-            if(bollettino != "1")
+            if (bollettino != "1")
                 bulletin = false;
 
             if (data.Files.Count > 0)
@@ -136,7 +150,7 @@ namespace FrontEndPagoPA.Controllers
                     var l = (List<CsvDtoOut>)_cache.Get("list")!;
 
                     var newList = new List<CsvDtoIn>();
-                    foreach(var c in l)
+                    foreach (var c in l)
                     {
                         var nc = _mapper.Map<CsvDtoIn>(c);
                         var last = r.FirstOrDefault(a => a.Contains(c.nomeFile!) || a == c.nomeFile);
@@ -159,7 +173,7 @@ namespace FrontEndPagoPA.Controllers
 
                     //ELIMINA FILE ZIP
                     System.IO.File.Delete(directory);
-                    System.IO.File.Delete(directory.Replace(".zip",""));
+                    System.IO.File.Delete(directory.Replace(".zip", ""));
 
                     _cache.Set("list", newList);
 
@@ -171,7 +185,7 @@ namespace FrontEndPagoPA.Controllers
             return JsonConvert.SerializeObject(records);
         }
 
-        public async Task<string> GetRichiesteEsitate(int page = 1, int itemsPerPage = 100, string codiceFiscale = "", string iuv = "", string dataInizio = "", string dataFine = "")
+        public async Task<string> GetRichiesteEsitate(int page = 1, int itemsPerPage = 100, string codiceFiscale = "", string iuv = "", string dataInizio = "", string dataFine = "", string importoMin = "", string importoMax = "")
         {
             Globals g = new(_tokenProvider);
             TokenDto token;
@@ -200,6 +214,12 @@ namespace FrontEndPagoPA.Controllers
                 append += "&dataFine=" + dataF;
                 today = "";
             }
+
+            if (importoMin != null && importoMin != "")
+                append += "&importoMin=" + importoMin;
+
+            if (importoMax != null && importoMax != "")
+                append += "&importoMax=" + importoMax;
 
             ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, false, null, page, itemsPerPage, append);
 
@@ -331,24 +351,23 @@ namespace FrontEndPagoPA.Controllers
             var dataI = new DateTime();
             var dataF = new DateTime();
             bool worked = Convert.ToBoolean(fc["worked"]);
-
             bool? valid;
+            bool? paid = null;
+
+
             if (!string.IsNullOrEmpty(fc["valid"]))
                 valid = Convert.ToBoolean(fc["valid"]);
             else
                 valid = null;
 
-            bool? paid = null;
 
-            if (fc["paid"].ToString() != "" && fc["paid"].ToString() != null) { 
-                if (fc["paid"]! == "SI")
+            if (fc["paid"].ToString() != "" && fc["paid"].ToString() != null)
+            {
+                if (fc["paid"]! == "SI" || fc["paid"]! == "true")
                     paid = true;
                 else
                     paid = false;
             }
-
-            if (fc["paid"].ToString() == "" || fc["paid"].ToString() == null)
-                paid = false;
 
             if (dataInizio != "" && dataInizio != null)
             {
@@ -372,6 +391,22 @@ namespace FrontEndPagoPA.Controllers
 
             if (codiceFiscale != null && codiceFiscale != "")
                 append += "&codiceFiscale=" + codiceFiscale;
+
+
+            if (fc["payable"].ToString() != "" && fc["payable"].ToString() != null)
+            {
+                append += "&payable=" + fc["payable"];
+            }
+
+            if (fc["importoMin"].ToString() != "" && fc["importoMin"].ToString() != null)
+            {
+                append += "&importoMin=" + fc["importoMin"];
+            }
+
+            if (fc["importoMax"].ToString() != "" && fc["importoMax"].ToString() != null)
+            {
+                append += "&importoMax=" + fc["importoMax"];
+            }
 
             response = await _actionService.GetInstallmentsAsync(token.sub, worked, today, paid, valid, Convert.ToInt32(fc["page"]), Convert.ToInt32(fc["itemsPerPage"]), append);
 
@@ -422,10 +457,11 @@ namespace FrontEndPagoPA.Controllers
             return JsonConvert.SerializeObject(getRendicontazioniResults);
         }
 
+
         [HttpGet]
-        public string EliminaFiltro()
+        public string EliminaFiltroRichiesteEsitate()
         {
-            IEnumerable<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = (IEnumerable<DebtPositionInstallmentViewModel>)_cache.Get("richiesteEsitate")!;
+            IEnumerable<GetInstallmentsResult> debtPositionInstallmentViewModels = (IEnumerable<GetInstallmentsResult>)_cache.Get("richiesteEsitate")!;
 
             return JsonConvert.SerializeObject(debtPositionInstallmentViewModels);
         }
@@ -433,7 +469,7 @@ namespace FrontEndPagoPA.Controllers
         [HttpGet]
         public string EliminaFiltroInAttesa()
         {
-            IEnumerable<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = (IEnumerable<DebtPositionInstallmentViewModel>)_cache.Get("richiesteInAttesa")!;
+            IEnumerable<GetInstallmentsResult> debtPositionInstallmentViewModels = (IEnumerable<GetInstallmentsResult>)_cache.Get("richiesteInAttesa")!;
 
             return JsonConvert.SerializeObject(debtPositionInstallmentViewModels);
         }
@@ -463,28 +499,104 @@ namespace FrontEndPagoPA.Controllers
         }
 
 
-        public static void WriteCSV<T>(IEnumerable<T> items, string filename)
+        public static void WriteCSVStoricoOperazioni(List<StoricoOperazioniViewModel> items, string filename)
         {
-            var csv = string.Join("\n", items.ToArray());
-            System.IO.File.WriteAllText(filename, csv.ToString());
+            var csv = "Titolo;Rata;IUV;Tipologia;Data Scadenza;Importo;Anagrafica;Codice Fiscale;CAP;Comune;Provincia;Indirizzo\n";
+            foreach (var item in items)
+            {
+                csv +=
+                    item.title + ";";
+
+                //per far visualizzare la descrizione delle multe e non 'Rata unica' senza poter distinguere se è il pagamento entro o dopo 5 giorni
+                if (item.description!.Contains("rata"))
+                    csv += (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";";
+                else
+                    csv += item.description + ";";
+
+                csv += item.iuv + ";" +
+                GetOperationTypeString(item.operationTypeId) + ";" +
+                ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
+                ' ' + item.price + " €" + ";" +
+                item.anagraficaPagatore + ";" +
+                item.codiceIdentificativoUnivocoPagatore + ";" +
+                ' ' + item.capPagatore + ";" +
+                item.comunePagatore + ";" +
+                item.provinciaPagatore + ";" +
+                item.indirizzoPagatore + ";" + "\n";
+            }
+            System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
         }
 
 
         public static void WriteCSVRendicontazione(List<GetRendicontazioniResult> items, string filename)
         {
-            var csv = "Nominativo;Codice Fiscale;IUV;Importo;Rata;Data Scadenza;Pagato\n";
+            var csv = "Nominativo;Codice Fiscale;Tipologia;IUV;Importo;Rata;Data Scadenza;Pagato\n";
             foreach (var item in items)
             {
                 csv +=
                     item.anagraficaPagatore + ";" +
                     item.codiceIdentificativoUnivocoPagatore + ";" +
+                    GetOperationTypeString(item.operationTypeId) + ";" +
                     item.iuv + ";" +
                     ' ' + item.price + " €" + ";" +
                     (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
-                    ' ' + item.expirationDate + ";" +
+                    ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
                     (item.paid == true ? "SI" : "NO") + "\n";
             }
             System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
+        }
+
+
+        public static void WriteCSVRichiesteEsitate(List<GetInstallmentsResult> items, string filename)
+        {
+            var csv = "Iuv;Codice Fiscale;Tipologia;Importo;Rata;Data Scadenza;Stato\n";
+            foreach (var item in items)
+            {
+                csv +=
+                    item.iuv + ";" +
+                    item.codiceIdentificativoUnivocoPagatore + ";" +
+                    GetOperationTypeString(item.operationTypeId) + ";" +
+                    ' ' + item.price + " €" + ";" +
+                    (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
+                    ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
+                    (item.valid == true ? "ESITATA" : "NON VALIDATA") + "\n";
+            }
+            System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
+        }
+
+        private static string GetOperationTypeString(int operationTypeId)
+        {
+            switch (operationTypeId)
+            {
+                case 1:
+                    return "Tari anni precedenti";
+                case 2:
+                    return "Mensa scolastica";
+                case 3:
+                    return "Multa";
+                case 4:
+                    return "Canone unico";
+                case 5:
+                    return "Passo carrabile";
+                case 6:
+                    return "Trasporto scolastico";
+                case 7:
+                    return "Diritti di segreteria per certificati anagrafici";
+                case 8:
+                    return "Affitti";
+                case 9:
+                    return "Tassa concorso";
+                case 10:
+                    return "Diritti di segreteria e spese di notifica";
+                case 11:
+                    return "Aree Mercatali";
+                case 12:
+                    return "COSAP/TOSAP";
+                case 13:
+                    return "Tari anno in corso";
+                default:
+                    return "";
+            }
         }
 
 
@@ -500,11 +612,12 @@ namespace FrontEndPagoPA.Controllers
 
                 var files = new List<string>();
 
-                foreach (var i in l) {
+                foreach (var i in l)
+                {
                     var fileName = i.First().Key.Split("/").Last();
                     var base64 = i.First().Value;
                     Globals.ConvertBase64ToFile(newPath + "/" + fileName, base64);
-                    files.Add(newPath + "/" + fileName);    
+                    files.Add(newPath + "/" + fileName);
                 }
 
                 var zipFile = newPath + "/" + nf + ".zip";
@@ -529,10 +642,10 @@ namespace FrontEndPagoPA.Controllers
             var l = new List<string>();
             string webRootPath = _webHostEnvironment.WebRootPath;
             try
-            { 
+            {
                 var nf = DateTime.Now.Ticks;
-                var newPath = webRootPath +  Globals.FolderZip + nf;
-                if(!Directory.Exists(newPath)) 
+                var newPath = webRootPath + Globals.FolderZip + nf;
+                if (!Directory.Exists(newPath))
                     Directory.CreateDirectory(newPath);
 
                 ZipFile.ExtractToDirectory(webRootPath + pathFile, newPath);
@@ -541,7 +654,7 @@ namespace FrontEndPagoPA.Controllers
                 foreach (string file in files)
                     l.Add(Globals.FolderZip + nf + "/" + Path.GetFileName(file));
             }
-            catch(Exception) 
+            catch (Exception)
             {
                 _logger.Error("  An error occurred in the OpenZipFile in Action Controller  ");
             }
@@ -555,17 +668,17 @@ namespace FrontEndPagoPA.Controllers
             try
             {
                 var split = date.Split('-');
-                if(split.Length < 3)
+                if (split.Length < 3)
                     return false;
-                
+
                 var year = split[0];
                 var month = split[1];
                 var day = split[2];
-                
+
                 if (year.Length < 4)
                     return false;
 
-                if(Convert.ToInt32(year) < 1920)
+                if (Convert.ToInt32(year) < 1920)
                     return false;
 
                 if (month.Length < 2)
@@ -632,8 +745,8 @@ namespace FrontEndPagoPA.Controllers
                         case 1:
                             try
                             {
-                                if (CheckDate(r.dataScadenzaRata1!)) 
-                                { 
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
                                     var d = Convert.ToDateTime(r.dataScadenzaRata1);
                                     nr.valid = true;
                                 }
@@ -707,7 +820,7 @@ namespace FrontEndPagoPA.Controllers
                                     nr.valid = false;
                                     break;
                                 }
-                                
+
                                 if (CheckDate(r.dataScadenzaRata3!))
                                 {
                                     var d = Convert.ToDateTime(r.dataScadenzaRata3);
@@ -1709,7 +1822,7 @@ namespace FrontEndPagoPA.Controllers
                     nr.valid = false;
                 }
 
-                if(bollettino && (r.nomeFile == null || r.nomeFile == ""))
+                if (bollettino && (r.nomeFile == null || r.nomeFile == ""))
                 {
                     nr.message = "nome del file non presente";
                     nr.valid = false;
@@ -1742,7 +1855,6 @@ namespace FrontEndPagoPA.Controllers
         [HttpPost]
         public async Task<string> GetIuvInCsv(IFormCollection fc)
         {
-            var l = new List<string>();
             Globals g = new(_tokenProvider);
             TokenDto token;
             token = g.GetDeserializedToken();
@@ -1755,8 +1867,30 @@ namespace FrontEndPagoPA.Controllers
             string dataInizio = fc["dataInizio"]!;
             string dataFine = fc["dataFine"]!;
             string nominativo = fc["nominativo"]!;
+            string importoMin = fc["importoMin"]!;
+            string importoMax = fc["importoMax"]!;
             var dataI = new DateTime();
             var dataF = new DateTime();
+            bool worked = Convert.ToBoolean(fc["worked"]);
+
+            bool? valid;
+            if (!string.IsNullOrEmpty(fc["valid"]))
+                valid = Convert.ToBoolean(fc["valid"]);
+            else
+                valid = null;
+
+            bool? paid = null;
+
+            if (fc["paid"].ToString() != "" && fc["paid"].ToString() != null)
+            {
+                if (fc["paid"]! == "SI")
+                    paid = true;
+                else
+                    paid = false;
+            }
+
+            if (fc["paid"].ToString() == "" || fc["paid"].ToString() == null)
+                paid = false;
 
             if (dataInizio != "" && dataInizio != null)
             {
@@ -1781,18 +1915,23 @@ namespace FrontEndPagoPA.Controllers
             if (codiceFiscale != null && codiceFiscale != "")
                 append += "&codiceFiscale=" + codiceFiscale;
 
+            if (importoMin != null && importoMin != "")
+                append += "&importoMin=" + importoMin;
+
+            if (importoMax != null && importoMax != "")
+                append += "&importoMax=" + importoMax;
+
             string webRootPath = _webHostEnvironment.WebRootPath;
             string fileName = Globals.FolderDownloadCsv + DateTime.Now.Ticks + ".csv";
 
             switch (fc["type"].ToString().ToUpper())
             {
                 case "RICHIESTEESITATE":
-                    ResponseDto? response = await _actionService.GetIUV(token.sub, true, today, append);
-                    l = JsonConvert.DeserializeObject<List<string>>(response.Result!.ToString()!);
-                    WriteCSV(l!, webRootPath + fileName);
+                    var response = await _actionService.GetInstallmentsAsync(token.sub, worked, today, paid, valid, Convert.ToInt32(fc["page"]), Convert.ToInt32(fc["itemsPerPage"]), append);
+                    var l = JsonConvert.DeserializeObject<List<GetInstallmentsResult>>(response.Result!.ToString()!);
+                    WriteCSVRichiesteEsitate(l!, webRootPath + fileName);
                     break;
             }
-
             return fileName;
         }
 
@@ -1813,6 +1952,8 @@ namespace FrontEndPagoPA.Controllers
             string dataInizio = fc["dataInizio"]!;
             string dataFine = fc["dataFine"]!;
             string nominativo = fc["nominativo"]!;
+            string importoMin = fc["importoMin"]!;
+            string importoMax = fc["importoMax"]!;
             var dataI = new DateTime();
             var dataF = new DateTime();
 
@@ -1849,6 +1990,12 @@ namespace FrontEndPagoPA.Controllers
             if (codiceFiscale != null && codiceFiscale != "")
                 append += "&codiceFiscale=" + codiceFiscale;
 
+            if (importoMin != null && importoMin != "")
+                append += "&importoMin=" + importoMin;
+
+            if (importoMax != null && importoMax != "")
+                append += "&importoMax=" + importoMax;
+
             string webRootPath = _webHostEnvironment.WebRootPath;
             string fileName = Globals.FolderDownloadCsv + DateTime.Now.Ticks + ".csv";
 
@@ -1864,10 +2011,10 @@ namespace FrontEndPagoPA.Controllers
         {
             string webRootPath = _webHostEnvironment.WebRootPath;
             string fileName = Globals.FolderDownloadCsv + DateTime.Now.Ticks + ".csv";
-            var l = new List<string>();
+            var l = new List<StoricoOperazioniViewModel>();
             ResponseDto? response = await _actionService.GetIUVFromOperation(id);
-            l = JsonConvert.DeserializeObject<List<string>>(response.Result!.ToString()!);
-            WriteCSV(l!, webRootPath + fileName);
+            l = JsonConvert.DeserializeObject<List<StoricoOperazioniViewModel>>(response.Result!.ToString()!);
+            WriteCSVStoricoOperazioni(l!, webRootPath + fileName);
             return fileName;
         }
 
@@ -1880,5 +2027,8 @@ namespace FrontEndPagoPA.Controllers
             l = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(response.Result!.ToString()!);
             return CreateZipFile(l!)!;
         }
+
+
+
     }
 }
