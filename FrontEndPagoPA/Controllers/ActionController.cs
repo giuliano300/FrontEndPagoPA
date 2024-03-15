@@ -601,44 +601,6 @@ namespace FrontEndPagoPA.Controllers
             }
         }
 
-        public static void WriteCSVRichiesteEsitate(List<GetInstallmentsResult> items, string filename)
-        {
-            var csv = "Iuv;Codice Fiscale;Tipologia;Importo;Rata;Data Scadenza;Stato\n";
-            foreach (var item in items)
-            {
-                csv +=
-                    item.iuv + ";" +
-                    item.codiceIdentificativoUnivocoPagatore + ";" +
-                    GetOperationTypeString(item.operationTypeId) + ";" +
-                    ' ' + item.price + " €" + ";" +
-                    (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
-                    ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
-                    (item.valid == true ? "ESITATA" : "NON VALIDATA") + "\n";
-            }
-            System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
-        }
-
-        private static string GetOperationTypeString(int operationTypeId)
-        {
-            switch (operationTypeId)
-            {
-                case 1:
-                    return "Tari";
-                case 2:
-                    return "Mensa scolastica";
-                case 3:
-                    return "Multa";
-                case 4:
-                    return "Canone unico";
-                case 5:
-                    return "Passo carrabile";
-                case 6:
-                    return "Trasporto scolastico";
-                default:
-                    return "";
-            }
-        }
-
 
         public string? CreateZipFile(List<Dictionary<string, string>> l)
         {
