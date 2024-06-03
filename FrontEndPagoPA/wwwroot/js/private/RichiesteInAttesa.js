@@ -116,12 +116,9 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.archive-list-waiting').empty();
-    if (r != null)
-    {
-        if (r.length > 0)
-        {
-            for (var i = 0; i < r.length; i++)
-            {
+    if (r != null) {
+        if (r.length > 0) {
+            for (var i = 0; i < r.length; i++) {
                 let rata = "Rata unica";
                 let expDate = new Date(r[i].expirationDate);
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -137,12 +134,12 @@ function GetRichieste(r) {
                     "<li>" + operationType + "</li>" +
                     "<li>" + r[i].price + "€</li>";
 
-                    if (operationType == "Multa")
-                        li += "<li>" + r[i].description + "</li>";
-                    else
-                        li += "<li>" + rata + "</li>";
+                if (operationType == "Multa")
+                    li += "<li>" + r[i].description + "</li>";
+                else
+                    li += "<li>" + rata + "</li>";
 
-                li += "<li>" + expDateString + "</li>" + 
+                li += "<li>" + expDateString + "</li>" +
                     "<li><strong><i class='las la-clock'></i>&nbsp;IN ATTESA DI ESITAZIONE</strong></li>" +
                     "</ul>";
 

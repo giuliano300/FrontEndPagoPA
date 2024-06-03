@@ -19,7 +19,6 @@ const OperationType = {
     ACQUALUCEGAS: 14
 }
 
-
 function FiltraRichieste() {
     $('.preload').show();
     let data = {
@@ -44,6 +43,10 @@ function FiltraRichieste() {
     }
     else
         data.paid = true;
+
+    let nominativo = $('#nominativo').val();
+    let dataInizio = $('#dataInizio').val();
+    let dataFine = $('#dataFine').val();
 
     $.post("/Action/FiltraRichieste", data, function (res) {
         let r = JSON.parse(res);
@@ -204,6 +207,13 @@ function GetRichieste(r) {
                     "<li>" + r[i].iuv + "</li>" +
                     "<li>" + operationType + "</li>" +
                     "<li>" + r[i].price + "€</li>";
+
+                if (operationType == "Multa")
+                    li += "<li>" + r[i].description + "</li>";
+                else
+                    li += "<li>" + rata + "</li>";
+
+                li += "<li class='text-center'>" + expDateString + "</li>";
 
                 if (operationType == "Multa")
                     li += "<li>" + r[i].description + "</li>";

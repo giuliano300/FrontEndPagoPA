@@ -31,7 +31,7 @@
         $('.btn-submit').removeAttr('disabled');
         $('.csv-list').hide();
         $('.csv-list-body').empty();
-        var r = jQuery.parseJSON(response);
+        var r = JSON.parse(response);
         if (r.length == 0) {
             $('.modal-title').html('Attenzione');
             $('.modal-body').html('Attenzione si è verificato un problema nel caricamento del csv. Il nome delle colonne non risulta corretto. Modificare le colonne e ricaricare il file.');
