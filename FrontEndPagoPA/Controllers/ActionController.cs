@@ -333,6 +333,25 @@ namespace FrontEndPagoPA.Controllers
             return JsonConvert.SerializeObject(response);
         }
 
+        //public async Task<string> GetOperationTypesBySenderUserId(int senderUserId)
+        //{
+        //    Globals g = new(_tokenProvider);
+        //    TokenDto token = g.GetDeserializedToken();
+        //    List<OperationTypesSenderUserDto> l = new();
+        //    string today = DateTime.Today.ToString();
+
+        //    ResponseDto? response = await _actionService.GetOperationTypesSenderUsers(senderUserId);
+
+        //    if (response is not null && response.IsSuccess)
+        //        l = JsonConvert.DeserializeObject<List<OperationTypesSenderUserDto>>(Convert.ToString(response.Result)!)!;
+                
+        //    else
+        //        _logger.Error(response?.Message);
+
+
+        //    return JsonConvert.SerializeObject(response);
+        //}
+
         [HttpPost]
         public async Task<string> FiltraRichieste(IFormCollection fc)
         {
@@ -518,10 +537,10 @@ namespace FrontEndPagoPA.Controllers
                 csv += item.iuv + ";" +
                 GetOperationTypeString(item.operationTypeId) + ";" +
                 ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
-                ' ' + item.price + " €" + ";" +
+                string.Format("{0:0.00} €", item.price) + ";" +
                 item.anagraficaPagatore + ";" +
                 item.codiceIdentificativoUnivocoPagatore + ";" +
-                ' ' + item.capPagatore + ";" +
+                item.capPagatore!.PadLeft(5, '0') + ";" + 
                 item.comunePagatore + ";" +
                 item.provinciaPagatore + ";" +
                 item.indirizzoPagatore + ";" + "\n";
@@ -540,7 +559,7 @@ namespace FrontEndPagoPA.Controllers
                     item.codiceIdentificativoUnivocoPagatore + ";" +
                     GetOperationTypeString(item.operationTypeId) + ";" +
                     item.iuv + ";" +
-                    ' ' + item.price + " €" + ";" +
+                    string.Format("{0:0.00} €", item.price) + ";" +
                     (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
                     ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
                     (item.paid == true ? "SI" : "NO") + "\n";
@@ -558,7 +577,7 @@ namespace FrontEndPagoPA.Controllers
                     item.iuv + ";" +
                     item.codiceIdentificativoUnivocoPagatore + ";" +
                     GetOperationTypeString(item.operationTypeId) + ";" +
-                    ' ' + item.price + " €" + ";" +
+                    string.Format("{0:0.00} €", item.price) + ";" +
                     (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
                     ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
                     (item.valid == true ? "ESITATA" : "NON VALIDATA") + "\n";
@@ -571,7 +590,7 @@ namespace FrontEndPagoPA.Controllers
             switch (operationTypeId)
             {
                 case 1:
-                    return "Tari";
+                    return "Tari anni precedenti";
                 case 2:
                     return "Mensa scolastica";
                 case 3:
@@ -582,6 +601,20 @@ namespace FrontEndPagoPA.Controllers
                     return "Passo carrabile";
                 case 6:
                     return "Trasporto scolastico";
+                case 7:
+                    return "Diritti di segreteria per certificati anagrafici";
+                case 8:
+                    return "Affitti";
+                case 9:
+                    return "Tassa concorso";
+                case 10:
+                    return "Diritti di segreteria e spese di notifica";
+                case 11:
+                    return "Aree Mercatali";
+                case 12:
+                    return "COSAP/TOSAP";
+                case 13:
+                    return "Tari anno in corso";
                 default:
                     return "";
             }
@@ -1959,7 +1992,7 @@ namespace FrontEndPagoPA.Controllers
                 {
                     paid = false;
                     payable = true;
-                }    
+                }
             }
 
             if (dataInizio != "" && dataInizio != null)

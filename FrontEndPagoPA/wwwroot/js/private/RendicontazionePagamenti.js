@@ -3,12 +3,20 @@ let currentDate = new Date();
 let today = currentDate.toISOString().split('T')[0];
 
 const OperationType = {
-    TARI: 1,
+    TARIANNIPRECEDENTI: 1,
     MENSA: 2,
     MULTE: 3,
     CANONE: 4,
     PASSOCARRABILE: 5,
-    TRASPORTO: 6
+    TRASPORTO: 6,
+    DIRITTISEGRETERIACERTIFICATIANAGRAFICI: 7,
+    AFFITI: 8,
+    TASSACONCORSO: 9,
+    DIRITTISEGRETERIAESPESEDINOTIFICA: 10,
+    AREEMERCATALI: 11,
+    COSAPTOSAP: 12,
+    TARIANNOINCORSO: 13,
+    ACQUALUCEGAS: 14
 }
 
 
@@ -225,8 +233,8 @@ function GetRichieste(r) {
 
 
 function CheckOperationTypeId(id) {
-    if (id === OperationType.TARI)
-        return "Tari";
+    if (id === OperationType.TARIANNIPRECEDENTI)
+        return "Tari anni precedenti";
     else if (id === OperationType.MENSA)
         return "Mensa scolastica";
     else if (id === OperationType.MULTE)
@@ -237,6 +245,20 @@ function CheckOperationTypeId(id) {
         return "Passo carrabile";
     else if (id === OperationType.TRASPORTO)
         return "Trasporto scolastico";
+    else if (id === OperationType.DIRITTISEGRETERIACERTIFICATIANAGRAFICI)
+        return "Diritti di segreteria per certificati anagrafici";
+    else if (id === OperationType.AFFITI)
+        return "Affitti";
+    else if (id === OperationType.TASSACONCORSO)
+        return "Tassa concorso";
+    else if (id === OperationType.DIRITTISEGRETERIAESPESEDINOTIFICA)
+        return "Diritti di segreteria e spese di notifica";
+    else if (id === OperationType.AREEMERCATALI)
+        return "Aree Mercatali";
+    else if (id === OperationType.COSAPTOSAP)
+        return "COSAP/TOSAP";
+    else if (id === OperationType.TARIANNOINCORSO)
+        return "Tari anno in corso";
     else
         return "";
 }
