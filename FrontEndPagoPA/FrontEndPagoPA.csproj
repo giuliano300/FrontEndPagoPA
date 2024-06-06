@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Content Include="favicon.ico" />
+    <Content Include="Less\Style.css" />
   </ItemGroup>
 
   <ItemGroup>
