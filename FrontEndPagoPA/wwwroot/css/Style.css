@@ -859,6 +859,7 @@ h6 {
 }
 
 .card {
+    margin-bottom: 11px;
     width: 100%;
     background: #ffffff;
     border-radius: 10px;
@@ -1041,7 +1042,7 @@ footer {
     background: #333;
     color: #ffffff;
     padding: 10px 0;
-    margin: 15px 0 0 0;
+    margin: 4px 0 0 0;
     font-size: 0.9rem;
     text-align: center;
 }
