@@ -556,13 +556,13 @@ namespace FrontEndPagoPA.Controllers
             {
                 csv +=
                     item.anagraficaPagatore + ";" +
-                    item.codiceIdentificativoUnivocoPagatore + ";" +
-                    GetOperationTypeString(item.operationTypeId) + ";" +
+                    item.codiceFiscale + ";" +
+                    item.tipoOperazione + ";" +
                     item.iuv + ";" +
-                    string.Format("{0:0.00} €", item.price) + ";" +
+                    string.Format("{0:0.00} €", item.prezzo) + ";" +
                     (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
-                    ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
-                    (item.paid == true ? "SI" : "NO") + "\n";
+                    ' ' + item.dataScadenza.ToString("dd/MM/yyyy") + ";" +
+                    (item.pagato == true ? "SI" : "NO") + "\n";
             }
             System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
         }
@@ -615,6 +615,8 @@ namespace FrontEndPagoPA.Controllers
                     return "COSAP/TOSAP";
                 case 13:
                     return "Tari anno in corso";
+                case 14:
+                    return "Servizio acqua, luce e gas";
                 default:
                     return "";
             }
