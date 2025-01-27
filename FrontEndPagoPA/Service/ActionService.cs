@@ -65,6 +65,7 @@ namespace FrontEndPagoPA.Service
                 Url = apiPagoPABase + "/api/OperationTypesSenderUser?senderUserId=" + senderUserId
             }, withBearer: true);
         }
+
         public async Task<ResponseDto> GetOperationsByUserId(string userId, string? today, int page = 1, int itemsPerPage = 100, string append = "")
         {
             var queryString = $"?userId={userId}&today={today}&page={page}&itemsPerPage={itemsPerPage}{append}";

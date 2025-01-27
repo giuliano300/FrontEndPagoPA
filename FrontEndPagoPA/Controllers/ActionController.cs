@@ -333,6 +333,25 @@ namespace FrontEndPagoPA.Controllers
             return JsonConvert.SerializeObject(response);
         }
 
+        //public async Task<string> GetOperationTypesBySenderUserId(int senderUserId)
+        //{
+        //    Globals g = new(_tokenProvider);
+        //    TokenDto token = g.GetDeserializedToken();
+        //    List<OperationTypesSenderUserDto> l = new();
+        //    string today = DateTime.Today.ToString();
+
+        //    ResponseDto? response = await _actionService.GetOperationTypesSenderUsers(senderUserId);
+
+        //    if (response is not null && response.IsSuccess)
+        //        l = JsonConvert.DeserializeObject<List<OperationTypesSenderUserDto>>(Convert.ToString(response.Result)!)!;
+                
+        //    else
+        //        _logger.Error(response?.Message);
+
+
+        //    return JsonConvert.SerializeObject(response);
+        //}
+
         [HttpPost]
         public async Task<string> FiltraRichieste(IFormCollection fc)
         {
@@ -518,10 +537,10 @@ namespace FrontEndPagoPA.Controllers
                 csv += item.iuv + ";" +
                 GetOperationTypeString(item.operationTypeId) + ";" +
                 ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
-                ' ' + item.price + " €" + ";" +
+                string.Format("{0:0.00} €", item.price) + ";" +
                 item.anagraficaPagatore + ";" +
                 item.codiceIdentificativoUnivocoPagatore + ";" +
-                ' ' + item.capPagatore + ";" +
+                item.capPagatore!.PadLeft(5, '0') + ";" + 
                 item.comunePagatore + ";" +
                 item.provinciaPagatore + ";" +
                 item.indirizzoPagatore + ";" + "\n";
@@ -537,13 +556,13 @@ namespace FrontEndPagoPA.Controllers
             {
                 csv +=
                     item.anagraficaPagatore + ";" +
-                    item.codiceIdentificativoUnivocoPagatore + ";" +
-                    GetOperationTypeString(item.operationTypeId) + ";" +
+                    item.codiceFiscale + ";" +
+                    item.tipoOperazione + ";" +
                     item.iuv + ";" +
-                    ' ' + item.price + " €" + ";" +
+                    string.Format("{0:0.00} €", item.prezzo) + ";" +
                     (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
-                    ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
-                    (item.paid == true ? "SI" : "NO") + "\n";
+                    ' ' + item.dataScadenza.ToString("dd/MM/yyyy") + ";" +
+                    (item.pagato == true ? "SI" : "NO") + "\n";
             }
             System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
         }
@@ -558,7 +577,7 @@ namespace FrontEndPagoPA.Controllers
                     item.iuv + ";" +
                     item.codiceIdentificativoUnivocoPagatore + ";" +
                     GetOperationTypeString(item.operationTypeId) + ";" +
-                    ' ' + item.price + " €" + ";" +
+                    string.Format("{0:0.00} €", item.price) + ";" +
                     (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
                     ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
                     (item.valid == true ? "ESITATA" : "NON VALIDATA") + "\n";
@@ -596,6 +615,8 @@ namespace FrontEndPagoPA.Controllers
                     return "COSAP/TOSAP";
                 case 13:
                     return "Tari anno in corso";
+                case 14:
+                    return "Servizio acqua, luce e gas";
                 default:
                     return "";
             }
@@ -1973,7 +1994,7 @@ namespace FrontEndPagoPA.Controllers
                 {
                     paid = false;
                     payable = true;
-                }    
+                }
             }
 
             if (dataInizio != "" && dataInizio != null)

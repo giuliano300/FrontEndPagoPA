@@ -1041,8 +1041,8 @@ h6 {
 footer {
     background: #333;
     color: #ffffff;
-    padding: .87rem 0;
-    margin: -0.4vh 0 0 0;
+    padding: 10px 0;
+    margin: 15px 0 0 0;
     font-size: 0.9rem;
     text-align: center;
 }
