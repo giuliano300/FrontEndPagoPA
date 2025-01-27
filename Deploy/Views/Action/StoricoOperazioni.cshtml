@@ -1,0 +1,75 @@
+﻿@model List<FrontEndPagoPA.Models.OperationHistoryViewModel>
+@{
+    ViewBag.Title = "Storico Operazioni";
+    var today = DateTime.Today.ToString("yyyy-MM-dd");
+}
+
+
+<div class="row">
+    <div class="col-lg-12 fade-in">
+        <h4>Archivio richieste</h4>
+        <h1>Storico operazioni</h1>
+    </div>
+</div>
+
+<div class="row fade-in">
+    <div class="col-md-12">
+        <div class="card request-archive">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>Filtra lista per:</h5>
+                </div>
+            </div>
+            <div class="row form-site p-0">
+                <div class="row">
+                    <input type="text" name="worked" id="worked" value="false" hidden />
+                    <div class="col-md-2 col-sm-2">
+                        <label>
+                            Data inizio
+                            <input type="date" name="dataInizio" id="dataInizio" value="@today" />
+                        </label>
+                    </div>
+                    <div class="col-md-2 col-sm-2">
+                        <label>
+                            Data fine
+                            <input type="date" name="dataFine" id="dataFine" />
+                        </label>
+                    </div>
+                    <div class="col-md-1 col-sm-1">
+                        <input type="button" id="filtraRichieste" value="CERCA" name="cerca" class="btn_filter" onclick="FiltraRichieste()" />
+                    </div>
+                    <div class="col-md-1 col-sm-1">
+                        <input type="button" id="svuota" value="SVUOTA" name="svuota" class="btn_filter" onclick="EliminaFiltro()" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <!--archive list header-->
+                    <ul class="operations-history__header">
+                        <li>Descrizione</li>
+                        <li class='text-center'>Data creazione</li>
+                        <li class='text-center'>Tipologia</li>
+                        <li class='text-center'>Tipo</li>
+                        <li class='text-center'>Stato avanzamento</li>
+                        <li class="text-center">Scarica IUV</li>
+                        <li class="text-center">Scarica Documenti</li>
+                    </ul>
+                    <!--end archive list header-->
+                    <div class="preload preload-mini"><i class='bx bx-loader bx-spin'></i><br /><p>Attendere caricamento in corso...</p></div>
+
+                    <div class="operations-history">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="divider"></div>
+                    <div class="pagination">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/private/storicoOperazioni.js" asp-append-version="true"></script>

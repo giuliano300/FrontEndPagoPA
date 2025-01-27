@@ -1,0 +1,87 @@
+﻿@model List<FrontEndPagoPA.Models.DebtPositionInstallmentViewModel>
+
+@{
+    ViewBag.Title = "Richieste In Attesa";
+    var today = DateTime.Today.ToString("yyyy-MM-dd");
+}
+
+<div class="row">
+    <div class="col-lg-12 fade-in">
+        <h4>Archivio richieste</h4>
+        <h1>Richieste in attesa di esitazione</h1>
+    </div>
+</div>
+
+<div class="row fade-in">
+    <div class="col-md-12">
+        <div class="card request-archive">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>Filtra lista per:</h5>
+                </div>
+            </div>
+            <div class="row form-site p-0">
+                <div class="row">
+                    <input type="text" name="worked" id="worked" value="false" hidden />
+                    <div class="col-md-2 col-sm-2">
+                        <label>
+                            Data inizio
+                            <input type="date" name="dataInizio" id="dataInizio" value="@today" />
+                        </label>
+                    </div>
+                    <div class="col-md-2 col-sm-2">
+                        <label>
+                            Data fine
+                            <input type="date" name="dataFine" id="dataFine" />
+                        </label>
+                    </div>
+                    <div class="col-md-2 col-sm-2">
+                        <label>
+                            Codice Fiscale
+                            <input type="text" name="codiceFiscale" id="codiceFiscale" />
+                        </label>
+                    </div>
+                    <div class="col-md-2 col-sm-2">
+                        <label>
+                            IUV
+                            <input type="text" name="iuv" id="iuv" />
+                        </label>
+                    </div>
+                    <div class="col-md-1 col-sm-1">
+                        <input type="button" id="filtraRichieste" value="CERCA" name="cerca" class="btn_filter" onclick="FiltraRichieste()" />
+                    </div>
+                    <div class="col-md-1 col-sm-1">
+                        <input type="button" id="svuota" value="SVUOTA" name="svuota" class="btn_filter" onclick="EliminaFiltro()" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <!--archive list header-->
+                    <ul class="archive-list-waiting__header">
+                        <li>Id</li>
+                        <li>Codice fiscale</li>
+                        <li>IUV</li>
+                        <li>Tipologia</li>
+                        <li>Importo</li>
+                        <li>Rata</li>
+                        <li>Data scadenza</li>
+                        <li>Stato</li>
+                    </ul>
+                    <!--end archive list header-->
+                    <div class="preload preload-mini"><i class='bx bx-loader bx-spin'></i><br /><p>Attendere caricamento in corso...</p></div>
+                    <div class="archive-list-waiting">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="divider"></div>
+                    <div class="pagination">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/private/richiesteInAttesa.js" asp-append-version="true"></script>

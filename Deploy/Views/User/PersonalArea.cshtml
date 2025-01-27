@@ -1,0 +1,140 @@
+﻿@model FrontEndPagoPA.Models.UserDto
+
+@{
+    ViewBag.Title = "Personal Area";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-30 fade-in">
+            <div class="row">
+                <div class="col-md-2 col-sm-3">
+                    <div class="nav-personal-area">
+                        <ul>
+                            <li>
+                                Utenza principale <i class='bx bx-chevron-right'></i>
+                            </li>
+                            <li>
+                                <a href="/User/UsersList">Lista utenti <i class='bx bx-chevron-right'></i></a>
+                            </li>
+                            <li>
+                                <a href="/User/AddUser">Aggiungi utente <i class='bx bx-chevron-right'></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-10 col-sm-9">
+                    <div class="row">
+                        <form method="post" action="/User/PersonalArea" id="personalData">
+                            <div class="form-site">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h3 class="pb-20 textsize-4"><i class='bx bxs-user'></i> Modifica utenza principale</h3>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label asp-for="@Model.businessName" for="businessName">Nome Azienda </label>
+                                                <input asp-for="@Model.businessName" type="text" value="@Model.businessName" name="businessName" id="businessName" />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label asp-for="@Model.UserName" for="representative">Referente </label>
+                                                <input asp-for="@Model.UserName" type="text" value="@Model.UserName" name="representative" id="representative" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="row" id="passwordFields">
+                                            <div class="col-md-4">
+                                                <label asp-for="@Model.currentPassword" for="currentPassword">Password attuale </label>
+                                                <input asp-for="@Model.currentPassword" type="password" name="currentPassword" id="currentPassword" onchange="checkPassword()" />
+                                                <label id="currentPasswordLabel" class="error"></label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label asp-for="@Model.newPassword" for="newPassword">Nuova password </label>
+                                                <input asp-for="@Model.newPassword" type="password" name="newPassword" id="newPassword" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label asp-for="@Model.confirmNewPassword" for="confirmNewPassword">Conferma nuova password </label>
+                                                <input asp-for="@Model.confirmNewPassword" type="password" name="confirmNewPassword" id="confirmNewPassword" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-4"></div>
+                                    <div class="col-md-4 col-sm-4">
+                                        <div class="row">
+                                            <div class="col-md-3 col-sm-3"></div>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input type="submit" value="SALVA MODIFICHE" name="edit" />
+                                            </div>
+                                            <div class="col-md-3 col-sm-3"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#personalData").validate({
+            rules: {
+                newPassword: {
+                    minlength: 6
+                },
+                confirmNewPassword: {
+                    equalTo: "#newPassword"
+                },
+                businessName: {
+                    required: true
+                },
+                representative: {
+                    required: true
+                }
+            },
+            messages: {
+                newPassword: {
+                    minlength: "La password deve essere almeno di 6 lettere."
+                },
+                confirmNewPassword: {
+                    equalTo: "Le nuove password non corrispondono"
+                },
+                businessName: "Nome Azienda è obbligatorio",
+                representative: "Referente è obbligatorio",
+            },
+        })
+    });
+
+
+    function checkPassword() {
+        let saveButton = $('#edit');
+        let data = {
+            pwd: $('#currentPassword').val()
+        }
+        $.post("/Home/CheckPwd", data, function (res) {
+            let r = JSON.parse(res);
+            if (!r) {
+                // var cp = $('');
+                // cp.innerHTML("Password diversa da quella attuale");
+                $('#currentPasswordLabel').html("Password diversa da quella attuale");
+                // alert("Passowrd non corretta");
+                saveButton.prop("disabled", true);
+            }
+            else {
+                saveButton.prop("disabled", false);
+                $('#currentPasswordLabel').html("");
+            }
+
+        });
+    }
+</script>

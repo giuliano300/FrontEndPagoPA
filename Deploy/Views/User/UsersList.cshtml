@@ -1,0 +1,69 @@
+﻿@model List<FrontEndPagoPA.Models.SenderUserDto>
+
+@{
+    ViewBag.Title = "Lista Utenti";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mt-30 fade-in">
+            <div class="row">
+                <div class="col-md-2 col-sm-3">
+                    <div class="nav-personal-area">
+                        <ul>
+                            <li>
+                                <a href="/User/PersonalArea">Utenza principale <i class='bx bx-chevron-right'></i></a>
+                            </li>
+                            <li>
+                                Lista utenti <i class='bx bx-chevron-right'></i>
+                            </li>
+                            <li>
+                                <a href="/User/AddUser">Aggiungi utente <i class='bx bx-chevron-right'></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-10 col-sm-9">
+                    <div class="row">
+                        <div class="form-site">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="pb-20 textsize-4"><i class='bx bxs-user'></i> Lista utenti</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!--archive list header-->
+                                    <ul class="list-users_header">
+                                        <li>Id</li>
+                                        <li>Nome azienda</li>
+                                        <li>Codice fiscale</li>
+                                        <li>Identificativo BU</li>
+                                        <li class="text-center">Modifica</li>
+                                        <li class="text-center">Elimina</li>
+                                    </ul>
+                                    <!--end archive list header-->
+
+                                    <div class="list-users">
+                                        @foreach(var s in Model)
+                                        {
+                                            <ul>
+                                                <li>@s.id</li>
+                                                <li>@s.businessName</li>
+                                                <li>@s.identificativoDominio</li>
+                                                <li>@s.identificativoBU</li>
+                                                <li class="text-center"><a href="/User/EditUser/@s.id" title="Modifica utente"><i class="las la-pen"></i></a></li>
+                                                <li class="text-center"><a href="/User/DeleteSenderUser/@s.id" class="delete" title="Elimina utente"><i class="las la-trash"></i></a></li>
+                                            </ul> 
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

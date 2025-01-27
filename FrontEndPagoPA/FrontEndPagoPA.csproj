@@ -4,6 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+	<CopyRazorGenerateFilesToPublishDirectory>true</CopyRazorGenerateFilesToPublishDirectory>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,12 +16,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Web.config" />
     <Content Remove="wwwroot\js\site.js" />
     <Content Remove="wwwroot\lib\bootstrap\dist\js\dropzone.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="favicon.ico" />
+	  <Content Include="favicon.ico" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,84 @@
+﻿@model FrontEndPagoPA.Models.UserDto
+
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card pt-30 pb-30 pl-30 pr-30 fade-in">
+            <h3 class="textsize-4">Benvenuto <span class="blue">@Model.businessName</span></h3>
+            <p>
+                Da qui, avrai accesso completo e personalizzato alle funzionalità e alle risorse disponibili per gestire e ottimizzare la tua esperienza sul portale.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row pt-30 fade-in">
+    <div class="col-md-4 col-sm-4">
+        <div class="card-user">
+            <img src="/images/icon-edit-user.png" alt="dati personali e accesso" />
+            <h4>Dati personali e accesso</h4>
+            <a href="/User/PersonalArea" class="btn btn__blue">MODIFICA DATI</a>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-4">
+        <div class="card-operation">
+            <section>
+                <img src="/images/icon-iuv.png" alt="nuova posizione debitoria singola" />
+                <h3>Nuova posizione debitoria <br /><span>SINGOLA</span></h3>
+            </section>
+            <div class="text-center">
+                <a href="/IuvSingolo/Index" class="btn btn-small">GENERA IUV</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-4">
+        <div class="card-operation">
+            <section>
+                <img src="/images/icon-iuvs.png" alt="nuova posizione debitoria multpla" />
+                <h3>Nuova posizione debitoria <br /><span>MULTIPLA</span></h3>
+            </section>
+            <div class="text-center">
+                <a href="/IuvMultiplo/Index" class="btn btn-small">GENERA IUV</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row pt-30 fade-in">
+    <div class="col-md-4 col-sm-4">
+        <div class="card-request bg-req-waiting">
+            <section>
+                <img src="/images/icon-req-waiting.png" alt="in attesa di accettazione" />
+                <h3>In attesa di accettazione</h3>
+            </section>
+            <div class="pt-20 text-center">
+                <a href="/Action/RichiesteInAttesa" class="link-orange">ACCEDI AL REPORT</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-4">
+        <div class="card-request bg-req-ok">
+            <section>
+                <img src="/images/icon-req-ok.png" alt="richieste accettate" />
+                <h3>Richieste esitate</h3>
+            </section>
+            <div class="pt-20 text-center">
+                <a href="/Action/RichiesteEsitate" class="link-green">ACCEDI AL REPORT</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-4">
+        <div class="card-request bg-pay-back">
+            <section>
+                <img src="/images/icn-pay-return.png" alt="rendicontazione pagamenti" />
+                <h3>Rendicontazione pagamenti</h3>
+            </section>
+            <div class="pt-20 text-center">
+                <a href="/Action/RendicontazionePagamenti">ACCEDI AL REPORT</a>
+            </div>
+        </div>
+    </div>
+</div>

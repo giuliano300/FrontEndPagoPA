@@ -1,0 +1,137 @@
+﻿@{
+    ViewBag.Title = "GeneraBollettinoMultiplo";
+}
+
+<div class="row fade-in">
+    <div class="col-md-6 col-sm-6">
+        <h4>Generazione posizione debitoria multipla</h4>
+        <h1>Genera solo IUV multiplo </h1>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <div class="icn-top-main">
+            <img src="/images/icn-iuv-document.png" style="max-width:100px;" />
+        </div>
+    </div>
+</div>
+<form action="/IuvMultiplo/RegistraOperazioneIuvMultiplo" class="frm" method="post">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card generate-iuv form-site fade-in">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Inserisci la descrizione della nuova posizione debitoria</h5>
+                        <p>Nell'eventuale bollettino sarà riportato in alto affianco al logo</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 pt-10">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="text" name="title" required maxlength="350" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="divider"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Seleziona l'untente con cui generare la posizione debitoria</h5>
+                        <p>Seleziona successivamente il tipo di IUV da generare</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12 pt-10">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label>Utente</label>
+                                    <select class="user" name="senderUserId" required onchange="GetOperationType($(this).val())">
+                                        <option value="">Seleziona un utente</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 col-sm-4">
+                                    <label>Tipo</label>
+                                    <select class="operationType" name="operationTypeId" required onchange="CheckOperationType()">
+                                        <option value="">Seleziona un tipo</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="divider"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Carica la lista in formato CSV</h5>
+                        <p>
+                            Compila il file CSV con i dati dei destinatari e caricalo attraverso il form. <strong>N.B. i nominativi segnati come errore(in rosso) non verranno lavorati.</strong>
+                            <br />
+                            Se non sai come compilare il file <a href="../../DemoFile/csv-pagopa_v2.csv">clicca qui</a> per scaricare un esempio
+                        </p>
+                    </div>
+                </div>
+                <div class="row pt-10 pb-30 single-file-upload">
+                    <div class="col-md-12">
+                        <label>Carica file CSV</label>
+                        <div class="dropzone" id="dropzone-form" name="mainFileUploader">
+                            <div class="fallback">
+                                <input asp-for="File" type="file" />
+                            </div>
+                        </div>
+                        <input type="hidden" name="upload" value="" required />
+                    </div>
+                    <div class="col-md-12">
+                        <span class="progress">
+                            <span class="progress-bar">0%</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="csv-list" style="display:none;">
+                            <p class="text-center">Di seguito la lista delle posizioni debitorie contenute nel csv</p>
+
+                            <!--List header-->
+                            <ul class="csv-list__header">
+                                <li>Nominativo</li>
+                                <li>Codice fiscale</li>
+                                <li>Importo</li>
+                                <li class="text-center">Numero rate</li>
+                                <li>Stato</li>
+                                <li>Messaggio</li>
+                            </ul>
+                            <span class="csv-list-body"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-4"></div>
+                    <div class="col-md-4 col-sm-4">
+                        <input type="submit" value="PROSEGUI" name="genera_iuv_multiplo" class="btn-submit" />
+                    </div>
+                    <div class="col-md-4 col-sm-4"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <a href="/IuvMultiplo/index" class="back-page"><i class='bx bx-left-arrow-alt'></i> TORNA INDIETRO</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="bollettino" value="0" />
+    <input type="hidden" name="lista" value="false" class="lista" />
+</form>
+
+<script src="~/js/private/IuvMultiplo/generaiuv.js" asp-append-version="true"></script>
+<script>
+
+</script>

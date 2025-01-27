@@ -1,4 +1,7 @@
-﻿$(function () {
+﻿
+
+$(function () {
+    //let senderUserId = $('#senderUserId').val();
     $.get("/Action/GetOperationTypes", function (res) {
         let r = JSON.parse(res);
         let op = operationTypesId;
@@ -31,14 +34,13 @@
 
     })
 
-        $('#contoPostale').on('change', function () {
-            if ($(this).is(':checked')) 
-                $('#numeroContoPoste').removeAttr('readonly');
-            else
-            {
-                $('#numeroContoPoste').val('');
-                $('#numeroContoPoste').attr('readonly', 'readonly');
-            }
+    $('#contoPostale').on('change', function () {
+        if ($(this).is(':checked')) 
+            $('#numeroContoPoste').removeAttr('readonly');
+        else
+        {
+            $('#numeroContoPoste').val('');
+            $('#numeroContoPoste').attr('readonly', 'readonly');
+        }
     })
-
 })
