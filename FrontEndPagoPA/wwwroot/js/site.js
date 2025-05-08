@@ -55,7 +55,7 @@ function PersonalArea() {
 //}
 
 //// Call the function when the document is ready
-//$(document).ready(function () {
+//$(function () {
 //    togglePasswordFields();
 //});
 

@@ -1,0 +1,5 @@
+﻿Titolo;Rata;IUV;Tipologia;Data Scadenza;Importo;Anagrafica;Codice Fiscale;CAP;Comune;Provincia;Indirizzo
+test;1;01245439751621751;Tari anni precedenti; 30/11/2024;1067,00 €;Simone Lanza;LNZSMN95C08D478G;12345;NA;NA;test;
+test;2;01245439752621852;Tari anni precedenti; 30/12/2024;1067,00 €;Simone Lanza;LNZSMN95C08D478G;12345;NA;NA;test;
+test;3;01245439753621953;Tari anni precedenti; 01/01/2025;1067,00 €;Simone Lanza;LNZSMN95C08D478G;12345;NA;NA;test;
+test;Rata unica;01245439754622054;Tari anni precedenti; 30/10/2025;3201,00 €;Simone Lanza;LNZSMN95C08D478G;12345;NA;NA;test;

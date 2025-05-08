@@ -1,18 +1,58 @@
 ﻿let itemsPerPage = 100;
+let currentDate = new Date();
+let today = currentDate.toISOString().split('T')[0];
 
+loadOperationTypes();
+
+function loadOperationTypes() {
+    return $.get("/Action/GetOperationTypes")
+        .then(response => {
+            response = JSON.parse(response);
+
+            if (response && response.IsSuccess) {
+                operationTypes = response.Result.reduce((acc, type) => {
+                    acc[type.id] = type.typeName;
+                    return acc;
+                }, {});
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching operation types:', error);
+        });
+}
+
+function CheckOperationTypeId(id) {
+    return operationTypes[id] || '';
+}
 function DownloadList() {
+    $('.preload').show();
+
     let data = {
         dataInizio: $('#dataInizio').val(),
         dataFine: $('#dataFine').val(),
         codiceFiscale: $('#codiceFiscale').val(),
         iuv: $('#iuv').val(),
-        worked: 1,
+        importoMin: $('#importoMinimo').val(),
+        importoMax: $('#importoMassimo').val(),
+        worked: true,
+        page: 1,
+        valid: null,
+        itemsPerPage: 100000000,
         type: "RichiesteEsitate"
     }
+
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+
+    document.body.appendChild(iframe);
     $.post("/Action/GetIuvInCsv", data, function (res) {
-        window.open(res);
-    });
+        iframe.src = res;
+    })
+        .done(function () {
+            $('.preload').hide();
+        });
 }
+
 
 function FiltraRichieste() {
     $('.preload').show();
@@ -21,52 +61,78 @@ function FiltraRichieste() {
         dataFine: $('#dataFine').val(),
         codiceFiscale: $('#codiceFiscale').val(),
         iuv: $('#iuv').val(),
+        importoMin: $('#importoMinimo').val(),
+        importoMax: $('#importoMassimo').val(),
         worked: true,
         page: 1,
-        valid: true,
+        valid: null,
         itemsPerPage: itemsPerPage
     }
     $.post("/Action/FiltraRichieste", data, function (res) {
-        let r = $.parseJSON(res);
+        let r = JSON.parse(res);
         GetRichieste(r.Result);
-        CreatePaginations(r.Message);
+        CreatePaginations(data.codiceFiscale, data.iuv, data.dataInizio, data.dataFine, data.importoMin, data.importoMax, true);
     });
 }
 
 function GetRichiestePerPage(p, first) {
-    $.get("/Action/GetRichiesteEsitate?page=" + p + "&itemsPerPage=" + itemsPerPage, function (res) {
-        var r = $.parseJSON(res);
+    let codiceFiscale = $('#codiceFiscale').val();
+    let iuv = $('#iuv').val();
+    let dataInizio = $('#dataInizio').val();
+    let dataFine = $('#dataFine').val();
+    let importoMin = $('#importoMinimo').val();
+    let importoMax = $('#importoMassimo').val();
+
+    $('.items').removeClass('selected');
+    $('.item-' + p).addClass('selected');
+
+    $.get("/Action/GetRichiesteEsitate?page=" + p + "&itemsPerPage=" + itemsPerPage + "&codiceFiscale=" + codiceFiscale + "&iuv=" + iuv + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine + "&importoMin=" + importoMin + "&importoMax=" + importoMax, function (res) {
+        var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
-            CreatePaginations(r.Message);
+            CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine, importoMin, importoMax, first);
 
         $('.preload').hide();
-
     })
 }
 
 
 $(function () {
-  $('.preload').show();
-  GetRichiestePerPage(1, true);
+    $('.preload').show();
+    GetRichiestePerPage(1, true);
 });
 
-function CreatePaginations(totItems) {
-    $('.pagination').empty();
+function CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine, importoMin, importoMax, first) {
+    $.get("/Action/GetRichiesteEsitate?page=1&itemsPerPage=1000000000&codiceFiscale=" + codiceFiscale + "&iuv=" + iuv + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine + "&importoMin=" + importoMin + "&importoMax=" + importoMax, function (res) {
+        var r = JSON.parse(res);
 
-    if (totItems > 0) {
+        var totItems = r.Message;
 
-        let a = "<a onclick='GetRichiestePerPage(1)'><i class='las la-angle-left'></i></a>";
+        $('.pagination').empty();
 
-        let nPage = Math.ceil(totItems / itemsPerPage);
+        if (totItems > 0) {
 
-        for (var i = 0; i < nPage; i++)
-            a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")'>" + (i + 1) + "</a>";
+            let a = "<a onclick='GetRichiestePerPage(1)'><i class='las la-angle-left'></i></a>";
 
-        a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
+            let nPage = Math.ceil(totItems / itemsPerPage);
 
-        $('.pagination').append(a);
-    }
+            for (var i = 0; i < nPage; i++)
+                a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")' class='items item-" + (i + 1) + "'>" + (i + 1) + "</a>";
+
+            a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
+
+            if (totItems == 1)
+                a += "<span>  1 Risultato </span>";
+            else
+                a += "<span>" + "  " + totItems + " Risultati</span>";
+
+            $('.pagination').append(a);
+            if (first) {
+                $('.items').removeClass('selected');
+                $('.item-1').addClass('selected');
+            }
+        }
+    })
 }
 
 function EliminaFiltro() {
@@ -76,12 +142,16 @@ function EliminaFiltro() {
     let dataF = $('#dataFine');
     let codiceFiscale = $('#codiceFiscale');
     let iuv = $('#iuv');
-    $.get("/Action/EliminaFiltro", function (res) {
-        var r = $.parseJSON(res);
-        dataI.val('');
+    let importoMin = $('#importoMinimo');
+    let importoMax = $('#importoMassimo');
+    $.get("/Action/EliminaFiltroRichiesteEsitate", function (res) {
+        var r = JSON.parse(res);
+        dataI.val(today);
         dataF.val('');
         codiceFiscale.val('');
         iuv.val('');
+        importoMin.val('');
+        importoMax.val('');
         GetRichiestePerPage(1, true);
     })
 };
@@ -89,35 +159,47 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.archive-list-accepted').empty();
-    if(r != null)
+    if (r != null) {
         if (r.length > 0) {
             for (var i = 0; i < r.length; i++) {
                 let rata = "Rata unica";
-                let expDate = new Date(r[i].installment.expirationDate);
+                let expDate = new Date(r[i].expirationDate);
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
                 let expDateString = expDate.toLocaleDateString('it-IT', options);
+                let operationType = CheckOperationTypeId(r[i].operationTypeId);
 
-                if (r[i].installment.numeroRata != 0)
-                    rata = r[i].installment.numeroRata;
+                if (r[i].numeroRata != 0)
+                    rata = r[i].numeroRata;
                 var li = "<ul>" +
-                    "<li>" + r[i].installment.id + "</li>" +
-                    "<li>" + r[i].installment.iuv + "</li>" +
-                    "<li>" + r[i].debtPosition.codiceIdentificativoUnivocoPagatore + "</li>" +
-                    "<li>" + r[i].installment.price + "€</li>" +
-                    "<li>" + rata + "</li>" +
-                    "<li>" + expDateString + "</li>" +
-                    "<li><strong><i class='las la-check'></i>&nbsp;ESITATA</strong></li>" +
-                    //"<li><a href='#'><i class='las la-file-alt'></i></a></li>" +
-                    "</ul>";
+                    "<li>" + r[i].id + "</li>" +
+                    "<li>" + r[i].codiceIdentificativoUnivocoPagatore + "</li>" +
+                    "<li>" + r[i].iuv + "</li>" +
+                    "<li>" + operationType + "</li>" +
+                    "<li>" + r[i].price + "€</li>";
+
+                if (operationType == "Multa")
+                    li += "<li>" + r[i].description + "</li>";
+                else
+                    li += "<li>" + rata + "</li>";
+
+                li += "<li>" + expDateString + "</li>";
+
+                if (r[i].valid != true)
+                    li += "<li><strong style='color:#EA5555;'><i class='las la-times'></i>&nbsp;NON VALIDATA</strong></li>";
+
+                else
+                    li += "<li><strong><i class='las la-check'></i>&nbsp;ESITATA</strong></li>";
+
+                li += "</ul>";
 
                 $('.archive-list-accepted').append(li);
             }
         }
         else
             $('.archive-list-accepted').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
+    }
     else
         $('.archive-list-accepted').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
 
     $('.preload').hide();
-
 }

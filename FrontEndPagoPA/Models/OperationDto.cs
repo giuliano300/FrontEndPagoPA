@@ -8,6 +8,8 @@
         public int senderUserId { get; set; }
         public DateTime insertDate { get; set; }
         public bool bollettino { get; set; }
+        public string code { get; set; }
+        public int serviceIdentifier { get; set; }
         public OperationDto()
         {
             id = 0;
@@ -15,6 +17,8 @@
             operationTypeId = 0;
             senderUserId = 0;
             bollettino = false;
+            code = "";
+            serviceIdentifier = 0;
         }
     }
 }

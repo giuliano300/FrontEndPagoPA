@@ -3911,7 +3911,7 @@ function completed() {
 	jQuery.ready();
 }
 
-// Catch cases where $(document).ready() is called
+// Catch cases where $() is called
 // after the browser event has already occurred.
 // Support: IE <=9 - 10 only
 // Older IE sometimes signals "interactive" too soon

@@ -94,6 +94,9 @@ namespace FrontEndPagoPA.Controllers
                     u.PasswordHash = ph.HashPassword(u, u.newPassword!);
                 }
 
+                if (u.email == null || u.email == "")
+                    u.email = currentToken.email;
+
                 var response = await _authService.UpdatePersonalAreaAsync(u);
 
                 if (response == null)

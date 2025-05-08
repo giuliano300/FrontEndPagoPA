@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewBag.Title = "Seleziona il tipo di posizione";
+}
+
+<div class="row">
+    <div class="col-lg-12 fade-in">
+        <h4>Generazione posizione debitoria multipla</h4>
+        <h1>Seleziona il tipo di posizione</h1>
+    </div>
+</div>
+
+<div class="row fade-in">
+    <div class="col-lg-9 col-md-10">
+        <div class="card pl-30 pr-30 mb-30">
+            <div class="select-iuv">
+                <div class="icon-iuv">
+                    <img src="/images/icn-iuv-document.png" alt="Genera documento multiplo con bollettino" />
+                </div>
+                <section>
+                    <h5>Genera documento con bollettino</h5>
+                    <p>
+                        Selezionando questa posizione potrai generare sia GLI IUV che i documentI con i bollettini pronti da spedire.
+                    </p>
+                </section>
+                <a href="/IuvMultiplo/GeneraBollettinoMultiplo" class="btn btn-iuv">SELEZIONA</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row fade-in">
+    <div class="col-lg-9 col-md-10">
+        <div class="card pl-30 pr-30 mb-30">
+            <div class="select-iuv">
+                <div class="icon-iuv text-center">
+                    <img src="/images/icn-iuv.png" alt="Genera solo IUV" />
+                </div>
+                <section>
+                    <h5>Genera solo IUV multiplo</h5>
+                    <p>
+                        Selezionando questa posizione potrai generare solo gli IUV, dovrai successivamente generare i documenti da spedire.
+                    </p>
+                </section>
+                <a href="/IuvMultiplo/GeneraIuvMultiplo" class="btn btn-iuv">SELEZIONA</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

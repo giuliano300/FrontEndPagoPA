@@ -1,4 +1,33 @@
 ﻿let itemsPerPage = 100;
+let currentDate = new Date();
+let today = currentDate.toISOString().split('T')[0];
+
+
+let operationTypes = {};
+
+loadOperationTypes();
+
+function loadOperationTypes() {
+    return $.get("/Action/GetOperationTypes")
+        .then(response => {
+            response = JSON.parse(response);
+
+            if (response && response.IsSuccess) {
+                operationTypes = response.Result.reduce((acc, type) => {
+                    acc[type.id] = type.typeName;
+                    return acc;
+                }, {});
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching operation types:', error);
+        });
+}
+
+function CheckOperationTypeId(id) {
+    return operationTypes[id] || '';
+}
+
 function FiltraRichieste() {
     $('.preload').show();
     let data = {
@@ -11,45 +40,71 @@ function FiltraRichieste() {
         itemsPerPage: itemsPerPage
     }
     $.post("/Action/FiltraRichieste", data, function (res) {
-        let r = $.parseJSON(res);
+        let r = JSON.parse(res);
         GetRichieste(r.Result);
-        CreatePaginations(r.Message);
+        CreatePaginations(data.codiceFiscale, data.iuv, data.dataInizio, data.dataFine, true);
     });
 }
 
 function GetRichiestePerPage(p, first) {
-    $.get("/Action/GetRichiesteInAttesa?page=" + p + "&itemsPerPage=" + itemsPerPage, function (res) {
-        var r = $.parseJSON(res);
+
+    let codiceFiscale = $('#codiceFiscale').val();
+    let iuv = $('#iuv').val();
+    let dataInizio = $('#dataInizio').val();
+    let dataFine = $('#dataFine').val();
+
+    $('.items').removeClass('selected');
+    $('.item-' + p).addClass('selected');
+
+    $.get("/Action/GetRichiesteInAttesa?page=" + p + "&itemsPerPage=" + itemsPerPage + "&codiceFiscale=" + codiceFiscale + "&iuv=" + iuv + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
+        var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
-            CreatePaginations(r.Message);
+            CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine, first);
 
         $('.preload').hide();
- })
+    })
 }
 
-function CreatePaginations(totItems) {
-    $('.pagination').empty();
+function CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine, first) {
+    $.get("/Action/GetRichiesteInAttesa?page=1&itemsPerPage=1000000000&codiceFiscale=" + codiceFiscale + "&iuv=" + iuv + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
+        var r = JSON.parse(res);
 
-    if (totItems > 0) {
+        var totItems = r.Message;
 
-        let a = "<a onclick='GetRichiestePerPage(1)'><i class='las la-angle-left'></i></a>";
+        $('.pagination').empty();
 
-        let nPage = Math.ceil(totItems / itemsPerPage);
+        if (totItems > 0) {
 
-        for (var i = 0; i < nPage; i++)
-            a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")'>" + (i + 1) + "</a>";
+            let a = "<a onclick='GetRichiestePerPage(1)'><i class='las la-angle-left'></i></a>";
 
-        a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
+            let nPage = Math.ceil(totItems / itemsPerPage);
 
-        $('.pagination').append(a);
-    }
+            for (var i = 0; i < nPage; i++)
+                a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")' class='items item-" + (i + 1) + "'>" + (i + 1) + "</a>";
+
+            a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
+
+            if (totItems == 1)
+                a += "<span>  1 Risultato </span>";
+            else
+                a += "<span>" + "  " + totItems + " Risultati</span>";
+
+            $('.pagination').append(a);
+            if (first) {
+                $('.items').removeClass('selected');
+                $('.item-1').addClass('selected');
+            }
+        }
+    })
 }
 
 
 $(function () {
+    $('.preload').show();
     GetRichiestePerPage(1, true);
 });
+
 
 function EliminaFiltro() {
     $('.preload').show();
@@ -59,7 +114,7 @@ function EliminaFiltro() {
     let codiceFiscale = $('#codiceFiscale');
     let iuv = $('#iuv');
     $.get("/Action/EliminaFiltroInAttesa", function (res) {
-        var r = $.parseJSON(res);
+        var r = JSON.parse(res);
         dataI.val(today);
         dataF.val('');
         codiceFiscale.val('');
@@ -71,24 +126,31 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.archive-list-waiting').empty();
-    if(r != null)
+    if (r != null) {
         if (r.length > 0) {
             for (var i = 0; i < r.length; i++) {
                 let rata = "Rata unica";
-                let expDate = new Date(r[i].installment.expirationDate);
+                let expDate = new Date(r[i].expirationDate);
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
                 let expDateString = expDate.toLocaleDateString('it-IT', options);
+                let operationType = CheckOperationTypeId(r[i].operationTypeId);
 
-                if (r[i].installment.numeroRata != 0)
-                    rata = r[i].installment.numeroRata;
+                if (r[i].numeroRata != 0)
+                    rata = r[i].numeroRata;
                 var li = "<ul>" +
-                        "<li>" + r[i].installment.id + "</li>" +
-                        "<li>" + r[i].installment.iuv + "</li>" +
-                        "<li>" + r[i].debtPosition.codiceIdentificativoUnivocoPagatore + "</li>" +
-                        "<li>" + r[i].installment.price + "€</li>" +
-                        "<li>" + rata + "</li>" +
-                        "<li>" + expDateString + "</li>" +
-                        "<li><strong><i class='las la-clock'></i>&nbsp;IN ATTESA DI ESITAZIONE</strong></li>" +
+                    "<li>" + r[i].id + "</li>" +
+                    "<li>" + r[i].codiceIdentificativoUnivocoPagatore + "</li>" +
+                    "<li>" + r[i].iuv + "</li>" +
+                    "<li>" + operationType + "</li>" +
+                    "<li>" + r[i].price + "€</li>";
+
+                if (operationType == "Multe")
+                    li += "<li>" + r[i].description + "</li>";
+                else
+                    li += "<li>" + rata + "</li>";
+
+                li += "<li>" + expDateString + "</li>" +
+                    "<li><strong><i class='las la-clock'></i>&nbsp;IN ATTESA DI ESITAZIONE</strong></li>" +
                     "</ul>";
 
                 $('.archive-list-waiting').append(li);
@@ -96,9 +158,43 @@ function GetRichieste(r) {
         }
         else
             $('.archive-list-waiting').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
+    }
     else
         $('.archive-list-waiting').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
 
     $('.preload').hide();
+}
+//function CheckOperationTypeId(id) {
+//    if (id === OperationType.TARIANNIPRECEDENTI)
+//        return "Tari anni precedenti";
+//    else if (id === OperationType.MENSA)
+//        return "Mensa scolastica";
+//    else if (id === OperationType.MULTE)
+//        return "Multa";
+//    else if (id === OperationType.CANONE)
+//        return "Canone unico";
+//    else if (id === OperationType.PASSOCARRABILE)
+//        return "Passo carrabile";
+//    else if (id === OperationType.TRASPORTO)
+//        return "Trasporto scolastico";
+//    else if (id === OperationType.DIRITTISEGRETERIACERTIFICATIANAGRAFICI)
+//        return "Diritti di segreteria per certificati anagrafici";
+//    else if (id === OperationType.AFFITI)
+//        return "Affitti";
+//    else if (id === OperationType.TASSACONCORSO)
+//        return "Tassa concorso";
+//    else if (id === OperationType.DIRITTISEGRETERIAESPESEDINOTIFICA)
+//        return "Diritti di segreteria e spese di notifica";
+//    else if (id === OperationType.AREEMERCATALI)
+//        return "Aree Mercatali";
+//    else if (id === OperationType.COSAPTOSAP)
+//        return "COSAP/TOSAP";
+//    else if (id === OperationType.TARIANNOINCORSO)
+//        return "Tari anno in corso";
+//    else
+//        return "";
+//}
 
+function CheckOperationTypeId(id) {
+    return operationTypes[id] || '';
 }
