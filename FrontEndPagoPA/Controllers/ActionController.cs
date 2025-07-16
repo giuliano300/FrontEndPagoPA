@@ -3,23 +3,18 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using FrontEndPagoPA.Models;
 using FrontEndPagoPA.Service;
+using FrontEndPagoPA.ViewModel;
 using log4net;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Hosting.Internal;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Formats.Asn1;
 using System.Globalization;
-using System.IO;
 using System.IO.Compression;
-using System.Numerics;
 using System.Reflection;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
+
 
 namespace FrontEndPagoPA.Controllers
 {
@@ -48,27 +43,56 @@ namespace FrontEndPagoPA.Controllers
             return View();
         }
 
-
-        public async Task<IActionResult> RichiesteInAttesa()
+        public IActionResult RichiesteInAttesa()
         {
             return View();
         }
 
-        public async Task<string> GetRendicontazionePagamenti(int page = 1, int itemsPerPage = 100)
+        public async Task<string> GetRendicontazionePagamenti(int page = 1, int itemsPerPage = 100, bool paid = true, string nominativo = "", string dataInizio = "", string dataFine = "", string iuv = "", string codiceFiscale = "", string importoMin = "", string importoMax = "", bool payable = false)
         {
             Globals g = new(_tokenProvider);
             TokenDto token;
             token = g.GetDeserializedToken();
-            List<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = new();
             string today = DateTime.Today.ToString();
+            var dataI = new DateTime();
+            var dataF = new DateTime();
+            string append = "";
 
-            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, true, true, page, itemsPerPage);
+            if (nominativo != "" && nominativo != null)
+                append += "&nominativo=" + nominativo;
+
+            if (iuv != "" && iuv != null)
+                append += "&iuv=" + iuv;
+
+            if (codiceFiscale != "" && codiceFiscale != null)
+                append += "&codiceFiscale=" + codiceFiscale;
+
+            if (importoMin != null && importoMin != "")
+                append += "&importoMin=" + importoMin;
+
+            if (importoMax != null && importoMax != "")
+                append += "&importoMax=" + importoMax;
+
+            if (dataInizio != "" && dataInizio != null)
+            {
+                dataI = DateTime.Parse(dataInizio);
+                append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy");
+                today = "";
+            }
+
+            if (dataFine != "" && dataFine != null)
+            {
+                dataF = DateTime.Parse(dataFine);
+                append += "&dataFine=" + dataF.ToString("MM/dd/yyyy");
+                today = "";
+            }
+
+            append += "&payable=" + payable;
+
+            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, paid, true, page, itemsPerPage, append);
 
             if (response is not null && response.IsSuccess)
-            {
-                debtPositionInstallmentViewModels = JsonConvert.DeserializeObject<List<DebtPositionInstallmentViewModel>>(Convert.ToString(response.Result)!)!;
-                _cache.Set("rendicontazionePagamenti", debtPositionInstallmentViewModels);
-            }
+                _cache.Set("rendicontazionePagamenti", JsonConvert.DeserializeObject<List<GetRendicontazioniResult>>(Convert.ToString(response.Result)!)!);
             else
                 _logger.Error(response?.Message);
 
@@ -80,7 +104,7 @@ namespace FrontEndPagoPA.Controllers
             var bollettino = HttpContext.Request.Query["bollettino"].ToString();
 
             bool bulletin = true;
-            if(bollettino != "1")
+            if (bollettino != "1")
                 bulletin = false;
 
             if (data.Files.Count > 0)
@@ -96,7 +120,7 @@ namespace FrontEndPagoPA.Controllers
                         await upload.CopyToAsync(fileSrteam);
                     }
 
-                    var r = await ConvertCsv(Globals.FolderCsv + fileName, bulletin);
+                    var r = ConvertCsv(Globals.FolderCsv + fileName, bulletin);
 
                     _cache.Set("list", r);
 
@@ -123,12 +147,12 @@ namespace FrontEndPagoPA.Controllers
                         await upload.CopyToAsync(fileSrteam);
                     }
 
-                    var r = await OpenZipFile(Globals.FolderZip + fileName);
+                    var r = OpenZipFile(Globals.FolderZip + fileName);
 
                     var l = (List<CsvDtoOut>)_cache.Get("list")!;
 
                     var newList = new List<CsvDtoIn>();
-                    foreach(var c in l)
+                    foreach (var c in l)
                     {
                         var nc = _mapper.Map<CsvDtoIn>(c);
                         var last = r.FirstOrDefault(a => a.Contains(c.nomeFile!) || a == c.nomeFile);
@@ -151,7 +175,7 @@ namespace FrontEndPagoPA.Controllers
 
                     //ELIMINA FILE ZIP
                     System.IO.File.Delete(directory);
-                    System.IO.File.Delete(directory.Replace(".zip",""));
+                    System.IO.File.Delete(directory.Replace(".zip", ""));
 
                     _cache.Set("list", newList);
 
@@ -162,50 +186,139 @@ namespace FrontEndPagoPA.Controllers
             List<CsvDto> records = new();
             return JsonConvert.SerializeObject(records);
         }
-        public async Task<string> GetRichiesteEsitate(int page = 1, int itemsPerPage = 100)
+
+        public async Task<string> GetRichiesteEsitate(int page = 1, int itemsPerPage = 100, string codiceFiscale = "", string iuv = "", string dataInizio = "", string dataFine = "", string importoMin = "", string importoMax = "")
         {
             Globals g = new(_tokenProvider);
             TokenDto token;
             token = g.GetDeserializedToken();
             string today = DateTime.Today.ToString();
-            int skip = (page - 1) * itemsPerPage;
+            string append = "";
+            var dataI = new DateTime();
+            var dataF = new DateTime();
 
-            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, false, true, page, itemsPerPage);
+            if (codiceFiscale != "" && codiceFiscale != null)
+                append += "&codiceFiscale=" + codiceFiscale;
+
+            if (iuv != "" && iuv != null)
+                append += "&iuv=" + iuv;
+
+            if (dataInizio != "" && dataInizio != null)
+            {
+                dataI = DateTime.Parse(dataInizio);
+                append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy");
+                today = "";
+            }
+
+            if (dataFine != "" && dataFine != null)
+            {
+                dataF = DateTime.Parse(dataFine);
+                append += "&dataFine=" + dataF.ToString("MM/dd/yyyy");
+                today = "";
+            }
+
+            if (importoMin != null && importoMin != "")
+                append += "&importoMin=" + importoMin;
+
+            if (importoMax != null && importoMax != "")
+                append += "&importoMax=" + importoMax;
+
+            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, false, null, page, itemsPerPage, append);
 
             if (response is not null && response.IsSuccess)
-                _cache.Set("richiesteEsitate", JsonConvert.DeserializeObject<List<DebtPositionInstallmentViewModel>>(Convert.ToString(response.Result)!));
+                _cache.Set("richiesteEsitate", JsonConvert.DeserializeObject<List<GetInstallmentsResult>>(Convert.ToString(response.Result)!));
             else
                 _logger.Error(response?.Message);
 
             return JsonConvert.SerializeObject(response);
         }
 
-        public async Task<string> GetRichiesteInAttesa(int page = 1, int itemsPerPage = 100)
+        public async Task<string> GetRichiesteInAttesa(int page = 1, int itemsPerPage = 100, string codiceFiscale = "", string iuv = "", string dataInizio = "", string dataFine = "")
         {
             Globals g = new(_tokenProvider);
             TokenDto token;
             token = g.GetDeserializedToken();
-            List<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = new();
             string today = DateTime.Today.ToString();
+            string append = "";
+            var dataI = new DateTime();
+            var dataF = new DateTime();
 
-            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, false, today, false, false, page, itemsPerPage);
+            if (codiceFiscale != "" && codiceFiscale != null)
+                append += "&codiceFiscale=" + codiceFiscale;
+
+            if (iuv != "" && iuv != null)
+                append += "&iuv=" + iuv;
+
+            if (dataInizio != "" && dataInizio != null)
+            {
+                dataI = DateTime.Parse(dataInizio);
+                append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy"); 
+                today = "";
+            }
+
+            if (dataFine != "" && dataFine != null)
+            {
+                dataF = DateTime.Parse(dataFine);
+                append += "&dataFine=" + dataF.ToString("MM/dd/yyyy");
+                today = "";
+            }
+
+            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, false, today, false, false, page, itemsPerPage, append);
 
             if (response is not null && response.IsSuccess)
-            {
-                debtPositionInstallmentViewModels = JsonConvert.DeserializeObject<List<DebtPositionInstallmentViewModel>>(Convert.ToString(response.Result)!)!;
-                _cache.Set("richiesteInAttesa", debtPositionInstallmentViewModels);
-            }
+                _cache.Set("richiesteInAttesa", JsonConvert.DeserializeObject<List<GetInstallmentsResult>>(Convert.ToString(response.Result)!)!);
             else
                 _logger.Error(response?.Message);
 
             return JsonConvert.SerializeObject(response);
+        }
+
+        public async Task<string> GetStoricoOperazioni(int page = 1, int itemsPerPage = 100, string dataInizio = "", string dataFine = "")
+        {
+            Globals g = new(_tokenProvider);
+            TokenDto token;
+            token = g.GetDeserializedToken();
+            string today = DateTime.Today.ToString();
+            string append = "";
+            var dataI = new DateTime();
+            var dataF = new DateTime();
+
+            if (dataInizio != "" && dataInizio != null)
+            {
+                dataI = DateTime.Parse(dataInizio);
+                append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy");
+                today = "";
+            }
+
+            if (dataFine != "" && dataFine != null)
+            {
+                dataF = DateTime.Parse(dataFine);
+                append += "&dataFine=" + dataF.ToString("MM/dd/yyyy");
+                today = "";
+            }
+
+            ResponseDto? response = await _actionService.GetOperationsByUserId(token.sub, today, page, itemsPerPage, append);
+
+            if (response is not null && response.IsSuccess)
+                _cache.Set("richiesteStoricoOperazioni", JsonConvert.DeserializeObject<List<OperationHistoryViewModel>>(Convert.ToString(response.Result)!)!);
+            else
+                _logger.Error(response?.Message);
+
+            return JsonConvert.SerializeObject(response);
+        }
+
+        [HttpGet]
+        public string EliminaFiltroStoricoOperazioni()
+        {
+            IEnumerable<OperationHistoryViewModel> oHViewModels = (IEnumerable<OperationHistoryViewModel>)_cache.Get("richiesteStoricoOperazioni")!;
+
+            return JsonConvert.SerializeObject(oHViewModels);
         }
 
         public async Task<string> GetOperationTypes()
         {
             Globals g = new(_tokenProvider);
-            TokenDto token;
-            token = g.GetDeserializedToken();
+            TokenDto token = g.GetDeserializedToken();
             List<OperationTypeDto> l = new();
             string today = DateTime.Today.ToString();
 
@@ -219,6 +332,25 @@ namespace FrontEndPagoPA.Controllers
 
             return JsonConvert.SerializeObject(response);
         }
+
+        //public async Task<string> GetOperationTypesBySenderUserId(int senderUserId)
+        //{
+        //    Globals g = new(_tokenProvider);
+        //    TokenDto token = g.GetDeserializedToken();
+        //    List<OperationTypesSenderUserDto> l = new();
+        //    string today = DateTime.Today.ToString();
+
+        //    ResponseDto? response = await _actionService.GetOperationTypesSenderUsers(senderUserId);
+
+        //    if (response is not null && response.IsSuccess)
+        //        l = JsonConvert.DeserializeObject<List<OperationTypesSenderUserDto>>(Convert.ToString(response.Result)!)!;
+                
+        //    else
+        //        _logger.Error(response?.Message);
+
+
+        //    return JsonConvert.SerializeObject(response);
+        //}
 
         [HttpPost]
         public async Task<string> FiltraRichieste(IFormCollection fc)
@@ -239,12 +371,20 @@ namespace FrontEndPagoPA.Controllers
             string nominativo = fc["nominativo"]!;
             var dataI = new DateTime();
             var dataF = new DateTime();
-            bool worked = Convert.ToBoolean(fc["worked"]!);
-            bool valid = Convert.ToBoolean(fc["valid"]!);
+            bool worked = Convert.ToBoolean(fc["worked"]);
+            bool? valid;
             bool? paid = null;
 
-            if (fc["paid"].ToString() != "") { 
-                if (fc["paid"]! == "SI")
+
+            if (!string.IsNullOrEmpty(fc["valid"]))
+                valid = Convert.ToBoolean(fc["valid"]);
+            else
+                valid = null;
+
+
+            if (fc["paid"].ToString() != "" && fc["paid"].ToString() != null)
+            {
+                if (fc["paid"]! == "SI" || fc["paid"]! == "true")
                     paid = true;
                 else
                     paid = false;
@@ -253,14 +393,14 @@ namespace FrontEndPagoPA.Controllers
             if (dataInizio != "" && dataInizio != null)
             {
                 dataI = DateTime.Parse(dataInizio);
-                append += "&dataInizio=" + dataI;
+                append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy"); 
                 today = "";
             }
 
             if (dataFine != "" && dataFine != null)
             {
                 dataF = DateTime.Parse(dataFine);
-                append += "&dataFine=" + dataF;
+                append += "&dataFine=" + dataF.ToString("MM/dd/yyyy");
                 today = "";
             }
 
@@ -273,37 +413,90 @@ namespace FrontEndPagoPA.Controllers
             if (codiceFiscale != null && codiceFiscale != "")
                 append += "&codiceFiscale=" + codiceFiscale;
 
+
+            if (fc["payable"].ToString() != "" && fc["payable"].ToString() != null)
+            {
+                append += "&payable=" + fc["payable"];
+            }
+
+            if (fc["importoMin"].ToString() != "" && fc["importoMin"].ToString() != null)
+            {
+                append += "&importoMin=" + fc["importoMin"];
+            }
+
+            if (fc["importoMax"].ToString() != "" && fc["importoMax"].ToString() != null)
+            {
+                append += "&importoMax=" + fc["importoMax"];
+            }
+
             response = await _actionService.GetInstallmentsAsync(token.sub, worked, today, paid, valid, Convert.ToInt32(fc["page"]), Convert.ToInt32(fc["itemsPerPage"]), append);
 
             return JsonConvert.SerializeObject(response);
         }
 
-        [HttpGet]
-        public async Task<string> EliminaFiltroRendicontazione()
+        public async Task<string> FiltraRichiesteStoricoOperazioni(IFormCollection fc)
         {
-            IEnumerable<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = (IEnumerable<DebtPositionInstallmentViewModel>)_cache.Get("rendicontazionePagamenti")!;
+            Globals g = new(_tokenProvider);
+            TokenDto token;
+            token = g.GetDeserializedToken();
+            string today = DateTime.Today.ToString();
+
+            string append = "";
+
+            var response = new ResponseDto();
+
+            string dataInizio = fc["dataInizio"]!;
+            string dataFine = fc["dataFine"]!;
+            var dataI = new DateTime();
+            var dataF = new DateTime();
+
+            if (dataInizio != "" && dataInizio != null)
+            {
+                dataI = DateTime.Parse(dataInizio);
+                append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy"); 
+                today = "";
+            }
+
+            if (dataFine != "" && dataFine != null)
+            {
+                dataF = DateTime.Parse(dataFine);
+                append += "&dataFine=" + dataF.ToString("MM/dd/yyyy");
+                today = "";
+            }
+
+            response = await _actionService.GetOperationsByUserId(token.sub, today, Convert.ToInt32(fc["page"]), Convert.ToInt32(fc["itemsPerPage"]), append);
+
+            return JsonConvert.SerializeObject(response);
+        }
+
+
+        [HttpGet]
+        public string EliminaFiltroRendicontazione()
+        {
+            IEnumerable<GetRendicontazioniResult> getRendicontazioniResults = (IEnumerable<GetRendicontazioniResult>)_cache.Get("rendicontazionePagamenti")!;
+
+            return JsonConvert.SerializeObject(getRendicontazioniResults);
+        }
+
+
+        [HttpGet]
+        public string EliminaFiltroRichiesteEsitate()
+        {
+            IEnumerable<GetInstallmentsResult> debtPositionInstallmentViewModels = (IEnumerable<GetInstallmentsResult>)_cache.Get("richiesteEsitate")!;
 
             return JsonConvert.SerializeObject(debtPositionInstallmentViewModels);
         }
 
         [HttpGet]
-        public async Task<string> EliminaFiltro()
+        public string EliminaFiltroInAttesa()
         {
-            IEnumerable<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = (IEnumerable<DebtPositionInstallmentViewModel>)_cache.Get("richiesteEsitate")!;
-
-            return JsonConvert.SerializeObject(debtPositionInstallmentViewModels);
-        }
-
-        [HttpGet]
-        public async Task<string> EliminaFiltroInAttesa()
-        {
-            IEnumerable<DebtPositionInstallmentViewModel> debtPositionInstallmentViewModels = (IEnumerable<DebtPositionInstallmentViewModel>)_cache.Get("richiesteInAttesa")!;
+            IEnumerable<GetInstallmentsResult> debtPositionInstallmentViewModels = (IEnumerable<GetInstallmentsResult>)_cache.Get("richiesteInAttesa")!;
 
             return JsonConvert.SerializeObject(debtPositionInstallmentViewModels);
         }
 
 
-        public async Task<List<CsvDtoOut>> ConvertCsv(string pathFile, bool bollettino)
+        public List<CsvDtoOut> ConvertCsv(string pathFile, bool bollettino)
         {
             string webRootPath = _webHostEnvironment.WebRootPath;
             string csvFilePath = webRootPath + pathFile;
@@ -327,26 +520,112 @@ namespace FrontEndPagoPA.Controllers
         }
 
 
-        public static void WriteCSV<T>(IEnumerable<T> items, string filename)
+        public static void WriteCSVStoricoOperazioni(List<StoricoOperazioniViewModel> items, string filename)
         {
-            var csv = string.Join("\n", items.ToArray());
-            System.IO.File.WriteAllText(filename, csv.ToString());
-
-        }
-        public static void WriteCSVRendicontazione(List<DebtPositionInstallmentViewModel> items, string filename)
-        {
-            var csv = "Nominativo;Codice Fiscale;IUV;Importo;Rata;Data Scadenza;Pagato\n";
+            var csv = "Titolo;Rata;IUV;Tipologia;Data Scadenza;Importo;Anagrafica;Codice Fiscale;CAP;Comune;Provincia;Indirizzo\n";
             foreach (var item in items)
-                csv += item.debtPosition.anagraficaPagatore + ";" + 
-                    item.debtPosition.codiceIdentificativoUnivocoPagatore + ";" + item.installment.iuv + ";" + 
-                    item.installment.price + ";" + (item.installment.numeroRata == 0 ? "Rata unica" : item.installment.numeroRata) + ";" + 
-                    item.installment.expirationDate + ";" + (item.installment.paid == true ? "SI" : "NO") + "\n";
+            {
+                csv +=
+                    item.title + ";";
 
-           System.IO.File.WriteAllText(filename, csv.ToString());
+                //per far visualizzare la descrizione delle multe e non 'Rata unica' senza poter distinguere se è il pagamento entro o dopo 5 giorni
+                if (item.description!.Contains("rata"))
+                    csv += (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";";
+                else
+                    csv += item.description + ";";
 
+                csv += item.iuv + ";" +
+                GetOperationTypeString(item.operationTypeId) + ";" +
+                ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
+                string.Format("{0:0.00} €", item.price) + ";" +
+                item.anagraficaPagatore + ";" +
+                item.codiceIdentificativoUnivocoPagatore + ";" +
+                item.capPagatore!.PadLeft(5, '0') + ";" + 
+                item.comunePagatore + ";" +
+                item.provinciaPagatore + ";" +
+                item.indirizzoPagatore + ";" + "\n";
+            }
+            System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
         }
 
-        public string CreateZipFile(List<Dictionary<string, string>> l)
+
+        public static void WriteCSVRendicontazione(List<GetRendicontazioniResult> items, string filename)
+        {
+            var csv = "Nominativo;Codice Fiscale;Tipologia;IUV;Importo;Rata;Data Scadenza;Pagato;Data Pagamento\n";
+            foreach (var item in items)
+            {
+                csv +=
+                    item.anagraficaPagatore + ";" +
+                    item.codiceFiscale + ";" +
+                    item.tipoOperazione + ";" +
+                    item.iuv + ";" +
+                    string.Format("{0:0.00} €", item.prezzo) + ";" +
+                    (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
+                    ' ' + item.dataScadenza.ToString("dd/MM/yyyy") + ";" +
+                    (item.pagato == true ? "SI" : "NO") + ";" +
+                    (item.paymentDate != null ? Convert.ToDateTime(item.paymentDate).ToString("dd/MM/yyyy") : "") +
+                    "\n";
+            }
+            System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
+        }
+
+
+        public static void WriteCSVRichiesteEsitate(List<GetInstallmentsResult> items, string filename)
+        {
+            var csv = "Iuv;Codice Fiscale;Tipologia;Importo;Rata;Data Scadenza;Stato\n";
+            foreach (var item in items)
+            {
+                csv +=
+                    item.iuv + ";" +
+                    item.codiceIdentificativoUnivocoPagatore + ";" +
+                    GetOperationTypeString(item.operationTypeId) + ";" +
+                    string.Format("{0:0.00} €", item.price) + ";" +
+                    (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
+                    ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
+                    (item.valid == true ? "ESITATA" : "NON VALIDATA") + "\n";
+            }
+            System.IO.File.WriteAllText(filename, csv.ToString(), Encoding.UTF8);
+        }
+
+        private static string GetOperationTypeString(int operationTypeId)
+        {
+            switch (operationTypeId)
+            {
+                case 1:
+                    return "Tari anni precedenti";
+                case 2:
+                    return "Mensa scolastica";
+                case 3:
+                    return "Multa";
+                case 4:
+                    return "Canone unico";
+                case 5:
+                    return "Passo carrabile";
+                case 6:
+                    return "Trasporto scolastico";
+                case 7:
+                    return "Diritti di segreteria per certificati anagrafici";
+                case 8:
+                    return "Affitti";
+                case 9:
+                    return "Tassa concorso";
+                case 10:
+                    return "Diritti di segreteria e spese di notifica";
+                case 11:
+                    return "Aree Mercatali";
+                case 12:
+                    return "COSAP/TOSAP";
+                case 13:
+                    return "Tari anno in corso";
+                case 14:
+                    return "Servizio acqua, luce e gas";
+                default:
+                    return "";
+            }
+        }
+
+
+        public string? CreateZipFile(List<Dictionary<string, string>> l)
         {
             try
             {
@@ -358,11 +637,12 @@ namespace FrontEndPagoPA.Controllers
 
                 var files = new List<string>();
 
-                foreach (var i in l) {
+                foreach (var i in l)
+                {
                     var fileName = i.First().Key.Split("/").Last();
                     var base64 = i.First().Value;
                     Globals.ConvertBase64ToFile(newPath + "/" + fileName, base64);
-                    files.Add(newPath + "/" + fileName);    
+                    files.Add(newPath + "/" + fileName);
                 }
 
                 var zipFile = newPath + "/" + nf + ".zip";
@@ -382,15 +662,15 @@ namespace FrontEndPagoPA.Controllers
         }
 
 
-        public async Task<List<string>> OpenZipFile(string pathFile)
+        public List<string> OpenZipFile(string pathFile)
         {
             var l = new List<string>();
             string webRootPath = _webHostEnvironment.WebRootPath;
             try
-            { 
+            {
                 var nf = DateTime.Now.Ticks;
-                var newPath = webRootPath +  Globals.FolderZip + nf;
-                if(!Directory.Exists(newPath)) 
+                var newPath = webRootPath + Globals.FolderZip + nf;
+                if (!Directory.Exists(newPath))
                     Directory.CreateDirectory(newPath);
 
                 ZipFile.ExtractToDirectory(webRootPath + pathFile, newPath);
@@ -399,7 +679,7 @@ namespace FrontEndPagoPA.Controllers
                 foreach (string file in files)
                     l.Add(Globals.FolderZip + nf + "/" + Path.GetFileName(file));
             }
-            catch(Exception e) 
+            catch (Exception)
             {
                 _logger.Error("  An error occurred in the OpenZipFile in Action Controller  ");
             }
@@ -407,22 +687,23 @@ namespace FrontEndPagoPA.Controllers
             return l;
         }
 
+
         private bool CheckDate(string date)
         {
             try
             {
                 var split = date.Split('-');
-                if(split.Length < 3)
+                if (split.Length < 3)
                     return false;
-                
+
                 var year = split[0];
                 var month = split[1];
                 var day = split[2];
-                
+
                 if (year.Length < 4)
                     return false;
 
-                if(Convert.ToInt32(year) < 1920)
+                if (Convert.ToInt32(year) < 1920)
                     return false;
 
                 if (month.Length < 2)
@@ -440,7 +721,7 @@ namespace FrontEndPagoPA.Controllers
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }
@@ -489,8 +770,8 @@ namespace FrontEndPagoPA.Controllers
                         case 1:
                             try
                             {
-                                if (CheckDate(r.dataScadenzaRata1!)) 
-                                { 
+                                if (CheckDate(r.dataScadenzaRata1!))
+                                {
                                     var d = Convert.ToDateTime(r.dataScadenzaRata1);
                                     nr.valid = true;
                                 }
@@ -564,7 +845,7 @@ namespace FrontEndPagoPA.Controllers
                                     nr.valid = false;
                                     break;
                                 }
-                                
+
                                 if (CheckDate(r.dataScadenzaRata3!))
                                 {
                                     var d = Convert.ToDateTime(r.dataScadenzaRata3);
@@ -1566,7 +1847,7 @@ namespace FrontEndPagoPA.Controllers
                     nr.valid = false;
                 }
 
-                if(bollettino && (r.nomeFile == null || r.nomeFile == ""))
+                if (bollettino && (r.nomeFile == null || r.nomeFile == ""))
                 {
                     nr.message = "nome del file non presente";
                     nr.valid = false;
@@ -1578,7 +1859,7 @@ namespace FrontEndPagoPA.Controllers
         }
 
 
-        public async Task<IActionResult> RichiesteEsitate()
+        public IActionResult RichiesteEsitate()
         {
             return View();
         }
@@ -1589,81 +1870,16 @@ namespace FrontEndPagoPA.Controllers
             return View();
         }
 
+
         public ActionResult StoricoOperazioni()
         {
             return View();
         }
 
 
-        public async Task<string> FiltraRichiesteStoricoOperazioni(IFormCollection fc)
-        {
-            Globals g = new(_tokenProvider);
-            TokenDto token;
-            token = g.GetDeserializedToken();
-            string today = DateTime.Today.ToString();
-
-            string append = "";
-
-            var response = new ResponseDto();
-
-            string dataInizio = fc["dataInizio"]!;
-            string dataFine = fc["dataFine"]!;
-            var dataI = new DateTime();
-            var dataF = new DateTime();
-
-            if (dataInizio != "" && dataInizio != null)
-            {
-                dataI = DateTime.Parse(dataInizio);
-                append += "&dataInizio=" + dataI;
-                today = "";
-            }
-
-            if (dataFine != "" && dataFine != null)
-            {
-                dataF = DateTime.Parse(dataFine);
-                append += "&dataFine=" + dataF;
-                today = "";
-            }
-
-            response = await _actionService.GetOperationsByUserId(token.sub, today, Convert.ToInt32(fc["page"]), Convert.ToInt32(fc["itemsPerPage"]), append);
-
-
-            return JsonConvert.SerializeObject(response);
-        }
-
-        public async Task<string> GetStoricoOperazioni(int page = 1, int itemsPerPage = 100)
-        {
-            Globals g = new(_tokenProvider);
-            TokenDto token;
-            token = g.GetDeserializedToken();
-            List<OperationHistoryViewModel> oHViewModels = new();
-            string today = DateTime.Today.ToString();
-
-            ResponseDto? response = await _actionService.GetOperationsByUserId(token.sub, today, page, itemsPerPage);
-
-            if (response is not null && response.IsSuccess)
-            {
-                oHViewModels = JsonConvert.DeserializeObject<List<OperationHistoryViewModel>>(Convert.ToString(response.Result)!)!;
-                _cache.Set("richiesteStoricoOperazioni", oHViewModels);
-            }
-            else
-                _logger.Error(response?.Message);
-
-            return JsonConvert.SerializeObject(response);
-        }
-
-        [HttpGet]
-        public async Task<string> EliminaFiltroStoricoOperazioni()
-        {
-            IEnumerable<OperationHistoryViewModel> oHViewModels = (IEnumerable<OperationHistoryViewModel>)_cache.Get("richiesteStoricoOperazioni")!;
-
-            return JsonConvert.SerializeObject(oHViewModels);
-        }
-
         [HttpPost]
         public async Task<string> GetIuvInCsv(IFormCollection fc)
         {
-            var l = new List<string>();
             Globals g = new(_tokenProvider);
             TokenDto token;
             token = g.GetDeserializedToken();
@@ -1676,70 +1892,21 @@ namespace FrontEndPagoPA.Controllers
             string dataInizio = fc["dataInizio"]!;
             string dataFine = fc["dataFine"]!;
             string nominativo = fc["nominativo"]!;
+            string importoMin = fc["importoMin"]!;
+            string importoMax = fc["importoMax"]!;
             var dataI = new DateTime();
             var dataF = new DateTime();
+            bool worked = Convert.ToBoolean(fc["worked"]);
 
-            if (dataInizio != "" && dataInizio != null)
-            {
-                dataI = DateTime.Parse(dataInizio);
-                append += "&dataInizio=" + dataI;
-                today = "";
-            }
+            bool? valid;
+            if (!string.IsNullOrEmpty(fc["valid"]))
+                valid = Convert.ToBoolean(fc["valid"]);
+            else
+                valid = null;
 
-            if (dataFine != "" && dataFine != null)
-            {
-                dataF = DateTime.Parse(dataFine);
-                append += "&dataFine=" + dataF;
-                today = "";
-            }
-
-            if (nominativo != null && nominativo != "")
-                append += "&nominativo=" + nominativo;
-
-            if (iuv != null && iuv != "")
-                append += "&iuv=" + iuv;
-
-            if (codiceFiscale != null && codiceFiscale != "")
-                append += "&codiceFiscale=" + codiceFiscale;
-
-            string webRootPath = _webHostEnvironment.WebRootPath;
-            string fileName = Globals.FolderDownloadCsv + DateTime.Now.Ticks + ".csv";
-
-            switch (fc["type"].ToString().ToUpper())
-            {
-                case "RICHIESTEESITATE":
-                    ResponseDto? response = await _actionService.GetIUV(token.sub, true, today, append);
-                    l = JsonConvert.DeserializeObject<List<string>>(response.Result!.ToString()!);
-                    WriteCSV(l!, webRootPath + fileName);
-                    break;
-            }
-
-            return fileName;
-        }
-
-
-        [HttpPost]
-        public async Task<string> GeneraRendicontazione(IFormCollection fc)
-        {
-            var l = new List<DebtPositionInstallmentViewModel>();
-            Globals g = new(_tokenProvider);
-            TokenDto token;
-            token = g.GetDeserializedToken();
-            string today = DateTime.Today.ToString();
-
-            string append = "";
-
-            string iuv = fc["iuv"]!;
-            string codiceFiscale = fc["codiceFiscale"]!;
-            string dataInizio = fc["dataInizio"]!;
-            string dataFine = fc["dataFine"]!;
-            string nominativo = fc["nominativo"]!;
-            var dataI = new DateTime();
-            var dataF = new DateTime();
-     
             bool? paid = null;
 
-            if (fc["paid"].ToString() != "")
+            if (fc["paid"].ToString() != "" && fc["paid"].ToString() != null)
             {
                 if (fc["paid"]! == "SI")
                     paid = true;
@@ -1747,17 +1914,20 @@ namespace FrontEndPagoPA.Controllers
                     paid = false;
             }
 
+            if (fc["paid"].ToString() == "" || fc["paid"].ToString() == null)
+                paid = false;
+
             if (dataInizio != "" && dataInizio != null)
             {
                 dataI = DateTime.Parse(dataInizio);
-                append += "&dataInizio=" + dataI;
+                append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy"); 
                 today = "";
             }
 
             if (dataFine != "" && dataFine != null)
             {
                 dataF = DateTime.Parse(dataFine);
-                append += "&dataFine=" + dataF;
+                append += "&dataFine=" + dataF.ToString("MM/dd/yyyy");
                 today = "";
             }
 
@@ -1770,14 +1940,110 @@ namespace FrontEndPagoPA.Controllers
             if (codiceFiscale != null && codiceFiscale != "")
                 append += "&codiceFiscale=" + codiceFiscale;
 
+            if (importoMin != null && importoMin != "")
+                append += "&importoMin=" + importoMin;
+
+            if (importoMax != null && importoMax != "")
+                append += "&importoMax=" + importoMax;
+
             string webRootPath = _webHostEnvironment.WebRootPath;
             string fileName = Globals.FolderDownloadCsv + DateTime.Now.Ticks + ".csv";
 
-            var response = await _actionService.GetRendicontazione(token.sub, today, paid, append);
-            l = JsonConvert.DeserializeObject<List<DebtPositionInstallmentViewModel>>(response.Result!.ToString()!);
-            WriteCSVRendicontazione(l!, webRootPath + fileName);
-
+            switch (fc["type"].ToString().ToUpper())
+            {
+                case "RICHIESTEESITATE":
+                    var response = await _actionService.GetInstallmentsAsync(token.sub, worked, today, paid, valid, Convert.ToInt32(fc["page"]), Convert.ToInt32(fc["itemsPerPage"]), append);
+                    var l = JsonConvert.DeserializeObject<List<GetInstallmentsResult>>(response.Result!.ToString()!);
+                    WriteCSVRichiesteEsitate(l!, webRootPath + fileName);
+                    break;
+            }
             return fileName;
+        }
+
+
+        [HttpPost]
+        public async Task<string> GeneraRendicontazione(IFormCollection fc)
+        {
+            try { 
+                var l = new List<GetRendicontazioniResult>();
+                Globals g = new(_tokenProvider);
+                TokenDto token;
+                token = g.GetDeserializedToken();
+                string today = DateTime.Today.ToString();
+
+                string append = "";
+
+                string iuv = fc["iuv"]!;
+                string codiceFiscale = fc["codiceFiscale"]!;
+                string dataInizio = fc["dataInizio"]!;
+                string dataFine = fc["dataFine"]!;
+                string nominativo = fc["nominativo"]!;
+                string importoMin = fc["importoMin"]!;
+                string importoMax = fc["importoMax"]!;
+                var dataI = new DateTime();
+                var dataF = new DateTime();
+
+                bool? paid = null;
+                bool? payable = null;
+
+                if (fc["paid"].ToString() != "")
+                {
+                    if (fc["paid"]! == "SI")
+                    {
+                        paid = true;
+                        payable = false;
+                    }
+                    else
+                    {
+                        paid = false;
+                        payable = true;
+                    }
+                }
+
+                if (dataInizio != "" && dataInizio != null)
+                {
+                    dataI = DateTime.Parse(dataInizio);
+                    append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy");
+                    today = "";
+                }
+
+                if (dataFine != "" && dataFine != null)
+                {
+                    dataF = DateTime.Parse(dataFine);
+                    append += "&dataFine=" + dataF.ToString("MM/dd/yyyy");
+                    today = "";
+                }
+
+                if (nominativo != null && nominativo != "")
+                    append += "&nominativo=" + nominativo;
+
+                if (iuv != null && iuv != "")
+                    append += "&iuv=" + iuv;
+
+                if (codiceFiscale != null && codiceFiscale != "")
+                    append += "&codiceFiscale=" + codiceFiscale;
+
+                if (importoMin != null && importoMin != "")
+                    append += "&importoMin=" + importoMin;
+
+                if (importoMax != null && importoMax != "")
+                    append += "&importoMax=" + importoMax;
+
+                append += "&payable=" + payable;
+
+                string webRootPath = _webHostEnvironment.WebRootPath;
+                string fileName = Globals.FolderDownloadCsv + DateTime.Now.Ticks + ".csv";
+
+                var response = await _actionService.GetRendicontazione(token.sub, today, paid, append);
+                l = JsonConvert.DeserializeObject<List<GetRendicontazioniResult>>(response.Result!.ToString()!);
+                WriteCSVRendicontazione(l!, webRootPath + fileName);
+
+                return fileName;
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
         }
 
         [HttpGet]
@@ -1785,10 +2051,10 @@ namespace FrontEndPagoPA.Controllers
         {
             string webRootPath = _webHostEnvironment.WebRootPath;
             string fileName = Globals.FolderDownloadCsv + DateTime.Now.Ticks + ".csv";
-            var l = new List<string>();
+            var l = new List<StoricoOperazioniViewModel>();
             ResponseDto? response = await _actionService.GetIUVFromOperation(id);
-            l = JsonConvert.DeserializeObject<List<string>>(response.Result!.ToString()!);
-            WriteCSV(l!, webRootPath + fileName);
+            l = JsonConvert.DeserializeObject<List<StoricoOperazioniViewModel>>(response.Result!.ToString()!);
+            WriteCSVStoricoOperazioni(l!, webRootPath + fileName);
             return fileName;
         }
 
@@ -1799,7 +2065,10 @@ namespace FrontEndPagoPA.Controllers
             var l = new List<Dictionary<string, string>>();
             ResponseDto? response = await _actionService.GetFilesFromOperation(id);
             l = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(response.Result!.ToString()!);
-            return CreateZipFile(l!);
+            return CreateZipFile(l!)!;
         }
+
+
+
     }
 }

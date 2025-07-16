@@ -95,7 +95,7 @@ namespace FrontEndPagoPA.Controllers
 
 
         [HttpPost]
-        public async Task<bool> CheckPwd(IFormCollection data)
+        public bool CheckPwd(IFormCollection data)
         {
             Globals g = new(_tokenProvider);
             var token = g.GetDeserializedToken();

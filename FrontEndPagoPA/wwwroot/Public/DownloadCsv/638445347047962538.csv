@@ -1,0 +1,6 @@
+﻿Titolo;Rata;IUV;Tipologia;Data Scadenza;Importo;Anagrafica;Codice Fiscale;CAP;Comune;Provincia;Indirizzo
+test10;1;01245432356671961;Passo carrabile; 18/02/2024 00:00:00; 60,75 €;Gennaro Esposito;XXXXXX00X00X000Q; 67888;Firenze;FI;indirizzo 10;
+test10;2;01245432401672062;Passo carrabile; 23/02/2024 00:00:00; 60,75 €;Gennaro Esposito;XXXXXX00X00X000Q; 67888;Firenze;FI;indirizzo 10;
+test10;3;01245432506672163;Passo carrabile; 10/03/2024 00:00:00; 60,75 €;Gennaro Esposito;XXXXXX00X00X000Q; 67888;Firenze;FI;indirizzo 10;
+test10;4;01245432675672264;Passo carrabile; 21/03/2024 00:00:00; 60,75 €;Gennaro Esposito;XXXXXX00X00X000Q; 67888;Firenze;FI;indirizzo 10;
+test10;Rata unica;01245432765672365;Passo carrabile; 26/05/2024 00:00:00; 243 €;Gennaro Esposito;XXXXXX00X00X000Q; 67888;Firenze;FI;indirizzo 10;

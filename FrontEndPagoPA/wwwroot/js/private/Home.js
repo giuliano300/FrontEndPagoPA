@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿$(function () {
     $("#loginForm").validate({
         rules: {
             userName: {

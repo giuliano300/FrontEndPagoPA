@@ -1,46 +1,70 @@
 ﻿let itemsPerPage = 100;
+var currentDate = new Date();
+var today = currentDate.toISOString().split('T')[0];
+
 function FiltraRichieste() {
     $('.preload').show();
-   let data = {
+    let data = {
         dataInizio: $('#dataInizio').val(),
         dataFine: $('#dataFine').val(),
         page: 1,
         itemsPerPage: itemsPerPage
     }
     $.post("/Action/FiltraRichiesteStoricoOperazioni", data, function (res) {
-        let r = $.parseJSON(res);
+        let r = JSON.parse(res);
         GetRichieste(r.Result);
-        CreatePaginations(r.Message);
+        CreatePaginations(data.dataInizio, data.dataFine, true);
     });
 }
 
 function GetRichiestePerPage(p, first) {
-    $.get("/Action/GetStoricoOperazioni?page=" + p + "&itemsPerPage=" + itemsPerPage, function (res) {
-        var r = $.parseJSON(res);
+    let dataInizio = $('#dataInizio').val();
+    let dataFine = $('#dataFine').val();
+
+    $('.items').removeClass('selected');
+    $('.item-' + p).addClass('selected');
+
+    $.get("/Action/GetStoricoOperazioni?page=" + p + "&itemsPerPage=" + itemsPerPage + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
+        var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
-            CreatePaginations(r.Message);
+            CreatePaginations(dataInizio, dataFine, first);
 
         $('.preload').hide();
-    })
+    });
 }
 
-function CreatePaginations(totItems) {
-    $('.pagination').empty();
+function CreatePaginations(dataInizio, dataFine, first) {
+    $.get("/Action/GetStoricoOperazioni?page=1&itemsPerPage=1000000000&dataInizio=" + dataInizio + "&dataFine=" + dataFine, function (res) {
+        var r = JSON.parse(res);
 
-    if (totItems > 0) {
+        var totItems = r.Message;
 
-        let a = "<a onclick='GetRichiestePerPage(1)'><i class='las la-angle-left'></i></a>";
+        $('.pagination').empty();
 
-        let nPage = Math.ceil(totItems / itemsPerPage);
+        if (totItems > 0) {
 
-        for (var i = 0; i < nPage; i++)
-            a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")'>" + (i + 1) + "</a>";
+            let a = "<a onclick='GetRichiestePerPage(1)'><i class='las la-angle-left'></i></a>";
 
-        a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
+            let nPage = Math.ceil(totItems / itemsPerPage);
 
-        $('.pagination').append(a);
-    }
+            for (var i = 0; i < nPage; i++)
+                a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")' class='items item-" + (i + 1) + "'>" + (i + 1) + "</a>";
+
+            a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
+
+            if (totItems == 1)
+                a += "<span>  1 Risultato </span>";
+            else
+                a += "<span>" + "  " + totItems + " Risultati</span>";
+
+            $('.pagination').append(a);
+            if (first) {
+                $('.items').removeClass('selected');
+                $('.item-1').addClass('selected');
+            }
+        }
+    });
 }
 
 
@@ -54,8 +78,8 @@ function EliminaFiltro() {
     let dataI = $('#dataInizio');
     let dataF = $('#dataFine');
     $.get("/Action/EliminaFiltroStoricoOperazioni", function (res) {
-        var r = $.parseJSON(res);
-        dataI.val('@today');
+        var r = JSON.parse(res);
+        dataI.val(today);
         dataF.val('');
         GetRichiestePerPage(1, true);
     })
@@ -64,7 +88,7 @@ function EliminaFiltro() {
 
 function GetRichieste(r) {
     $('.operations-history').empty();
-    if(r != null)
+    if (r != null) {
         if (r.length > 0) {
             for (var i = 0; i < r.length; i++) {
                 let date = new Date(r[i].date);
@@ -86,7 +110,7 @@ function GetRichieste(r) {
                 if (r[i].workedInstallmentsPercentage == 100) {
                     li += "<li class='text-center' title='documento disponibile' onclick='GetCsv(" + r[i].operationId + ")'><i class='bx bx-qr active-btn'></i></li>";
 
-                    if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null) {
+                    if (r[i].bollettino != true) {
                         li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
                     }
                     else {
@@ -94,12 +118,12 @@ function GetRichieste(r) {
                             li += "<li class='text-center' title='documento disponibile' onclick='GetZipFile(" + r[i].operationId + ")'><i class='las la-file-archive active-btn'></i></li>";
                         else
                             li += "<li class='text-center' title='documento non ancora disponibile'><i class='las la-file-archive not-active'></i></li>";
-                   }
+                    }
                 }
                 else {
                     li += "<li class='text-center' title='documento non ancora disponibile'><i class='bx bx-qr not-active'></i></li>";
 
-                    if (r[i].bollettino == false || r[i].bollettino == "" || r[i].bollettino == null) {
+                    if (r[i].bollettino != true) {
                         li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
                     }
                     else
@@ -112,6 +136,7 @@ function GetRichieste(r) {
         }
         else
             $('.operations-history').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
+    }
     else
         $('.operations-history').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
 
@@ -119,13 +144,31 @@ function GetRichieste(r) {
 }
 
 function GetCsv(id) {
+    $('.preload').show();
+
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+
+    document.body.appendChild(iframe);
     $.get("/Action/GetCsvFromOperation?id=" + id, function (res) {
-        window.open(res);
-    });
+        iframe.src = res;
+    })
+        .done(function () {
+            $('.preload').hide();
+        });
 }
 
 function GetZipFile(id) {
+    $('.preload').show();
+
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+
+    document.body.appendChild(iframe);
     $.get("/Action/GetFileFromOperation?id=" + id, function (res) {
-        window.open(res);
-    });
+        iframe.src = res;
+    })
+        .done(function () {
+            $('.preload').hide();
+        });
 }

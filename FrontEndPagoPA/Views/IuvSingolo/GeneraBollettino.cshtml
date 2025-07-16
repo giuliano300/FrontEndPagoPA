@@ -18,13 +18,13 @@
     <div class="preload"><i class='bx bx-loader-alt bx-spin'></i></div>
     <div class="col-md-12">
         <div class="card generate-iuv">
-            @using (Html.AjaxBeginForm("RegisterOperation", new AjaxOptions
-             {
-                 HttpMethod = "post",
-                 OnBegin = "GetPreload()",
-                 OnSuccess = "GetResult(data)",
+            @using(Html.AjaxBeginForm("RegisterOperation", new AjaxOptions
+            {
+                HttpMethod = "post",
+                OnBegin = "GetPreload()",
+                OnSuccess = "GetResult(data)",
 
-             }, new { @class = "form", enctype = "multipart/form-data" }))
+            }, new { @class = "form", enctype = "multipart/form-data" }))
             {
                 <div class="form-site p-0">
                     <div class="row">
@@ -65,7 +65,7 @@
                                     </div>
                                     <div class="col-md-4 col-sm-4">
                                         <label>Tipo</label>
-                                        <select class="operationType" name="operationTypeId" required>
+                                        <select class="operationType" name="operationTypeId" required onchange="CheckOperationType()">
                                             <option value="">Seleziona un tipo</option>
                                         </select>
                                     </div>
@@ -90,7 +90,7 @@
                                 <div class="row">
                                     <div class="col-md-5">
                                         <label>Nominativo</label>
-                                        <input type="text" name="name" required maxlength="35" />
+                                        <input type="text" name="name" required maxlength="35"/>
                                     </div>
                                     <div class="col-md-3 col-sm-3">
                                         <label>Codice fiscale</label>
@@ -134,9 +134,13 @@
                     <div class="row">
                         <div class="col-md-12 pt-10">
                             <div class="row">
+                                @* <div class="col-md-5 col-sm-5">
+                                    <label>Importo Totale (€)</label>
+                                    <input type="number" step="0.01" min="0" name="amount" required />
+                                </div> *@
                                 <div class="col-md-5 col-sm-5">
                                     <label>Importo Totale (€)</label>
-                                    <input type="number" name="amount" required />
+                                    <input type="text" pattern="[0-9]+([\.,][0-9]+)?" title="Enter a valid number" name="amount" required />
                                 </div>
                                 <div class="col-md-4 col-sm-4">
                                     <label>Scadenza pagamento RATA UNICA</label>
