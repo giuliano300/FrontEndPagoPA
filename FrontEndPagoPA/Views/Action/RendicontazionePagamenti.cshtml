@@ -2,7 +2,6 @@
 
 @{
     ViewBag.Title = "Rendicontazione Pagamenti";
-    var today = DateTime.Today.ToString("yyyy-MM-dd");
 }
 
 <div class="row">
@@ -28,13 +27,13 @@
                         <div class="col-md-2">
                             <label>
                                 Data inizio
-                                <input type="date" name="dataInizio" id="dataInizio" value="@today" />
+                                <input type="date" name="dataInizio" id="dataInizio" value="@DateTime.Today.ToString("yyyy-MM-dd")" />
                             </label>
                         </div>
                         <div class="col-md-2">
                             <label>
                                 Data fine
-                                <input type="date" name="dataFine" id="dataFine" />
+                                <input type="date" name="dataFine" id="dataFine" value="@DateTime.Today.ToString("yyyy-MM-dd")" />
                             </label>
                         </div>
                         <div class="col-md-2">
@@ -102,7 +101,8 @@
                         <li>Rata</li>
                         <li>Data scadenza</li>
                         <li class='text-center'>Pagata</li>
-                        <li class='text-center'>Data Pagamento</li>
+                        <li class='text-center'>Data pag.</li>
+                        <li class='text-center'>Azioni</li>
                     </ul>
                     <div class="preload preload-mini"><i class='bx bx-loader bx-spin'></i><br /><p>Attendere caricamento in corso...</p></div>
                     <!--end archive list header-->
@@ -116,6 +116,52 @@
                     <div class="pagination">
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateExpirationModal" tabindex="-1" aria-labelledby="updateExpirationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content expiration-modal">
+            <div class="modal-header expiration-modal__header">
+                <div class="expiration-modal__title">
+                    <span class="expiration-modal__icon"><i class='bx bx-calendar-edit'></i></span>
+                    <div>
+                        <span class="expiration-modal__eyebrow">Rinnovo posizione</span>
+                        <h5 class="modal-title" id="updateExpirationModalLabel">Modifica scadenza IUV</h5>
+                    </div>
+                </div>
+                <button type="button" class="expiration-modal__close" data-bs-dismiss="modal" aria-label="Chiudi">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            <div class="modal-body expiration-modal__body">
+                <input type="hidden" id="updateExpirationInstallmentId" />
+                <div class="expiration-modal__iuv">
+                    <span>IUV</span>
+                    <strong id="updateExpirationIuv"></strong>
+                </div>
+                <p class="expiration-modal__intro">Scegli una nuova scadenza valida. La posizione sarà reinviata automaticamente per l’elaborazione.</p>
+                <div class="expiration-modal__dates">
+                    <label>
+                        <span>Scadenza attuale</span>
+                        <input type="date" id="currentExpirationDate" disabled />
+                    </label>
+                    <i class='bx bx-right-arrow-alt'></i>
+                    <label>
+                        <span>Nuova scadenza</span>
+                        <input type="date" id="newExpirationDate" required />
+                    </label>
+                </div>
+                <div id="updateExpirationMessage" class="expiration-modal__message"></div>
+            </div>
+            <div class="modal-footer expiration-modal__footer">
+                <button type="button" class="expiration-modal__cancel" data-bs-dismiss="modal">Annulla</button>
+                <button type="button" class="expiration-modal__confirm" id="confirmExpirationUpdate" onclick="UpdateExpirationDate()">
+                    <i class='bx bx-refresh'></i>
+                    Aggiorna e reinvia
+                </button>
             </div>
         </div>
     </div>

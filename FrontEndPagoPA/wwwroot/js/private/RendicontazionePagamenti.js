@@ -1,6 +1,4 @@
 ﻿let itemsPerPage = 100;
-let currentDate = new Date();
-let today = currentDate.toISOString().split('T')[0];
 
 let operationTypes = {};
 
@@ -30,38 +28,7 @@ function CheckOperationTypeId(id) {
 
 function FiltraRichieste() {
     $('.preload').show();
-    let data = {
-        dataInizio: $('#dataInizio').val(),
-        dataFine: $('#dataFine').val(),
-        worked: $('#worked').val(),
-        valid: $('#valid').val(),
-        nominativo: $('#nominativo').val(),
-        codiceFiscale: $('#codiceFiscale').val(),
-        iuv: $('#iuv').val(),
-        importoMin: $('#importoMinimo').val(),
-        importoMax: $('#importoMassimo').val(),
-        paid: $('#pagato').val(),
-        page: 1,
-        itemsPerPage: itemsPerPage,
-        payable: false
-    }
-
-    if (data.paid == "NO") {
-        data.paid = false;
-        data.payable = true;
-    }
-    else
-        data.paid = true;
-
-    let nominativo = $('#nominativo').val();
-    let dataInizio = $('#dataInizio').val();
-    let dataFine = $('#dataFine').val();
-
-    $.post("/Action/FiltraRichieste", data, function (res) {
-        let r = JSON.parse(res);
-        GetRichieste(r.Result);
-        CreatePaginations(data.paid, data.nominativo, data.dataInizio, data.dataFine, data.iuv, data.codiceFiscale, data.importoMin, data.importoMax, true);
-    });
+    GetRichiestePerPage(1, true);
 }
 
 function GeneraCsv() {
@@ -92,16 +59,11 @@ function GeneraCsv() {
 
 function GetRichiestePerPage(p, first) {
     let paid = $('#pagato').val();
-    let payable;
 
-    if (paid == "NO") {
+    if (paid == "NO")
         paid = false;
-        payable = true;
-    }
-    else {
+    else
         paid = true;
-        payable = false;
-    }
 
     let nominativo = $('#nominativo').val();
     let dataInizio = $('#dataInizio').val();
@@ -114,7 +76,7 @@ function GetRichiestePerPage(p, first) {
     $('.items').removeClass('selected');
     $('.item-' + p).addClass('selected');
 
-    $.get("/Action/GetRendicontazionePagamenti?page=" + p + "&itemsPerPage=" + itemsPerPage + "&paid=" + paid + "&nominativo=" + nominativo + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine + "&iuv=" + iuv + "&codiceFiscale=" + codiceFiscale + "&importoMin=" + importoMin + "&importoMax=" + importoMax + "&payable=" + payable, function (res) {
+    $.get("/Action/GetRendicontazionePagamenti?page=" + p + "&itemsPerPage=" + itemsPerPage + "&paid=" + paid + "&nominativo=" + nominativo + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine + "&iuv=" + iuv + "&codiceFiscale=" + codiceFiscale + "&importoMin=" + importoMin + "&importoMax=" + importoMax, function (res) {
         var r = JSON.parse(res);
         GetRichieste(r.Result);
         if (first)
@@ -132,12 +94,7 @@ $(function () {
 
 function CreatePaginations(paid, nominativo, dataInizio, dataFine, iuv, codiceFiscale, importoMin, importoMax, first) {
 
-    let payable = false;
-
-    if (paid == false)
-        payable = true;
-
-    let url = "/Action/GetRendicontazionePagamenti?page=1&itemsPerPage=1000000000&paid=" + paid + "&nominativo=" + nominativo + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine + "&iuv=" + iuv + "&codiceFiscale=" + codiceFiscale + "&importoMin=" + importoMin + "&importoMax=" + importoMax + "&payable=" + payable;
+    let url = "/Action/GetRendicontazionePagamenti?page=1&itemsPerPage=1000000000&paid=" + paid + "&nominativo=" + nominativo + "&dataInizio=" + dataInizio + "&dataFine=" + dataFine + "&iuv=" + iuv + "&codiceFiscale=" + codiceFiscale + "&importoMin=" + importoMin + "&importoMax=" + importoMax;
     $.get(url, function (res) {
         var r = JSON.parse(res);
 
@@ -182,7 +139,7 @@ function EliminaFiltro() {
     let importoMax = $('#importoMassimo');
     $.get("/Action/EliminaFiltroRendicontazione", function (res) {
         var r = JSON.parse(res);
-        dataI.val(today);
+        dataI.val('');
         dataF.val('');
         nominativo.val('');
         iuv.val('');
@@ -205,6 +162,7 @@ function GetRichieste(r) {
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
                 let expDateString = expDate.toLocaleDateString('it-IT', options);
                 let operationType = CheckOperationTypeId(r[i].operationTypeId);
+                let isExpired = expDate < new Date(new Date().setHours(0, 0, 0, 0));
                 let paymentDate = "";
                 if (r[i].paid == true) {
                     let payDate = new Date(r[i].paymentDate);
@@ -233,6 +191,17 @@ function GetRichieste(r) {
                     li += "<li class='text-center'><a href='#'><i class='bx bx-x'></i></a></li>";
 
                 li += "<li class='text-center'>" + paymentDate + "</li>";
+
+                if (r[i].paid !== true && isExpired) {
+                    let isoExpirationDate = String(r[i].expirationDate).split('T')[0];
+                    li += "<li class='text-center'><button type='button' class='expiration-action' " +
+                        "aria-label='Modifica scadenza' data-tooltip='Modifica scadenza' " +
+                        "onclick=\"OpenExpirationModal(" + r[i].id + ", '" +
+                        String(r[i].iuv).replace(/'/g, "\\'") + "', '" + isoExpirationDate +
+                        "')\"><i class='bx bx-calendar-edit'></i></button></li>";
+                } else {
+                    li += "<li class='text-center'>-</li>";
+                }
                li += "</ul>";
 
                 $('.archive-payments').append(li);
@@ -245,4 +214,45 @@ function GetRichieste(r) {
         $('.archive-payments').append("<ul><li style='width:100%; text-align: center; padding:10px'> Nessuna richiesta trovata </li></ul>");
 
     $('.preload').hide();
+}
+
+function OpenExpirationModal(id, iuv, expirationDate) {
+    $('#updateExpirationInstallmentId').val(id);
+    $('#updateExpirationIuv').text(iuv);
+    $('#currentExpirationDate').val(expirationDate);
+    $('#newExpirationDate').val('').attr('min', new Date(Date.now() + 86400000).toISOString().split('T')[0]);
+    $('#updateExpirationMessage').empty();
+    $('#confirmExpirationUpdate').prop('disabled', false);
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('updateExpirationModal')).show();
+}
+
+function UpdateExpirationDate() {
+    let id = $('#updateExpirationInstallmentId').val();
+    let expirationDate = $('#newExpirationDate').val();
+    let message = $('#updateExpirationMessage');
+
+    if (!expirationDate) {
+        message.html("<strong style='color:#EA5555;'>Inserire la nuova data di scadenza.</strong>");
+        return;
+    }
+
+    $('#confirmExpirationUpdate').prop('disabled', true);
+    $.post('/Action/UpdateIuvExpirationDate', { id: id, expirationDate: expirationDate })
+        .done(function (response) {
+            let result = JSON.parse(response);
+            if (result.IsSuccess) {
+                message.html("<strong>" + result.Message + "</strong>");
+                setTimeout(function () {
+                    bootstrap.Modal.getInstance(document.getElementById('updateExpirationModal')).hide();
+                    GetRichiestePerPage(1, true);
+                }, 800);
+            } else {
+                message.html("<strong style='color:#EA5555;'>" + result.Message + "</strong>");
+                $('#confirmExpirationUpdate').prop('disabled', false);
+            }
+        })
+        .fail(function () {
+            message.html("<strong style='color:#EA5555;'>Errore durante l'aggiornamento.</strong>");
+            $('#confirmExpirationUpdate').prop('disabled', false);
+        });
 }

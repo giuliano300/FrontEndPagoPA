@@ -48,12 +48,12 @@ namespace FrontEndPagoPA.Controllers
             return View();
         }
 
-        public async Task<string> GetRendicontazionePagamenti(int page = 1, int itemsPerPage = 100, bool paid = true, string nominativo = "", string dataInizio = "", string dataFine = "", string iuv = "", string codiceFiscale = "", string importoMin = "", string importoMax = "", bool payable = false)
+        public async Task<string> GetRendicontazionePagamenti(int page = 1, int itemsPerPage = 100, bool paid = true, string nominativo = "", string dataInizio = "", string dataFine = "", string iuv = "", string codiceFiscale = "", string importoMin = "", string importoMax = "")
         {
             Globals g = new(_tokenProvider);
             TokenDto token;
             token = g.GetDeserializedToken();
-            string today = DateTime.Today.ToString();
+            string today = "";
             var dataI = new DateTime();
             var dataF = new DateTime();
             string append = "";
@@ -76,18 +76,16 @@ namespace FrontEndPagoPA.Controllers
             if (dataInizio != "" && dataInizio != null)
             {
                 dataI = DateTime.Parse(dataInizio);
-                append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy");
+                append += "&dataInizio=" + dataI.ToString("yyyy-MM-dd");
                 today = "";
             }
 
             if (dataFine != "" && dataFine != null)
             {
                 dataF = DateTime.Parse(dataFine);
-                append += "&dataFine=" + dataF.ToString("MM/dd/yyyy");
+                append += "&dataFine=" + dataF.ToString("yyyy-MM-dd");
                 today = "";
             }
-
-            append += "&payable=" + payable;
 
             ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, paid, true, page, itemsPerPage, append);
 
@@ -96,6 +94,23 @@ namespace FrontEndPagoPA.Controllers
             else
                 _logger.Error(response?.Message);
 
+            return JsonConvert.SerializeObject(response);
+        }
+
+        [HttpPost]
+        public async Task<string> UpdateIuvExpirationDate(int id, DateTime expirationDate)
+        {
+            var response = await _actionService.UpdateExpirationDate(id, expirationDate);
+
+            if (!response.IsSuccess)
+                _logger.Error(response.Message);
+
+            return JsonConvert.SerializeObject(response);
+        }
+
+        public async Task<string> GetExpiredInstallmentsByOperation(int operationId)
+        {
+            var response = await _actionService.GetExpiredInstallmentsByOperation(operationId);
             return JsonConvert.SerializeObject(response);
         }
 
@@ -206,7 +221,7 @@ namespace FrontEndPagoPA.Controllers
             if (dataInizio != "" && dataInizio != null)
             {
                 dataI = DateTime.Parse(dataInizio);
-                append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy");
+                append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy"); 
                 today = "";
             }
 
@@ -238,7 +253,7 @@ namespace FrontEndPagoPA.Controllers
             Globals g = new(_tokenProvider);
             TokenDto token;
             token = g.GetDeserializedToken();
-            string today = DateTime.Today.ToString();
+            string today = "";
             string append = "";
             var dataI = new DateTime();
             var dataF = new DateTime();
@@ -358,7 +373,7 @@ namespace FrontEndPagoPA.Controllers
             Globals g = new(_tokenProvider);
             TokenDto token;
             token = g.GetDeserializedToken();
-            string today = DateTime.Today.ToString();
+            string today = "";
 
             string append = "";
 
@@ -387,20 +402,23 @@ namespace FrontEndPagoPA.Controllers
                 if (fc["paid"]! == "SI" || fc["paid"]! == "true")
                     paid = true;
                 else
+                {
                     paid = false;
+                    today = "";
+                }
             }
 
             if (dataInizio != "" && dataInizio != null)
             {
                 dataI = DateTime.Parse(dataInizio);
-                append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy"); 
+                append += "&dataInizio=" + dataI.ToString("yyyy-MM-dd"); 
                 today = "";
             }
 
             if (dataFine != "" && dataFine != null)
             {
                 dataF = DateTime.Parse(dataFine);
-                append += "&dataFine=" + dataF.ToString("MM/dd/yyyy");
+                append += "&dataFine=" + dataF.ToString("yyyy-MM-dd");
                 today = "";
             }
 

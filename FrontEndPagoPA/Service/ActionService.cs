@@ -47,6 +47,25 @@ namespace FrontEndPagoPA.Service
             });
         }
 
+        public async Task<ResponseDto> UpdateExpirationDate(int installmentId, DateTime expirationDate)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = ApiType.POST,
+                Url = apiPagoPABase + $"/api/installment/{installmentId}/expiration-date",
+                Data = new { expirationDate }
+            }, withBearer: true);
+        }
+
+        public async Task<ResponseDto> GetExpiredInstallmentsByOperation(int operationId)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = ApiType.GET,
+                Url = apiPagoPABase + $"/api/installment/expired-by-operation/{operationId}"
+            }, withBearer: true);
+        }
+
         public async Task<ResponseDto> GetOperationTypes()
         {
             return await _baseService.SendAsync(new RequestDto()

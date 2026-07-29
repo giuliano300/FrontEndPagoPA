@@ -146,7 +146,7 @@ function EliminaFiltro() {
     let importoMax = $('#importoMassimo');
     $.get("/Action/EliminaFiltroRichiesteEsitate", function (res) {
         var r = JSON.parse(res);
-        dataI.val(today);
+        dataI.val('');
         dataF.val('');
         codiceFiscale.val('');
         iuv.val('');
@@ -189,6 +189,7 @@ function GetRichieste(r) {
 
                 else
                     li += "<li><strong><i class='las la-check'></i>&nbsp;ESITATA</strong></li>";
+
 
                 li += "</ul>";
 

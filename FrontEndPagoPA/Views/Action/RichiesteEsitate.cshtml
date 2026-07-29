@@ -2,7 +2,6 @@
 
 @{
     ViewBag.Title = "Richieste Esitate";
-    var today = DateTime.Today.ToString("yyyy-MM-dd");
 }
 
 <div class="row">
@@ -29,7 +28,7 @@
                                     <div>
                                         <label>
                                             Data inizio
-                                            <input type="date" name="dataInizio" id="dataInizio" value="@today" />
+                                            <input type="date" name="dataInizio" id="dataInizio" />
                                         </label>
                                     </div>
                                 </div>
@@ -112,4 +111,5 @@
         </div>
     </div>
 </div>
+
 <script src="~/js/private/richiesteEsitate.js" asp-append-version="true"></script>
