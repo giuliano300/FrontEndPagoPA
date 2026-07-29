@@ -59,10 +59,15 @@ function CreateRatei(n) {
     {
         for (var i = 0; i < n; i++)
         {
-            $('#rate-list').append('<div class="col-md-3 col-sm-3">' +
-                '<label>Scadenza RATA ' + (i + 1) + '</label>' +
-                '<input type="date" name="rata' + (i + 1) + '" required /> ' +
-                '</div>');
+            $('#rate-list').append('<div class="col-md-12 col-sm-12"><div class="row">' +
+                '<div class="col-md-6 col-sm-6">' +
+                '<label>Scadenza IUV RATA ' + (i + 1) + '</label>' +
+                '<input type="date" name="rata' + (i + 1) + '" required />' +
+                '</div>' +
+                '<div class="col-md-6 col-sm-6">' +
+                '<label>Scadenza bolletta RATA ' + (i + 1) + ' (opzionale)</label>' +
+                '<input type="date" name="billExpirationDateRata' + (i + 1) + '" />' +
+                '</div></div></div>');
         }
     }
 }

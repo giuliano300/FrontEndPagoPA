@@ -740,6 +740,19 @@ namespace FrontEndPagoPA.Controllers
                     totale = r.totale,
                     numeroRatei = r.numeroRatei,
                     nominativo = r.nominativo,
+                    dataScadenzaBollettaRataUnica = r.dataScadenzaBollettaRataUnica,
+                    dataScadenzaBollettaRata1 = r.dataScadenzaBollettaRata1,
+                    dataScadenzaBollettaRata2 = r.dataScadenzaBollettaRata2,
+                    dataScadenzaBollettaRata3 = r.dataScadenzaBollettaRata3,
+                    dataScadenzaBollettaRata4 = r.dataScadenzaBollettaRata4,
+                    dataScadenzaBollettaRata5 = r.dataScadenzaBollettaRata5,
+                    dataScadenzaBollettaRata6 = r.dataScadenzaBollettaRata6,
+                    dataScadenzaBollettaRata7 = r.dataScadenzaBollettaRata7,
+                    dataScadenzaBollettaRata8 = r.dataScadenzaBollettaRata8,
+                    dataScadenzaBollettaRata9 = r.dataScadenzaBollettaRata9,
+                    dataScadenzaBollettaRata10 = r.dataScadenzaBollettaRata10,
+                    dataScadenzaBollettaRata11 = r.dataScadenzaBollettaRata11,
+                    dataScadenzaBollettaRata12 = r.dataScadenzaBollettaRata12,
                     dataScadenzaRata1 = r.dataScadenzaRata1,
                     dataScadenzaRata10 = r.dataScadenzaRata10,
                     dataScadenzaRata11 = r.dataScadenzaRata11,
@@ -1850,6 +1863,24 @@ namespace FrontEndPagoPA.Controllers
                 if (bollettino && (r.nomeFile == null || r.nomeFile == ""))
                 {
                     nr.message = "nome del file non presente";
+                    nr.valid = false;
+                }
+
+                var optionalBillExpirationDates = new[]
+                {
+                    r.dataScadenzaBollettaRataUnica,
+                    r.dataScadenzaBollettaRata1, r.dataScadenzaBollettaRata2,
+                    r.dataScadenzaBollettaRata3, r.dataScadenzaBollettaRata4,
+                    r.dataScadenzaBollettaRata5, r.dataScadenzaBollettaRata6,
+                    r.dataScadenzaBollettaRata7, r.dataScadenzaBollettaRata8,
+                    r.dataScadenzaBollettaRata9, r.dataScadenzaBollettaRata10,
+                    r.dataScadenzaBollettaRata11, r.dataScadenzaBollettaRata12
+                };
+
+                if (optionalBillExpirationDates.Any(date =>
+                    !string.IsNullOrWhiteSpace(date) && !CheckDate(date)))
+                {
+                    nr.message = "Data scadenza bolletta deve essere scritta nel formato yyyy-MM-dd";
                     nr.valid = false;
                 }
 

@@ -5,6 +5,7 @@
         public int id { get; set; }
         public int debtPositionId { get; set; }
         public DateTime expirationDate { get; set; }
+        public DateTime? billExpirationDate { get; set; }
         public decimal? price { get; set; }
         public bool valid { get; set; }
         public bool worked { get; set; }

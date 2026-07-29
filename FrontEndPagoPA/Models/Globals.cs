@@ -74,6 +74,22 @@ namespace FrontEndPagoPA.Models
             return i;
         }
 
+        public static string GetBillExpirationInstallmentDate(CsvDtoIn c)
+        {
+            var dates = new[]
+            {
+                c.dataScadenzaBollettaRata1, c.dataScadenzaBollettaRata2,
+                c.dataScadenzaBollettaRata3, c.dataScadenzaBollettaRata4,
+                c.dataScadenzaBollettaRata5, c.dataScadenzaBollettaRata6,
+                c.dataScadenzaBollettaRata7, c.dataScadenzaBollettaRata8,
+                c.dataScadenzaBollettaRata9, c.dataScadenzaBollettaRata10,
+                c.dataScadenzaBollettaRata11, c.dataScadenzaBollettaRata12
+            };
+
+            var installmentCount = int.TryParse(c.numeroRatei, out var count) ? count : 0;
+            return string.Join(";", dates.Take(installmentCount).Select(date => date ?? string.Empty));
+        }
+
 
         public static bool CheckFc(string input)
         {

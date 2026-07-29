@@ -10,7 +10,9 @@
         public decimal importoTotaleDaVersare { get; set; }
         public int installmentNumber { get; set; }
         public string expirationInstallmentDate { get; set; }
+        public string? billExpirationInstallmentDate { get; set; }
         public DateTime uniqueInstallementExpirationDate { get; set; }
+        public DateTime? billExpirationDate { get; set; }
         public string nomeFile { get; set; }
         public bool? bollettino { get; set; }
         public string title { get; set; }

@@ -130,6 +130,15 @@ namespace FrontEndPagoPA.Controllers
                 installmentDate += Convert.ToDateTime(r12) + ";";
             }
 
+            var billExpirationDates = new List<string>();
+            for (var installmentIndex = 1; installmentIndex <= installmentNumber; installmentIndex++)
+            {
+                var value = data[$"billExpirationDateRata{installmentIndex}"].ToString();
+                billExpirationDates.Add(string.IsNullOrWhiteSpace(value)
+                    ? string.Empty
+                    : Convert.ToDateTime(value).ToString("yyyy-MM-dd"));
+            }
+
             var senderUserId = data["senderUserId"];
             var operationTypeId = data["operationTypeId"];
             var bullettin = data["bollettino"].ToString();
@@ -143,6 +152,7 @@ namespace FrontEndPagoPA.Controllers
 
             var amount = data["amount"];
             var expirationDate = data["expirationDate"];
+            var billExpirationDate = data["billExpirationDate"];
             var title = data["title"];
 
             if (installmentDate != "")
@@ -186,9 +196,13 @@ namespace FrontEndPagoPA.Controllers
                 anagraficaPagatore = name!,
                 codiceIdentificativoUnivocoPagatore = fiscalCode!,
                 expirationInstallmentDate = installmentDate!,
+                billExpirationInstallmentDate = string.Join(";", billExpirationDates),
                 importoTotaleDaVersare = Convert.ToDecimal(amount),
                 installmentNumber = installmentNumber,
                 uniqueInstallementExpirationDate = Convert.ToDateTime(expirationDate),
+                billExpirationDate = string.IsNullOrWhiteSpace(billExpirationDate)
+                    ? null
+                    : Convert.ToDateTime(billExpirationDate),
                 tipoIdentificativoUnivocoPagatore = "F",
                 bollettino = bul,
                 nomeFile = fileName,

@@ -104,9 +104,13 @@ namespace FrontEndPagoPA.Controllers
                     tipoIdentificativoUnivocoPagatore = "F",
                     title = ov.title!,
                     uniqueInstallementExpirationDate = Convert.ToDateTime(c.dataScadenzaRataUnica),
+                    billExpirationDate = string.IsNullOrWhiteSpace(c.dataScadenzaBollettaRataUnica)
+                        ? null
+                        : Convert.ToDateTime(c.dataScadenzaBollettaRataUnica),
                     installmentNumber = Convert.ToInt32(c.numeroRatei),
                     nomeFile = c.nomeFile!,
                     expirationInstallmentDate = Globals.GetExpirationInstallmentDate(c),
+                    billExpirationInstallmentDate = Globals.GetBillExpirationInstallmentDate(c),
                     inputBase64File = c.inputBase64File!,
                     outputBase64File = string.Empty,
                     indirizzoPagatore = c.indirizzo,
@@ -160,9 +164,13 @@ namespace FrontEndPagoPA.Controllers
                     tipoIdentificativoUnivocoPagatore = "F",
                     title = title!,
                     uniqueInstallementExpirationDate = Convert.ToDateTime(c.dataScadenzaRataUnica),
+                    billExpirationDate = string.IsNullOrWhiteSpace(c.dataScadenzaBollettaRataUnica)
+                        ? null
+                        : Convert.ToDateTime(c.dataScadenzaBollettaRataUnica),
                     installmentNumber = Convert.ToInt32(c.numeroRatei),
                     nomeFile = c.nomeFile!,
                     expirationInstallmentDate = Globals.GetExpirationInstallmentDate(cIn),
+                    billExpirationInstallmentDate = Globals.GetBillExpirationInstallmentDate(cIn),
                     indirizzoPagatore  = c.indirizzo, 
                     capPagatore = c.cap,
                     comunePagatore = c.comune,
