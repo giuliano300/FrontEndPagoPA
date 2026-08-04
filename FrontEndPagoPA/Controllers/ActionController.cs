@@ -567,20 +567,20 @@ namespace FrontEndPagoPA.Controllers
         }
 
 
-        public static void WriteCSVRendicontazione(List<GetRendicontazioniResult> items, string filename)
+        public static void WriteCSVRendicontazione(List<GetInstallmentsResult> items, string filename)
         {
             var csv = "Nominativo;Codice Fiscale;Tipologia;IUV;Importo;Rata;Data Scadenza;Pagato;Data Pagamento\n";
             foreach (var item in items)
             {
                 csv +=
                     item.anagraficaPagatore + ";" +
-                    item.codiceFiscale + ";" +
-                    item.tipoOperazione + ";" +
+                    item.codiceIdentificativoUnivocoPagatore + ";" +
+                    GetOperationTypeString(item.operationTypeId) + ";" +
                     item.iuv + ";" +
-                    string.Format("{0:0.00} €", item.prezzo) + ";" +
+                    string.Format("{0:0.00} €", item.price) + ";" +
                     (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
-                    ' ' + item.dataScadenza.ToString("dd/MM/yyyy") + ";" +
-                    (item.pagato == true ? "SI" : "NO") + ";" +
+                    ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
+                    (item.paid == true ? "SI" : "NO") + ";" +
                     (item.paymentDate != null ? Convert.ToDateTime(item.paymentDate).ToString("dd/MM/yyyy") : "") +
                     "\n";
             }
@@ -2014,11 +2014,14 @@ namespace FrontEndPagoPA.Controllers
         public async Task<string> GeneraRendicontazione(IFormCollection fc)
         {
             try { 
-                var l = new List<GetRendicontazioniResult>();
+                var l = new List<GetInstallmentsResult>();
                 Globals g = new(_tokenProvider);
                 TokenDto token;
                 token = g.GetDeserializedToken();
-                string today = DateTime.Today.ToString();
+                // Keep the export filters aligned with the filters used to populate
+                // the rendicontazione table. An implicit "today" filter would make
+                // the CSV differ from the rows currently shown after clearing dates.
+                string today = "";
 
                 string append = "";
 
@@ -2033,33 +2036,25 @@ namespace FrontEndPagoPA.Controllers
                 var dataF = new DateTime();
 
                 bool? paid = null;
-                bool? payable = null;
-
                 if (fc["paid"].ToString() != "")
                 {
                     if (fc["paid"]! == "SI")
-                    {
                         paid = true;
-                        payable = false;
-                    }
                     else
-                    {
                         paid = false;
-                        payable = true;
-                    }
                 }
 
                 if (dataInizio != "" && dataInizio != null)
                 {
                     dataI = DateTime.Parse(dataInizio);
-                    append += "&dataInizio=" + dataI.ToString("MM/dd/yyyy");
+                    append += "&dataInizio=" + dataI.ToString("yyyy-MM-dd");
                     today = "";
                 }
 
                 if (dataFine != "" && dataFine != null)
                 {
                     dataF = DateTime.Parse(dataFine);
-                    append += "&dataFine=" + dataF.ToString("MM/dd/yyyy");
+                    append += "&dataFine=" + dataF.ToString("yyyy-MM-dd");
                     today = "";
                 }
 
@@ -2078,13 +2073,23 @@ namespace FrontEndPagoPA.Controllers
                 if (importoMax != null && importoMax != "")
                     append += "&importoMax=" + importoMax;
 
-                append += "&payable=" + payable;
-
                 string webRootPath = _webHostEnvironment.WebRootPath;
                 string fileName = Globals.FolderDownloadCsv + DateTime.Now.Ticks + ".csv";
 
-                var response = await _actionService.GetRendicontazione(token.sub, today, paid, append);
-                l = JsonConvert.DeserializeObject<List<GetRendicontazioniResult>>(response.Result!.ToString()!);
+                var response = await _actionService.GetInstallmentsAsync(
+                    token.sub,
+                    true,
+                    today,
+                    paid,
+                    true,
+                    1,
+                    1_000_000_000,
+                    append);
+
+                if (!response.IsSuccess || response.Result is null)
+                    throw new InvalidOperationException(response.Message);
+
+                l = JsonConvert.DeserializeObject<List<GetInstallmentsResult>>(response.Result.ToString()!) ?? new();
                 WriteCSVRendicontazione(l!, webRootPath + fileName);
 
                 return fileName;

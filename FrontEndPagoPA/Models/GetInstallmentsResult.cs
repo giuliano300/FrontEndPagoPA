@@ -12,6 +12,7 @@ namespace FrontEndPagoPA.Models
         public bool? valid { get; set; }
         public int numeroRata { get; set; }
         public DateTime expirationDate { get; set; }
+        public DateTime? paymentDate { get; set; }
         public bool? paid { get; set; }
         public int operationTypeId { get; set; }
         public string description { get; set; }
