@@ -1,140 +1,107 @@
-﻿@model FrontEndPagoPA.Models.UserDto
+@model FrontEndPagoPA.Models.UserDto
 
 @{
-    ViewBag.Title = "Personal Area";
+    ViewBag.Title = "Utenza principale";
 }
 
 <div class="row">
-    <div class="col-md-12">
-        <div class="card mt-30 fade-in">
-            <div class="row">
-                <div class="col-md-2 col-sm-3">
-                    <div class="nav-personal-area">
-                        <ul>
-                            <li>
-                                Utenza principale <i class='bx bx-chevron-right'></i>
-                            </li>
-                            <li>
-                                <a href="/User/UsersList">Lista utenti <i class='bx bx-chevron-right'></i></a>
-                            </li>
-                            <li>
-                                <a href="/User/AddUser">Aggiungi utente <i class='bx bx-chevron-right'></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-10 col-sm-9">
-                    <div class="row">
-                        <form method="post" action="/User/PersonalArea" id="personalData">
-                            <div class="form-site">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <h3 class="pb-20 textsize-4"><i class='bx bxs-user'></i> Modifica utenza principale</h3>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label asp-for="@Model.businessName" for="businessName">Nome Azienda </label>
-                                                <input asp-for="@Model.businessName" type="text" value="@Model.businessName" name="businessName" id="businessName" />
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label asp-for="@Model.UserName" for="representative">Referente </label>
-                                                <input asp-for="@Model.UserName" type="text" value="@Model.UserName" name="representative" id="representative" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="row" id="passwordFields">
-                                            <div class="col-md-4">
-                                                <label asp-for="@Model.currentPassword" for="currentPassword">Password attuale </label>
-                                                <input asp-for="@Model.currentPassword" type="password" name="currentPassword" id="currentPassword" onchange="checkPassword()" />
-                                                <label id="currentPasswordLabel" class="error"></label>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label asp-for="@Model.newPassword" for="newPassword">Nuova password </label>
-                                                <input asp-for="@Model.newPassword" type="password" name="newPassword" id="newPassword" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label asp-for="@Model.confirmNewPassword" for="confirmNewPassword">Conferma nuova password </label>
-                                                <input asp-for="@Model.confirmNewPassword" type="password" name="confirmNewPassword" id="confirmNewPassword" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 col-sm-4"></div>
-                                    <div class="col-md-4 col-sm-4">
-                                        <div class="row">
-                                            <div class="col-md-3 col-sm-3"></div>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input type="submit" value="SALVA MODIFICHE" name="edit" />
-                                            </div>
-                                            <div class="col-md-3 col-sm-3"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-4"></div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+    <div class="col-lg-12 fade-in">
+        <h4>Gestione utenze</h4>
+        <h1>Utenza principale</h1>
+    </div>
+</div>
+
+<section class="users-page fade-in" aria-labelledby="personal-area-title">
+    <nav class="users-tabs" aria-label="Navigazione gestione utenti">
+        <a href="/User/PersonalArea" class="active" aria-current="page"><i class='bx bx-building-house'></i><span>Utenza principale</span></a>
+        <a href="/User/UsersList"><i class='bx bx-group'></i><span>Lista utenti</span></a>
+        <a href="/User/AddUser"><i class='bx bx-user-plus'></i><span>Aggiungi utente</span></a>
+    </nav>
+
+    <form method="post" action="/User/PersonalArea" id="personalData" class="user-form-card">
+        <div class="user-form-card__header">
+            <div class="users-card__title">
+                <span class="users-card__icon"><i class='bx bx-building-house'></i></span>
+                <div>
+                    <span class="users-card__eyebrow">PROFILO AMMINISTRATORE</span>
+                    <h2 id="personal-area-title">Dati dell’utenza principale</h2>
+                    <p>Aggiorna le informazioni dell’ente e le credenziali di accesso.</p>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+
+        <div class="user-form-card__body">
+            <section class="user-form-section" aria-labelledby="company-data-title">
+                <div class="user-form-section__heading">
+                    <span><i class='bx bx-buildings'></i></span>
+                    <div><h3 id="company-data-title">Informazioni dell’ente</h3><p>Dati visualizzati nel portale e associati all’utenza.</p></div>
+                </div>
+                <div class="user-form-grid user-form-grid--two">
+                    <label asp-for="@Model.businessName" for="businessName">Nome azienda
+                        <input asp-for="@Model.businessName" type="text" value="@Model.businessName" name="businessName" id="businessName" />
+                    </label>
+                    <label asp-for="@Model.UserName" for="representative">Referente
+                        <input asp-for="@Model.UserName" type="text" value="@Model.UserName" name="representative" id="representative" />
+                    </label>
+                </div>
+            </section>
+
+            <section class="user-form-section" aria-labelledby="security-title">
+                <div class="user-form-section__heading">
+                    <span><i class='bx bx-lock-alt'></i></span>
+                    <div><h3 id="security-title">Sicurezza e password</h3><p>Compila questi campi solo se desideri cambiare la password.</p></div>
+                </div>
+                <div class="user-form-grid user-form-grid--three" id="passwordFields">
+                    <label asp-for="@Model.currentPassword" for="currentPassword">Password attuale
+                        <input asp-for="@Model.currentPassword" type="password" name="currentPassword" id="currentPassword" onchange="checkPassword()" autocomplete="current-password" />
+                        <span id="currentPasswordLabel" class="error"></span>
+                    </label>
+                    <label asp-for="@Model.newPassword" for="newPassword">Nuova password
+                        <input asp-for="@Model.newPassword" type="password" name="newPassword" id="newPassword" autocomplete="new-password" />
+                    </label>
+                    <label asp-for="@Model.confirmNewPassword" for="confirmNewPassword">Conferma nuova password
+                        <input asp-for="@Model.confirmNewPassword" type="password" name="confirmNewPassword" id="confirmNewPassword" autocomplete="new-password" />
+                    </label>
+                </div>
+            </section>
+        </div>
+
+        <div class="user-form-card__footer">
+            <span class="form-save-note"><i class='bx bx-info-circle'></i> Le modifiche saranno applicate immediatamente.</span>
+            <button type="submit" class="user-form-submit" name="edit" id="edit"><i class='bx bx-check'></i> Salva modifiche</button>
+        </div>
+    </form>
+</section>
 
 <script>
     $(function () {
         $("#personalData").validate({
             rules: {
-                newPassword: {
-                    minlength: 6
-                },
-                confirmNewPassword: {
-                    equalTo: "#newPassword"
-                },
-                businessName: {
-                    required: true
-                },
-                representative: {
-                    required: true
-                }
+                newPassword: { minlength: 6 },
+                confirmNewPassword: { equalTo: "#newPassword" },
+                businessName: { required: true },
+                representative: { required: true }
             },
             messages: {
-                newPassword: {
-                    minlength: "La password deve essere almeno di 6 lettere."
-                },
-                confirmNewPassword: {
-                    equalTo: "Le nuove password non corrispondono"
-                },
+                newPassword: { minlength: "La password deve essere almeno di 6 lettere." },
+                confirmNewPassword: { equalTo: "Le nuove password non corrispondono" },
                 businessName: "Nome Azienda è obbligatorio",
-                representative: "Referente è obbligatorio",
-            },
+                representative: "Referente è obbligatorio"
+            }
         })
     });
 
-
     function checkPassword() {
         let saveButton = $('#edit');
-        let data = {
-            pwd: $('#currentPassword').val()
-        }
-        $.post("/Home/CheckPwd", data, function (res) {
+        $.post("/Home/CheckPwd", { pwd: $('#currentPassword').val() }, function (res) {
             let r = JSON.parse(res);
             if (!r) {
-                // var cp = $('');
-                // cp.innerHTML("Password diversa da quella attuale");
                 $('#currentPasswordLabel').html("Password diversa da quella attuale");
-                // alert("Passowrd non corretta");
                 saveButton.prop("disabled", true);
-            }
-            else {
+            } else {
                 saveButton.prop("disabled", false);
                 $('#currentPasswordLabel').html("");
             }
-
         });
     }
 </script>

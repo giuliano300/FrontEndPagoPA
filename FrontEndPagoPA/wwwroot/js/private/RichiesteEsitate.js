@@ -1,5 +1,6 @@
 ﻿let itemsPerPage = 100;
 let currentDate = new Date();
+let currentPage = 1;
 let today = currentDate.toISOString().split('T')[0];
 
 loadOperationTypes();
@@ -55,6 +56,7 @@ function DownloadList() {
 
 
 function FiltraRichieste() {
+    currentPage = 1;
     $('.preload').show();
     let data = {
         dataInizio: $('#dataInizio').val(),
@@ -76,6 +78,7 @@ function FiltraRichieste() {
 }
 
 function GetRichiestePerPage(p, first) {
+    currentPage = p;
     let codiceFiscale = $('#codiceFiscale').val();
     let iuv = $('#iuv').val();
     let dataInizio = $('#dataInizio').val();
@@ -96,6 +99,13 @@ function GetRichiestePerPage(p, first) {
     })
 }
 
+function ChangeItemsPerPage(value) {
+    itemsPerPage = Number(value) || 100;
+    currentPage = 1;
+    $('.preload').show();
+    GetRichiestePerPage(1, true);
+}
+
 
 $(function () {
     $('.preload').show();
@@ -112,25 +122,26 @@ function CreatePaginations(codiceFiscale, iuv, dataInizio, dataFine, importoMin,
 
         if (totItems > 0) {
 
-            let a = "<a onclick='GetRichiestePerPage(1)'><i class='las la-angle-left'></i></a>";
-
             let nPage = Math.ceil(totItems / itemsPerPage);
-
-            for (var i = 0; i < nPage; i++)
-                a += "<a onclick='GetRichiestePerPage(" + (i + 1) + ")' class='items item-" + (i + 1) + "'>" + (i + 1) + "</a>";
-
-            a += "<a onclick='GetRichiestePerPage(" + nPage + ")'><i class='las la-angle-right'></i></a>";
-
-            if (totItems == 1)
-                a += "<span>  1 Risultato </span>";
-            else
-                a += "<span>" + "  " + totItems + " Risultati</span>";
-
-            $('.pagination').append(a);
-            if (first) {
-                $('.items').removeClass('selected');
-                $('.item-1').addClass('selected');
+            currentPage = Math.min(Math.max(currentPage, 1), nPage);
+            let start = Math.max(1, currentPage - 2);
+            let end = Math.min(nPage, start + 4);
+            start = Math.max(1, end - 4);
+            let a = "<div class='pagination-controls'>";
+            a += "<button type='button' aria-label='Pagina precedente' " + (currentPage === 1 ? "disabled" : "onclick='GetRichiestePerPage(" + (currentPage - 1) + ", true)'") + "><i class='las la-angle-left'></i></button>";
+            if (start > 1) {
+                a += "<button type='button' onclick='GetRichiestePerPage(1, true)' class='items item-1'>1</button>";
+                if (start > 2) a += "<span class='pagination-ellipsis'>…</span>";
             }
+            for (let page = start; page <= end; page++)
+                a += "<button type='button' onclick='GetRichiestePerPage(" + page + ", true)' class='items item-" + page + (page === currentPage ? " selected" : "") + "' aria-label='Pagina " + page + "'>" + page + "</button>";
+            if (end < nPage) {
+                if (end < nPage - 1) a += "<span class='pagination-ellipsis'>…</span>";
+                a += "<button type='button' onclick='GetRichiestePerPage(" + nPage + ", true)' class='items item-" + nPage + "'>" + nPage + "</button>";
+            }
+            a += "<button type='button' aria-label='Pagina successiva' " + (currentPage === nPage ? "disabled" : "onclick='GetRichiestePerPage(" + (currentPage + 1) + ", true)'") + "><i class='las la-angle-right'></i></button>";
+            a += "</div><span class='pagination-summary'>" + totItems + (totItems === 1 ? " risultato" : " risultati") + "</span>";
+            $('.pagination').append(a);
         }
     })
 }

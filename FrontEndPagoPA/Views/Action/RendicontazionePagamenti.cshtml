@@ -100,7 +100,7 @@
                         <li>Importo</li>
                         <li>Rata</li>
                         <li>Data scadenza</li>
-                        <li class='text-center'>Pagata</li>
+                        <li class='text-center'>Stato pagamento</li>
                         <li class='text-center'>Data pag.</li>
                         <li class='text-center'>Azioni</li>
                     </ul>
@@ -113,7 +113,18 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="divider"></div>
-                    <div class="pagination">
+                    <div class="table-footer-bar">
+                        <label class="table-page-size">
+                            <span>Record per pagina</span>
+                            <select onchange="ChangeItemsPerPage(this.value)" aria-label="Record per pagina">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100" selected>100</option>
+                                <option value="200">200</option>
+                                <option value="500">500</option>
+                            </select>
+                        </label>
+                        <div class="pagination"></div>
                     </div>
                 </div>
             </div>
@@ -166,4 +177,4 @@
         </div>
     </div>
 </div>
-<script src="~/js/private/rendicontazionePagamenti.js" asp-append-version="true"></script>
+<script src="~/js/private/RendicontazionePagamenti.js" asp-append-version="true"></script>

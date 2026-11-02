@@ -1,50 +1,61 @@
-﻿
 @{
-    ViewBag.Title = "Seleziona il tipo di posizione";
+    ViewBag.Title = "Nuova posizione singola";
 }
+
 <div class="row">
     <div class="col-lg-12 fade-in">
-        <h4>Generazione posizione debitoria singola</h4>
-        <h1>Seleziona il tipo di posizione</h1>
+        <h4>Nuova posizione debitoria</h4>
+        <h1>Posizione singola</h1>
     </div>
 </div>
 
-<div class="row fade-in">
-    <div class="col-lg-9 col-md-10">
-        <div class="card pl-30 pr-30 mb-30">
-            <div class="select-iuv">
-                <div class="icon-iuv">
-                    <img src="/images/icn-iuv-document.png" alt="Genera documento con bollettino" />
-                </div>
-                <section>
-                    <h5>Genera documento con bollettino</h5>
-                    <p>
-                       Selezionando questa posizione potrai generare sia lo IUV che il documento con il bollettino pronto da spedire.
-                    </p>
-                </section>
-                <a href="/IuvSingolo/GeneraBollettino" class="btn btn-iuv">SELEZIONA</a>
-            </div>
+<section class="position-type-page fade-in" aria-labelledby="position-choice-title">
+    <div class="position-type-intro">
+        <div>
+            <span class="position-step"><strong>1</strong> di 2</span>
+            <h2 id="position-choice-title">Come vuoi generare la posizione?</h2>
+            <p>Scegli il risultato da produrre per il singolo debitore. Potrai inserire i dati nel passaggio successivo.</p>
         </div>
+        <span class="position-mode"><i class='bx bx-user'></i> Singolo debitore</span>
     </div>
-</div>
-<div class="row fade-in">
-    <div class="col-lg-9 col-md-10">
-        <div class="card pl-30 pr-30 mb-30">
-            <div class="select-iuv">
-                <div class="icon-iuv text-center">
-                    <img src="/images/icn-iuv.png" alt="Genera solo IUV" />
-                </div>
-                <section>
-                    <h5>Genera solo IUV</h5>
-                    <p>
-                        Selezionando questa posizione potrai generare solo lo IUV, dovrai successivamente generare il documento da spedire.
-                    </p>
-                </section>
-                <a href="/IuvSingolo/GeneraIuv" class="btn btn-iuv">SELEZIONA</a>
+
+    <div class="position-options">
+        <article class="position-option">
+            <div class="position-option__top">
+                <span class="position-option__icon"><i class='bx bx-receipt'></i></span>
+                <span class="position-option__badge position-option__badge--neutral">Con bollettino</span>
             </div>
-        </div>
+            <div class="position-option__content">
+                <span class="position-option__eyebrow">DOCUMENTO COMPLETO</span>
+                <h3>IUV con bollettino</h3>
+                <p>Genera lo IUV e il documento pagoPA già completo, pronto per essere inviato al debitore.</p>
+                <ul>
+                    <li><i class='bx bx-check'></i> Codice IUV generato automaticamente</li>
+                    <li><i class='bx bx-check'></i> Bollettino pagoPA pronto da scaricare</li>
+                    <li><i class='bx bx-check'></i> Documento immediatamente utilizzabile</li>
+                </ul>
+            </div>
+            <a href="/IuvSingolo/GeneraBollettino" class="position-option__action position-option__action--secondary">Continua con bollettino <i class='bx bx-right-arrow-alt'></i></a>
+        </article>
+
+        <article class="position-option position-option--primary">
+            <div class="position-option__top">
+                <span class="position-option__icon"><i class='bx bx-barcode'></i></span>
+                <span class="position-option__badge">Consigliato</span>
+            </div>
+            <div class="position-option__content">
+                <span class="position-option__eyebrow">GENERAZIONE RAPIDA</span>
+                <h3>Solo IUV</h3>
+                <p>Genera esclusivamente il codice IUV. Il documento da inviare potrà essere prodotto in un secondo momento.</p>
+                <ul>
+                    <li><i class='bx bx-check'></i> Procedura più rapida</li>
+                    <li><i class='bx bx-check'></i> Codice pronto per altri sistemi</li>
+                    <li><i class='bx bx-info-circle'></i> Bollettino non incluso</li>
+                </ul>
+            </div>
+            <a href="/IuvSingolo/GeneraIuv" class="position-option__action">Continua con solo IUV <i class='bx bx-right-arrow-alt'></i></a>
+        </article>
     </div>
-</div>
 
-
-
+    <div class="position-help"><i class='bx bx-help-circle'></i><span>Consigliamo Solo IUV per una generazione più rapida e flessibile. Scegli il bollettino solo se ti serve subito il documento completo.</span></div>
+</section>

@@ -37,7 +37,8 @@
                         <div class="col-md-12 pt-10">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input type="text" name="title" required maxlength="350" />
+                                    <label>Descrizione posizione</label>
+                                    <input type="text" name="title" required maxlength="350" placeholder="Es. Quota servizio anno 2026" />
                                 </div>
                             </div>
                         </div>
@@ -49,7 +50,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <h5>Seleziona l'untente con cui generare la posizione debitoria</h5>
+                            <h5>Seleziona l'utente con cui generare la posizione debitoria</h5>
                             <p>Seleziona successivamente il tipo di IUV da generare</p>
                         </div>
                     </div>
@@ -90,11 +91,11 @@
                                 <div class="row">
                                     <div class="col-md-5">
                                         <label>Nominativo</label>
-                                        <input type="text" name="name" required maxlength="35"/>
+                                        <input type="text" name="name" required maxlength="35" placeholder="Nome e cognome o ragione sociale" />
                                     </div>
                                     <div class="col-md-3 col-sm-3">
                                         <label>Codice fiscale / Partita iva</label>
-                                        <input type="text" name="fiscalCode" required />
+                                        <input type="text" name="fiscalCode" required placeholder="Codice fiscale o P. IVA" />
                                     </div>
                                     <div class="col-md-4 col-sm-4">
                                         <label>File</label>
@@ -140,7 +141,7 @@
                                 </div> *@
                                 <div class="col-md-5 col-sm-5">
                                     <label>Importo Totale (€)</label>
-                                    <input type="text" pattern="[0-9]+([\.,][0-9]+)?" title="Enter a valid number" name="amount" required />
+                                    <input type="text" inputmode="decimal" pattern="[0-9]+([\.,][0-9]+)?" title="Inserisci un importo valido" name="amount" required placeholder="0,00" />
                                 </div>
                                 <div class="col-md-3 col-sm-3">
                                     <label>Scadenza pagamento RATA UNICA</label>
@@ -173,7 +174,7 @@
                     <div class="row">
                         <div class="col-md-4 col-sm-4"></div>
                         <div class="col-md-4 col-sm-4">
-                            <input type="submit" value="GENERA IUV" name="genera_iuv" />
+                            <input type="submit" value="GENERA IUV E BOLLETTINO" name="genera_iuv" />
                         </div>
                         <div class="col-md-4 col-sm-4"></div>
                     </div>

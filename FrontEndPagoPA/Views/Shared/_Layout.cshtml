@@ -11,6 +11,7 @@
     var tp = new TokenProvider(_contextAccessor);
     Globals g = new(tp);
     token = g.GetDeserializedToken();
+    var currentPath = Context.Request.Path.Value?.ToLowerInvariant() ?? "";
 }
 <head>
     <meta http-equiv="Content-Type" charset="utf-8" content="text/html"/>
@@ -18,17 +19,20 @@
     <title>Portale PagoPa - @ViewBag.Title</title>
 
 
-    <link rel="stylesheet" type="text/css" href="~/css/Style.css?ver=1.8">
+    <link rel="stylesheet" type="text/css" href="~/css/Style.css?ver=2.0">
     
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/basic.css" type="text/css" />
     <link rel="stylesheet" href="~/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/modern.css?ver=1.0" type="text/css" />
+    <link rel="stylesheet" href="~/css/shell-v5.css?ver=1.0" type="text/css" />
     <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
     <link rel="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.js"></script>
 </head>
-<body>
+<body class="app-body">
+    <a class="skip-link" href="#main-content">Vai al contenuto principale</a>
     <div class="visible-mobile text-center">
         <div class="container-fluid">
             <div class="row">
@@ -43,70 +47,113 @@
             </div>
         </div>
     </div>
-    <div class="visible-desktop">
-        <div class="container-fluid">
+    <div class="visible-desktop portal-app">
+        <div class="container-fluid portal-container">
             <header class="header">
-                <div class="row">
-                    <div class="col-md-6 col-sm-6">
-                        <div class="header__logo">
-                            <a href="/Home/Dashboard"><img src="/images/Logo_2.png" alt="PagoPA" /></a>
+                <div class="header-inner">
+                    <div class="header-start">
+                        <button class="mobile-menu-toggle" type="button" aria-label="Apri menu" aria-controls="main-navigation" aria-expanded="false"><i class='bx bx-menu'></i></button>
+                        <div class="header-title">
+                            <span>Easy pagoPA</span>
+                            <strong>@ViewBag.Title</strong>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6">
-                            <div class="header_nav_user">
-                                <a onclick="OpenMenuUser()">@token.name</a>
-                                <div class="user-avatar">
-                                    <i class='bx bxs-user-circle'></i>
-                                </div>
-                                <ul>
-                                    <li><a href="/User/PersonalArea"><i class='bx bxs-user'></i> Modifica Dati</a></li>
-                                    <li><a href="/Home/Logout"><i class='bx bxs-log-out'></i> Logout</a></li>
-                                </ul>
+                    <div class="header-end">
+                        <div class="header-create-menu">
+                            <button class="header-primary-action header-create-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="header-create-options">
+                                <i class='bx bx-plus'></i><span>Nuova posizione</span><i class='bx bx-chevron-down header-create-chevron'></i>
+                            </button>
+                            <div class="header-create-options" id="header-create-options" role="menu" aria-label="Scegli il tipo di posizione">
+                                <a href="/IuvSingolo/" role="menuitem">
+                                    <span class="header-create-options__icon"><i class='bx bx-file'></i></span>
+                                    <span><strong>Posizione singola</strong><small>Per un singolo debitore</small></span>
+                                    <i class='bx bx-chevron-right'></i>
+                                </a>
+                                <a href="/IuvMultiplo/" role="menuitem">
+                                    <span class="header-create-options__icon"><i class='bx bx-layer'></i></span>
+                                    <span><strong>Posizioni multiple</strong><small>Importazione massiva</small></span>
+                                    <i class='bx bx-chevron-right'></i>
+                                </a>
                             </div>
+                        </div>
+                        <div class="header_nav_user">
+                            <button type="button" class="user-menu-trigger" onclick="OpenMenuUser()">
+                                <span class="user-avatar"><i class='bx bxs-user'></i></span>
+                                <span class="user-copy"><strong>@token.name</strong></span>
+                                <i class='bx bx-chevron-down'></i>
+                            </button>
+                            <ul>
+                                <li class="user-menu-summary">
+                                    <span class="user-menu-summary__avatar"><i class='bx bxs-user'></i></span>
+                                    <span><strong>@token.name</strong><small>Profilo utente</small></span>
+                                </li>
+                                <li class="user-menu-action">
+                                    <a href="/User/PersonalArea">
+                                        <i class='bx bx-user-circle'></i>
+                                        <span><strong>Area personale</strong><small>Profilo e credenziali</small></span>
+                                        <i class='bx bx-chevron-right'></i>
+                                    </a>
+                                </li>
+                                <li class="user-menu-action user-menu-action--logout">
+                                    <a href="/Home/Logout">
+                                        <i class='bx bx-log-out'></i>
+                                        <span><strong>Esci</strong><small>Termina la sessione</small></span>
+                                        <i class='bx bx-chevron-right'></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </header>
             <div class="row">
-                <div class="col-md-2 col-sm-3 p-0">
-                    <nav class="nav">
+                <div class="col-md-2 col-sm-3 p-0 sidebar-column">
+                    <nav class="nav" id="main-navigation" aria-label="Navigazione principale">
+                        <a href="/Home/Dashboard" class="sidebar-brand" aria-label="Easy pagoPA - Dashboard"><img src="/images/Logo_2.png" alt="" /><span><strong>Easy</strong> pagoPA</span></a>
+                        <div class="nav__mobile-head"><span>Menu</span><button type="button" class="mobile-menu-close" aria-label="Chiudi menu"><i class='bx bx-x'></i></button></div>
+                        <div class="nav-workspace"><span>WORKSPACE</span><strong>Portale pagoPA</strong><i class='bx bx-chevron-down'></i></div>
                         <ul>
-                            <li><i class='bx bxs-dashboard'></i><a href="/Home/Dashboard"> Dashboard</a></li>
-                            <li><i class="las la-user-friends"></i><a href="/User/UsersList"> Utenti</a></li>
-                            <li>
-                                <i class='bx bx-euro'></i><span> Nuova posizione debitoria  <i class='bx bx-chevron-down'></i></span>
+                            <li class="nav-label">Panoramica</li>
+                            <li class="@(currentPath.Contains("/home/dashboard") ? "active" : "")"><i class='bx bxs-dashboard'></i><a href="/Home/Dashboard"> Dashboard</a></li>
+                            <li class="nav-label nav-label--space">Gestione</li>
+                            <li class="@(currentPath.StartsWith("/user") ? "active" : "")"><i class="bx bx-group"></i><a href="/User/UsersList"> Utenti</a></li>
+                            <li class="has-sub @(currentPath.StartsWith("/iuv") ? "active open" : "")">
+                                <i class='bx bx-euro'></i><button type="button" class="nav-parent" aria-expanded="@(currentPath.StartsWith("/iuv") ? "true" : "false")">Nuova posizione debitoria <i class='bx bx-chevron-down'></i></button>
                                 <div class="nav--sub">
                                     <ul>
-                                        <li><a href="/IuvSingolo/">Singola</a></li>
-                                        <li><a href="/IuvMultiplo/">Multipla</a></li>
+                                        <li class="@(currentPath.StartsWith("/iuvsingolo") ? "current" : "")"><a href="/IuvSingolo/">Singola</a></li>
+                                        <li class="@(currentPath.StartsWith("/iuvmultiplo") ? "current" : "")"><a href="/IuvMultiplo/">Multipla</a></li>
                                     </ul>
                                 </div>
                             </li>
-                            <li>
-                                <i class='bx bx-list-ul'></i><span> Archivio richieste  <i class='bx bx-chevron-down'></i></span>
+                            <li class="has-sub @(currentPath.Contains("richieste") ? "active open" : "")">
+                                <i class='bx bx-list-ul'></i><button type="button" class="nav-parent" aria-expanded="@(currentPath.Contains("richieste") ? "true" : "false")">Archivio richieste <i class='bx bx-chevron-down'></i></button>
                                 <div class="nav--sub">
                                     <ul>
-                                        <li><a href="/Action/RichiesteInAttesa">Richieste in attesa</a></li>
-                                        <li><a href="/Action/RichiesteEsitate">Richieste esitate</a></li>
+                                        <li class="@(currentPath.Contains("richiesteinattesa") ? "current" : "")"><a href="/Action/RichiesteInAttesa">Richieste in attesa</a></li>
+                                        <li class="@(currentPath.Contains("richiesteesitate") ? "current" : "")"><a href="/Action/RichiesteEsitate">Richieste esitate</a></li>
                                     </ul>
                                 </div>
                             </li>
-                            <li><i class='bx bx-archive'></i> <a href="/Action/StoricoOperazioni"> Storico operazioni</a></li>
-                            <li><i class="las la-piggy-bank"></i><a href="/Action/RendicontazionePagamenti"> Rendicontazione pagamenti</a></li>
+                            <li class="@(currentPath.Contains("storicooperazioni") ? "active" : "")"><i class='bx bx-archive'></i> <a href="/Action/StoricoOperazioni"> Storico operazioni</a></li>
+                            <li class="@(currentPath.Contains("rendicontazionepagamenti") ? "active" : "")"><i class="bx bx-bar-chart-alt-2"></i><a href="/Action/RendicontazionePagamenti"> Rendicontazione pagamenti</a></li>
                         </ul>
+                        <div class="nav-trust"><i class='bx bx-shield-quarter'></i><div><strong>Ambiente protetto</strong><span>Connessione sicura</span></div></div>
                     </nav>
                 </div>
-                <div class="col-md-10 col-sm-9">
-                    <main class="main">
+                <div class="col-md-10 col-sm-9 content-column">
+                    <main class="main" id="main-content" tabindex="-1">
                         @RenderBody()
                     </main>
                 </div>
             </div>
+            <button type="button" class="nav-backdrop" aria-label="Chiudi menu"></button>
         </div>
         <footer>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        © 2023 <strong>Easy PagoPA</strong>. All Rights Reserved. |  Powered by <a href="https://easyway.technology" target="_blank">Easyway Technology</a>
+                        <span>© @DateTime.Now.Year <strong>Easy pagoPA</strong></span><span>Un servizio digitale semplice e accessibile</span>
                     </div>
                 </div>
             </div>

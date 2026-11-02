@@ -10,48 +10,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portale PagoPa - Login</title>
 
-    <link rel="stylesheet" type="text/css" href="~/css/Style.css?ver=1.1">
+    <link rel="stylesheet" type="text/css" href="~/css/Style.css?ver=2.0">
     <link rel="stylesheet" href="~/css/basic.css" type="text/css" />
     <link rel="stylesheet" href="~/css/dropzone.css" type="text/css" />
     <link rel="stylesheet" href="~/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/modern.css?ver=1.0" type="text/css" />
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" rel="stylesheet">
     <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
 </head>
-<body class="login__body">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-sm-3"></div>
-            <div class="col-md-4 col-sm-6">
-                <div class="login">
-                    <div class="login__card">
-                        <div class="text-center">
-                            <img class="login__logo" src="/images/Logo_2.png" />
-                        </div>
-                        <div class="panel-login">
-                            <form class="pt-30" action="/Home/Login" method="post" id="loginForm">
-                                <label for="userName">Email</label>
-                                <input asp-for="userName" class="form-input mb-10" type="email" name="userName" id="userName" />
-                                <label for="password">Password</label>
-                                <input asp-for="password" class="form-input mb-10" type="password" name="password" id="password" />
-                                <div class="text-center pt-20">
-                                    <input class="btn" type="submit" name="login" value="ACCEDI" />
-                                </div>
-                                <div class="text-center pt-10">
-                                    <span class="error-msg">@ViewBag.error</span>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="login__footer">
-                        <p>EASYWAY TECHNOLOGY © 2023</p>
-                    </div>
-                </div>
-
+<body class="login__body modern-login">
+    <main class="login-shell">
+        <section class="login-story" aria-label="Presentazione del portale">
+            <a class="login-brand" href="/" aria-label="Easy pagoPA"><img src="/images/Logo_2.png" alt="" /><span><strong>Easy</strong> pagoPA</span></a>
+            <div class="login-story__content">
+                <span class="eyebrow">Easy pagoPA · Portale enti</span>
+                <h1>Ogni operazione pagoPA.<br><span>Un solo spazio.</span></h1>
+                <p>Crea posizioni debitorie, monitora le richieste e consulta le rendicontazioni con un flusso operativo chiaro.</p>
+                <ul class="login-benefits">
+                    <li><i class='bx bx-check'></i><span>Posizioni singole e massive</span></li>
+                    <li><i class='bx bx-check'></i><span>Esiti, scadenze e pagamenti centralizzati</span></li>
+                    <li><i class='bx bx-check'></i><span>Accesso sicuro per gli operatori dell’ente</span></li>
+                </ul>
             </div>
-            <div class="col-md-4 col-sm-3"></div>
-        </div>
-    </div>
+            <p class="login-story__footer">Powered by Easyway Technology</p>
+        </section>
+        <section class="login-panel">
+            <div class="login-card-modern">
+                <div class="login-card-modern__heading">
+                    <span class="login-mobile-brand"><img src="/images/Logo_2.png" alt="" /> Easy pagoPA</span>
+                    <span class="eyebrow">Area riservata</span>
+                    <h2>Bentornato</h2>
+                    <p>Inserisci le tue credenziali per accedere al portale.</p>
+                </div>
+                <div class="panel-login">
+                    <form action="/Home/Login" method="post" id="loginForm">
+                        <div class="field-group">
+                            <label for="userName">Indirizzo email</label>
+                            <div class="field-with-icon"><i class='bx bx-envelope'></i><input asp-for="userName" class="form-input" type="email" name="userName" id="userName" autocomplete="username" placeholder="nome@ente.it" required /></div>
+                        </div>
+                        <div class="field-group">
+                            <label for="password">Password</label>
+                            <div class="field-with-icon"><i class='bx bx-lock-alt'></i><input asp-for="password" class="form-input" type="password" name="password" id="password" autocomplete="current-password" placeholder="Inserisci la password" required /><button class="password-toggle" type="button" aria-label="Mostra password" aria-pressed="false"><i class='bx bx-show'></i></button></div>
+                        </div>
+                        <button class="btn login-submit" type="submit" name="login"><span>Accedi al portale</span><i class='bx bx-right-arrow-alt'></i></button>
+                        @if (!String.IsNullOrWhiteSpace(ViewBag.error as string))
+                        {
+                            <div class="login-error" role="alert"><i class='bx bx-error-circle'></i><span>@ViewBag.error</span></div>
+                        }
+                    </form>
+                </div>
+                <p class="login-help"><i class='bx bx-shield-quarter'></i> Connessione protetta e dati cifrati</p>
+            </div>
+        </section>
+    </main>
 
 
     <script src="~/js/private/home.js" asp-append-version="true"></script>

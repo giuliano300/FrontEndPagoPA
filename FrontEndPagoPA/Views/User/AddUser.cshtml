@@ -1,179 +1,129 @@
-﻿@model FrontEndPagoPA.Models.SenderUserDto
+@model FrontEndPagoPA.Models.SenderUserDto
 
 @{
-    ViewBag.Title = "Utenti";
+    ViewBag.Title = Model.id > 0 ? "Modifica utente" : "Aggiungi utente";
+    var isEditing = Model.id > 0;
 }
 
-<style>
-    .dropdown-checklist {
-        position: relative;
-        display: inline-block;
-    }
-
-    .dropdown-checklist .select-box {
-        width: 200px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        cursor: pointer;
-    }
-
-    .dropdown-checklist .select-box::after {
-        content: "\25BC"; /* Down arrow character */
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .dropdown-checklist .options {
-        display: none;
-        position: absolute;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        max-height: 150px;
-        overflow-y: auto;
-        width: 200px;
-    }
-
-    .dropdown-checklist .options.show {
-        display: block;
-    }
-</style>
-
 <div class="row">
-    <div class="col-md-12">
-        <div class="card mt-30 fade-in">
-            <div class="row">
-                <div class="col-md-2 col-sm-3">
-                    <div class="nav-personal-area">
-                        <ul>
-                            <li>
-                                <a href="/User/PersonalArea">Utenza principale <i class='bx bx-chevron-right'></i></a>
-                            </li>
-                            <li>
-                                <a href="/User/UsersList">Lista utenti <i class='bx bx-chevron-right'></i></a>
-                            </li>
-                            <li>
-                                @if (Model.id.ToString() == "0")
-                                {
-                                    <text>Aggiungi utente <i class='bx bx-chevron-right'></i></text>
-                                    
-                                }
-                                else
-                                {
-                                    <text><a href="/User/AddUser">Aggiungi utente <i class='bx bx-chevron-right'></i></a></text>
-                                }
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-10 col-sm-9">
-                    <div class="row">
-                        <form method="post" action="/User/SaveUser" enctype="multipart/form-data">
-                            <div class="form-site">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <h3 class="pb-20 textsize-4"><i class='bx bxs-user'></i> @ViewBag.type utente</h3>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 col-sm-6">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label>Nome Azienda</label>
-                                                <input type="text" name="businessName" required value="@Model.businessName" />
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label>Codice Fiscale</label>
-                                                <input type="text" name="cod_fisc" required value="@Model.identificativoDominio" />
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label>Identificativo BU</label>
-                                                <input type="text" name="identificativoBU" required value="@Model.identificativoBU" />
-                                            </div>
-                                            <div class="col-md-8">
-                                                <label>Indirizzo</label>
-                                                <input type="text" name="address" required value="@Model.address" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Cap</label>
-                                                <input type="number" name="cap" maxlength="5" required value="@Model.cap" />
-                                            </div>
-                                            <div class="col-md-8">
-                                                <label>Città</label>
-                                                <input type="text" name="city" required value="@Model.city" />
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Provincia</label>
-                                                <input type="text" name="province" maxlength="2" required value="@Model.province" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-sm-6">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                @if (Model.id > 0)
-                                                {
-                                                    <div class="logo-ente"><img src="../../@Model.logo" style="width:100px;"></div>
-                                                    <label>Modifica logo</label>
-                                                    <input type="file" name="logo" />
-                                                }
-                                                else
-                                                {
-                                                    <label>Aggiungi un logo</label>
-                                                    <input type="file" name="logo" required />
-                                                }
-                                            </div>
-                                            <div class="col-md-6 pt-30">
-                                                <input type="checkbox" name="contoPostale" id="contoPostale" checked="@Model.contoPoste"  />
-                                                <label for="contoPostale" class="label-pay">Conto Corrente Postale</label>
-                                            </div>
-                                            <div class="col-md-6 pb-20">
-                                                <label class="label-pay">Numero Conto Postale</label>
-                                                <input type="text" name="numeroContoPoste" id="numeroContoPoste" value="@Model.numeroContoPoste" readonly required />
-                                            </div>
-                                            <div class="col-md-6 pt-30">
-                                                <input type="checkbox" name="contoBanca" id="contoBanca" checked="@Model.contoBanca" />
-                                                <label for="contoBanca" class="label-pay">Conto Corrente Bancario</label>
-                                            </div>
-                                            <div class="col-md-6 pb-20">
-                                                <label class="label-pay">CBILL</label>
-                                                <input type="text" name="CBILL" id="CBILL" value="@Model.CBILL" readonly required />
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <label>Seleziona un tipo</label>
-                                                <select class="multiple-select" multiple required style="min-height:150px" name="operationTypeId">
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                               </div>
-                                <div class="row">
-                                    <div class="col-md-4 col-sm-4"></div>
-                                    <div class="col-md-4 col-sm-4">
-                                        <div class="row">
-                                            <div class="col-md-3 col-sm-3"></div>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input type="submit" value="@ViewBag.type.ToUpper() UTENTE" name="edit"/>
-                                            </div>
-                                            <div class="col-md-3 col-sm-3"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-4"></div>
-                                </div>
-                            </div>
-                            <input type="hidden" value="@Model.id" name="id" id="senderUserId"/>
-                            <input type="hidden" value="@Model.logo" name="fileOld" />
-                        </form>
-                    </div>
+    <div class="col-lg-12 fade-in">
+        <h4>Gestione utenze</h4>
+        <h1>@(isEditing ? "Modifica utente" : "Aggiungi utente")</h1>
+    </div>
+</div>
+
+<section class="users-page fade-in" aria-labelledby="sender-user-title">
+    <nav class="users-tabs" aria-label="Navigazione gestione utenti">
+        <a href="/User/PersonalArea"><i class='bx bx-building-house'></i><span>Utenza principale</span></a>
+        <a href="/User/UsersList"><i class='bx bx-group'></i><span>Lista utenti</span></a>
+        <a href="/User/AddUser" class="@(!isEditing ? "active" : "")" aria-current="@(!isEditing ? "page" : null)"><i class='bx bx-user-plus'></i><span>Aggiungi utente</span></a>
+    </nav>
+
+    <form method="post" action="/User/SaveUser" enctype="multipart/form-data" class="user-form-card">
+        <div class="user-form-card__header">
+            <div class="users-card__title">
+                <span class="users-card__icon"><i class='bx @(isEditing ? "bx-user-check" : "bx-user-plus")'></i></span>
+                <div>
+                    <span class="users-card__eyebrow">@(isEditing ? "AGGIORNAMENTO UTENZA" : "NUOVA UTENZA")</span>
+                    <h2 id="sender-user-title">@(isEditing ? "Modifica i dati dell’utente" : "Configura il nuovo utente")</h2>
+                    <p>Inserisci i dati dell’ente, i riferimenti di pagamento e le operazioni abilitate.</p>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<script>
-    let operationTypesId = @ViewBag.operationTypesId
-</script>
+
+        <div class="user-form-card__body">
+            <section class="user-form-section" aria-labelledby="identity-title">
+                <div class="user-form-section__heading">
+                    <span><i class='bx bx-buildings'></i></span>
+                    <div><h3 id="identity-title">Identità dell’ente</h3><p>Informazioni fiscali e identificativi associati all’utenza.</p></div>
+                </div>
+                <div class="user-form-grid user-form-grid--three">
+                    <label>Nome azienda
+                        <input type="text" name="businessName" required value="@Model.businessName" />
+                    </label>
+                    <label>Codice fiscale
+                        <input type="text" name="cod_fisc" required value="@Model.identificativoDominio" />
+                    </label>
+                    <label>Identificativo BU
+                        <input type="text" name="identificativoBU" required value="@Model.identificativoBU" />
+                    </label>
+                </div>
+            </section>
+
+            <section class="user-form-section" aria-labelledby="address-title">
+                <div class="user-form-section__heading">
+                    <span><i class='bx bx-map'></i></span>
+                    <div><h3 id="address-title">Sede e recapiti</h3><p>Indirizzo amministrativo collegato all’ente.</p></div>
+                </div>
+                <div class="user-form-grid user-form-grid--address">
+                    <label class="field-address">Indirizzo
+                        <input type="text" name="address" required value="@Model.address" />
+                    </label>
+                    <label>CAP
+                        <input type="number" name="cap" maxlength="5" required value="@Model.cap" />
+                    </label>
+                    <label>Città
+                        <input type="text" name="city" required value="@Model.city" />
+                    </label>
+                    <label>Provincia
+                        <input type="text" name="province" maxlength="2" required value="@Model.province" />
+                    </label>
+                </div>
+            </section>
+
+            <section class="user-form-section" aria-labelledby="payments-title">
+                <div class="user-form-section__heading">
+                    <span><i class='bx bx-credit-card'></i></span>
+                    <div><h3 id="payments-title">Logo e configurazione pagamenti</h3><p>Personalizza l’ente e abilita i canali di incasso disponibili.</p></div>
+                </div>
+                <div class="user-config-grid">
+                    <div class="logo-upload-card">
+                        @if(isEditing && !string.IsNullOrWhiteSpace(Model.logo))
+                        {
+                            <div class="logo-ente"><img src="../../@Model.logo" alt="Logo attuale dell’ente" /></div>
+                            <label>Modifica logo<input type="file" name="logo" accept="image/*" /></label>
+                        }
+                        else
+                        {
+                            <span class="logo-upload-card__icon"><i class='bx bx-image-add'></i></span>
+                            <label>Aggiungi un logo<input type="file" name="logo" accept="image/*" required /></label>
+                        }
+                        <small>Formati immagine consigliati: PNG o SVG.</small>
+                    </div>
+
+                    <div class="payment-options">
+                        <div class="payment-option">
+                            <label class="payment-option__toggle"><input type="checkbox" name="contoPostale" id="contoPostale" checked="@Model.contoPoste" /><span><i class='bx bx-envelope'></i> Conto corrente postale</span></label>
+                            <label>Numero conto postale<input type="text" name="numeroContoPoste" id="numeroContoPoste" value="@Model.numeroContoPoste" readonly required /></label>
+                        </div>
+                        <div class="payment-option">
+                            <label class="payment-option__toggle"><input type="checkbox" name="contoBanca" id="contoBanca" checked="@Model.contoBanca" /><span><i class='bx bx-bank'></i> Conto corrente bancario</span></label>
+                            <label>CBILL<input type="text" name="CBILL" id="CBILL" value="@Model.CBILL" readonly required /></label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="user-form-section" aria-labelledby="permissions-title">
+                <div class="user-form-section__heading">
+                    <span><i class='bx bx-check-shield'></i></span>
+                    <div><h3 id="permissions-title">Operazioni abilitate</h3><p>Seleziona una o più tipologie disponibili per questa utenza.</p></div>
+                </div>
+                <label>Tipologie di operazione
+                    <select class="multiple-select" multiple required name="operationTypeId"></select>
+                </label>
+            </section>
+        </div>
+
+        <div class="user-form-card__footer">
+            <a href="/User/UsersList" class="user-form-cancel"><i class='bx bx-left-arrow-alt'></i> Torna alla lista</a>
+            <button type="submit" class="user-form-submit" name="edit"><i class='bx bx-check'></i> @(isEditing ? "Salva modifiche" : "Aggiungi utente")</button>
+        </div>
+
+        <input type="hidden" value="@Model.id" name="id" id="senderUserId" />
+        <input type="hidden" value="@Model.logo" name="fileOld" />
+    </form>
+</section>
+
+<script>let operationTypesId = @ViewBag.operationTypesId</script>
 <script src="~/js/private/AddUser.js" asp-append-version="true"></script>

@@ -1,84 +1,31 @@
-﻿@model FrontEndPagoPA.Models.UserDto
-
+@model FrontEndPagoPA.Models.UserDto
 @{
     ViewBag.Title = "Dashboard";
 }
 
+<section class="dashboard-hero fade-in">
+    <div>
+        <span class="eyebrow">Dashboard</span>
+        <h1>Buongiorno, <span>@Model.businessName</span></h1>
+        <p>Gestisci le attività pagoPA del tuo ente in modo rapido e sicuro.</p>
+    </div>
+    <div class="dashboard-date"><i class='bx bx-calendar'></i><span>@DateTime.Now.ToString("dddd d MMMM", new System.Globalization.CultureInfo("it-IT"))</span></div>
+</section>
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="card pt-30 pb-30 pl-30 pr-30 fade-in">
-            <h3 class="textsize-4">Benvenuto <span class="blue">@Model.businessName</span></h3>
-            <p>
-                Da qui, avrai accesso completo e personalizzato alle funzionalità e alle risorse disponibili per gestire e ottimizzare la tua esperienza sul portale.
-            </p>
-        </div>
+<section class="quick-actions fade-in" aria-labelledby="quick-actions-title">
+    <div class="section-heading"><div><span class="eyebrow">Azioni rapide</span><h2 id="quick-actions-title">Cosa vuoi fare?</h2></div></div>
+    <div class="quick-actions__grid">
+        <a href="/IuvSingolo/Index" class="action-card action-card--primary"><span class="action-card__icon"><i class='bx bx-file'></i></span><span class="action-card__content"><strong>Nuova posizione singola</strong><small>Genera uno IUV per un singolo debitore</small></span><i class='bx bx-right-arrow-alt action-card__arrow'></i></a>
+        <a href="/IuvMultiplo/Index" class="action-card"><span class="action-card__icon"><i class='bx bx-layer'></i></span><span class="action-card__content"><strong>Posizioni multiple</strong><small>Importa e gestisci più posizioni insieme</small></span><i class='bx bx-right-arrow-alt action-card__arrow'></i></a>
+        <a href="/User/PersonalArea" class="action-card"><span class="action-card__icon"><i class='bx bx-user'></i></span><span class="action-card__content"><strong>Dati dell’ente</strong><small>Aggiorna profilo e informazioni di accesso</small></span><i class='bx bx-right-arrow-alt action-card__arrow'></i></a>
     </div>
-</div>
+</section>
 
-<div class="row pt-30 fade-in">
-    <div class="col-md-4 col-sm-4">
-        <div class="card-user">
-            <img src="/images/icon-edit-user.png" alt="dati personali e accesso" />
-            <h4>Dati personali e accesso</h4>
-            <a href="/User/PersonalArea" class="btn btn__blue">MODIFICA DATI</a>
-        </div>
+<section class="dashboard-reports fade-in" aria-labelledby="reports-title">
+    <div class="section-heading"><div><span class="eyebrow">Monitoraggio</span><h2 id="reports-title">Richieste e pagamenti</h2></div><a href="/Action/StoricoOperazioni" class="section-link">Vedi lo storico <i class='bx bx-right-arrow-alt'></i></a></div>
+    <div class="report-grid">
+        <a class="report-card report-card--waiting" href="/Action/RichiesteInAttesa"><span class="report-card__icon"><i class='bx bx-time-five'></i></span><span><strong>Richieste in attesa</strong><small>Controlla le operazioni da completare</small></span><i class='bx bx-chevron-right'></i></a>
+        <a class="report-card report-card--success" href="/Action/RichiesteEsitate"><span class="report-card__icon"><i class='bx bx-check-circle'></i></span><span><strong>Richieste esitate</strong><small>Consulta gli esiti delle richieste inviate</small></span><i class='bx bx-chevron-right'></i></a>
+        <a class="report-card report-card--payments" href="/Action/RendicontazionePagamenti"><span class="report-card__icon"><i class='bx bx-euro'></i></span><span><strong>Rendicontazione</strong><small>Verifica incassi e pagamenti ricevuti</small></span><i class='bx bx-chevron-right'></i></a>
     </div>
-    <div class="col-md-4 col-sm-4">
-        <div class="card-operation">
-            <section>
-                <img src="/images/icon-iuv.png" alt="nuova posizione debitoria singola" />
-                <h3>Nuova posizione debitoria <br /><span>SINGOLA</span></h3>
-            </section>
-            <div class="text-center">
-                <a href="/IuvSingolo/Index" class="btn btn-small">GENERA IUV</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 col-sm-4">
-        <div class="card-operation">
-            <section>
-                <img src="/images/icon-iuvs.png" alt="nuova posizione debitoria multpla" />
-                <h3>Nuova posizione debitoria <br /><span>MULTIPLA</span></h3>
-            </section>
-            <div class="text-center">
-                <a href="/IuvMultiplo/Index" class="btn btn-small">GENERA IUV</a>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row pt-30 fade-in">
-    <div class="col-md-4 col-sm-4">
-        <div class="card-request bg-req-waiting">
-            <section>
-                <img src="/images/icon-req-waiting.png" alt="in attesa di accettazione" />
-                <h3>In attesa di accettazione</h3>
-            </section>
-            <div class="pt-20 text-center">
-                <a href="/Action/RichiesteInAttesa" class="link-orange">ACCEDI AL REPORT</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 col-sm-4">
-        <div class="card-request bg-req-ok">
-            <section>
-                <img src="/images/icon-req-ok.png" alt="richieste accettate" />
-                <h3>Richieste esitate</h3>
-            </section>
-            <div class="pt-20 text-center">
-                <a href="/Action/RichiesteEsitate" class="link-green">ACCEDI AL REPORT</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 col-sm-4">
-        <div class="card-request bg-pay-back">
-            <section>
-                <img src="/images/icn-pay-return.png" alt="rendicontazione pagamenti" />
-                <h3>Rendicontazione pagamenti</h3>
-            </section>
-            <div class="pt-20 text-center">
-                <a href="/Action/RendicontazionePagamenti">ACCEDI AL REPORT</a>
-            </div>
-        </div>
-    </div>
-</div>
+</section>

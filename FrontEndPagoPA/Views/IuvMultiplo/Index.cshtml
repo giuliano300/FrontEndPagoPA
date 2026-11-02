@@ -1,52 +1,61 @@
-﻿
 @{
-    ViewBag.Title = "Seleziona il tipo di posizione";
+    ViewBag.Title = "Nuove posizioni multiple";
 }
 
 <div class="row">
     <div class="col-lg-12 fade-in">
-        <h4>Generazione posizione debitoria multipla</h4>
-        <h1>Seleziona il tipo di posizione</h1>
+        <h4>Nuove posizioni debitorie</h4>
+        <h1>Posizioni multiple</h1>
     </div>
 </div>
 
-<div class="row fade-in">
-    <div class="col-lg-9 col-md-10">
-        <div class="card pl-30 pr-30 mb-30">
-            <div class="select-iuv">
-                <div class="icon-iuv">
-                    <img src="/images/icn-iuv-document.png" alt="Genera documento multiplo con bollettino" />
-                </div>
-                <section>
-                    <h5>Genera documento con bollettino</h5>
-                    <p>
-                        Selezionando questa posizione potrai generare sia GLI IUV che i documentI con i bollettini pronti da spedire.
-                    </p>
-                </section>
-                <a href="/IuvMultiplo/GeneraBollettinoMultiplo" class="btn btn-iuv">SELEZIONA</a>
-            </div>
+<section class="position-type-page fade-in" aria-labelledby="position-choice-title">
+    <div class="position-type-intro">
+        <div>
+            <span class="position-step"><strong>1</strong> di 2</span>
+            <h2 id="position-choice-title">Cosa vuoi generare dal file CSV?</h2>
+            <p>Scegli il risultato per tutte le posizioni importate. Nel passaggio successivo potrai caricare e verificare il file.</p>
         </div>
+        <span class="position-mode"><i class='bx bx-group'></i> Elaborazione multipla</span>
     </div>
-</div>
-<div class="row fade-in">
-    <div class="col-lg-9 col-md-10">
-        <div class="card pl-30 pr-30 mb-30">
-            <div class="select-iuv">
-                <div class="icon-iuv text-center">
-                    <img src="/images/icn-iuv.png" alt="Genera solo IUV" />
-                </div>
-                <section>
-                    <h5>Genera solo IUV multiplo</h5>
-                    <p>
-                        Selezionando questa posizione potrai generare solo gli IUV, dovrai successivamente generare i documenti da spedire.
-                    </p>
-                </section>
-                <a href="/IuvMultiplo/GeneraIuvMultiplo" class="btn btn-iuv">SELEZIONA</a>
+
+    <div class="position-options">
+        <article class="position-option">
+            <div class="position-option__top">
+                <span class="position-option__icon"><i class='bx bx-copy-alt'></i></span>
+                <span class="position-option__badge position-option__badge--neutral">Con bollettini</span>
             </div>
-        </div>
+            <div class="position-option__content">
+                <span class="position-option__eyebrow">PACCHETTO COMPLETO</span>
+                <h3>IUV e bollettini</h3>
+                <p>Genera tutti gli IUV e i relativi documenti pagoPA, pronti per essere distribuiti ai debitori.</p>
+                <ul>
+                    <li><i class='bx bx-check'></i> Importazione massiva tramite CSV</li>
+                    <li><i class='bx bx-check'></i> Bollettino per ogni posizione</li>
+                    <li><i class='bx bx-check'></i> Documenti raccolti e pronti al download</li>
+                </ul>
+            </div>
+            <a href="/IuvMultiplo/GeneraBollettinoMultiplo" class="position-option__action position-option__action--secondary">Continua con i bollettini <i class='bx bx-right-arrow-alt'></i></a>
+        </article>
+
+        <article class="position-option position-option--primary">
+            <div class="position-option__top">
+                <span class="position-option__icon"><i class='bx bx-layer'></i></span>
+                <span class="position-option__badge">Consigliato</span>
+            </div>
+            <div class="position-option__content">
+                <span class="position-option__eyebrow">ELABORAZIONE RAPIDA</span>
+                <h3>Solo IUV multipli</h3>
+                <p>Genera in una sola operazione tutti i codici IUV, senza produrre i documenti con bollettino.</p>
+                <ul>
+                    <li><i class='bx bx-check'></i> Importazione massiva tramite CSV</li>
+                    <li><i class='bx bx-check'></i> Codici pronti per altri sistemi</li>
+                    <li><i class='bx bx-info-circle'></i> Documenti non inclusi</li>
+                </ul>
+            </div>
+            <a href="/IuvMultiplo/GeneraIuvMultiplo" class="position-option__action">Continua con solo IUV <i class='bx bx-right-arrow-alt'></i></a>
+        </article>
     </div>
-</div>
 
-
-
-
+    <div class="position-help"><i class='bx bx-info-circle'></i><span>Il file CSV sarà verificato prima della generazione: eventuali righe non valide verranno evidenziate.</span></div>
+</section>

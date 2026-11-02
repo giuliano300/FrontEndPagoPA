@@ -1,69 +1,75 @@
-﻿@model List<FrontEndPagoPA.Models.SenderUserDto>
+@model List<FrontEndPagoPA.Models.SenderUserDto>
 
 @{
     ViewBag.Title = "Lista Utenti";
+    var usersCount = Model?.Count ?? 0;
 }
 
 <div class="row">
-    <div class="col-md-12">
-        <div class="card mt-30 fade-in">
-            <div class="row">
-                <div class="col-md-2 col-sm-3">
-                    <div class="nav-personal-area">
-                        <ul>
-                            <li>
-                                <a href="/User/PersonalArea">Utenza principale <i class='bx bx-chevron-right'></i></a>
-                            </li>
-                            <li>
-                                Lista utenti <i class='bx bx-chevron-right'></i>
-                            </li>
-                            <li>
-                                <a href="/User/AddUser">Aggiungi utente <i class='bx bx-chevron-right'></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-10 col-sm-9">
-                    <div class="row">
-                        <div class="form-site">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h3 class="pb-20 textsize-4"><i class='bx bxs-user'></i> Lista utenti</h3>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <!--archive list header-->
-                                    <ul class="list-users_header">
-                                        <li>Id</li>
-                                        <li>Nome azienda</li>
-                                        <li>Codice fiscale</li>
-                                        <li>Identificativo BU</li>
-                                        <li class="text-center">Modifica</li>
-                                        <li class="text-center">Elimina</li>
-                                    </ul>
-                                    <!--end archive list header-->
-
-                                    <div class="list-users">
-                                        @foreach(var s in Model)
-                                        {
-                                            <ul>
-                                                <li>@s.id</li>
-                                                <li>@s.businessName</li>
-                                                <li>@s.identificativoDominio</li>
-                                                <li>@s.identificativoBU</li>
-                                                <li class="text-center"><a href="/User/EditUser/@s.id" title="Modifica utente"><i class="las la-pen"></i></a></li>
-                                                <li class="text-center"><a href="/User/DeleteSenderUser/@s.id" class="delete" title="Elimina utente"><i class="las la-trash"></i></a></li>
-                                            </ul> 
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="col-lg-12 fade-in">
+        <h4>Gestione utenze</h4>
+        <h1>Utenti dell’ente</h1>
     </div>
 </div>
 
+<section class="users-page fade-in" aria-labelledby="users-list-title">
+    <nav class="users-tabs" aria-label="Navigazione gestione utenti">
+        <a href="/User/PersonalArea"><i class='bx bx-building-house'></i><span>Utenza principale</span></a>
+        <a href="/User/UsersList" class="active" aria-current="page"><i class='bx bx-group'></i><span>Lista utenti</span></a>
+        <a href="/User/AddUser"><i class='bx bx-user-plus'></i><span>Aggiungi utente</span></a>
+    </nav>
+
+    <div class="users-card">
+        <div class="users-card__header">
+            <div class="users-card__title">
+                <span class="users-card__icon"><i class='bx bx-group'></i></span>
+                <div>
+                    <span class="users-card__eyebrow">UTENZE COLLEGATE</span>
+                    <h2 id="users-list-title">Lista utenti</h2>
+                    <p>Gestisci le utenze abilitate a operare per conto dell’ente.</p>
+                </div>
+            </div>
+            <div class="users-card__actions">
+                <span class="users-count">@usersCount @(usersCount == 1 ? "utente" : "utenti")</span>
+                <a href="/User/AddUser" class="users-add-button"><i class='bx bx-plus'></i><span>Aggiungi utente</span></a>
+            </div>
+        </div>
+
+        <div class="users-table-wrap">
+            <ul class="list-users_header" aria-hidden="true">
+                <li>ID</li>
+                <li>Nome azienda</li>
+                <li>Codice fiscale</li>
+                <li>Business unit</li>
+                <li class="text-center">Azioni</li>
+            </ul>
+
+            <div class="list-users">
+                @if(usersCount == 0)
+                {
+                    <div class="users-empty-state">
+                        <span><i class='bx bx-user-plus'></i></span>
+                        <strong>Nessun utente collegato</strong>
+                        <p>Aggiungi la prima utenza per iniziare.</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach(var s in Model)
+                    {
+                        <ul>
+                            <li data-label="ID"><span class="user-id">#@s.id</span></li>
+                            <li data-label="Nome azienda"><strong>@s.businessName</strong></li>
+                            <li data-label="Codice fiscale"><span class="user-code">@s.identificativoDominio</span></li>
+                            <li data-label="Business unit"><span class="user-bu">@s.identificativoBU</span></li>
+                            <li data-label="Azioni" class="list-users__actions">
+                                <a href="/User/EditUser/@s.id" title="Modifica utente" aria-label="Modifica @s.businessName"><i class="las la-pen"></i></a>
+                                <a href="/User/DeleteSenderUser/@s.id" class="delete" title="Elimina utente" aria-label="Elimina @s.businessName"><i class="las la-trash"></i></a>
+                            </li>
+                        </ul>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>
