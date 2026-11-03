@@ -110,7 +110,7 @@ namespace FrontEndPagoPA.Controllers
 
 
 
-        public ActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
             Globals g = new(_tokenProvider);
             TokenDto token;
@@ -132,7 +132,21 @@ namespace FrontEndPagoPA.Controllers
                 _logger.Error("  An error occurred in the Dashboard() action in the Home controller  " + ex.Message);
                 return View("Error");
             }
-            return View(userDto);
+            var viewModel = new DashboardViewModel { User = userDto };
+            var contractResponse = await _homeService.GetCurrentEntityContractAsync();
+
+            if (contractResponse != null && contractResponse.IsSuccess)
+            {
+                var serializedContract = Convert.ToString(contractResponse.Result);
+                if (!string.IsNullOrWhiteSpace(serializedContract) && serializedContract != "null")
+                    viewModel.Contract = JsonConvert.DeserializeObject<EntityContractSummaryDto>(serializedContract);
+            }
+            else
+            {
+                viewModel.ContractSummaryAvailable = false;
+            }
+
+            return View(viewModel);
         }
     }
 }

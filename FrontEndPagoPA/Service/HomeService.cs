@@ -54,5 +54,14 @@ namespace FrontEndPagoPA.Service
                 Url = apiPagoPABase + "/api/auth/register"
             }, withBearer: true);
         }
+
+        public async Task<ResponseDto> GetCurrentEntityContractAsync()
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = ApiType.GET,
+                Url = apiPagoPABase + "/api/EntityContract/current"
+            }, withBearer: true);
+        }
     }
 }

@@ -1,4 +1,4 @@
-@model FrontEndPagoPA.Models.UserDto
+@model FrontEndPagoPA.Models.DashboardViewModel
 @{
     ViewBag.Title = "Dashboard";
 }
@@ -6,10 +6,85 @@
 <section class="dashboard-hero fade-in">
     <div>
         <span class="eyebrow">Dashboard</span>
-        <h1>Buongiorno, <span>@Model.businessName</span></h1>
+        <h1>Buongiorno, <span>@Model.User.businessName</span></h1>
         <p>Gestisci le attività pagoPA del tuo ente in modo rapido e sicuro.</p>
     </div>
     <div class="dashboard-date"><i class='bx bx-calendar'></i><span>@DateTime.Now.ToString("dddd d MMMM", new System.Globalization.CultureInfo("it-IT"))</span></div>
+</section>
+
+@{
+    var contractExpired = Model.Contract != null && Model.Contract.endDate.Date < DateTime.Today;
+    var contractUpcoming = Model.Contract != null && Model.Contract.startDate.Date > DateTime.Today;
+}
+<section class="contracts-overview fade-in @(contractExpired ? "is-expired" : Model.Contract?.exhausted == true ? "is-exhausted" : contractUpcoming ? "is-upcoming" : "")" aria-labelledby="contracts-title">
+    <div class="contracts-overview__header">
+        <div class="contracts-overview__title">
+            <span class="contracts-overview__icon"><i class='bx bx-receipt'></i></span>
+            <span><strong id="contracts-title">Contratti</strong><small>Disponibilità IUV del tuo ente</small></span>
+        </div>
+        @if (Model.Contract != null)
+        {
+            @if (contractExpired)
+            {
+                <span class="contracts-overview__status is-expired"><i class='bx bx-error-circle'></i> Scaduto il @Model.Contract.endDate.ToString("dd/MM/yyyy")</span>
+            }
+            else if (contractUpcoming)
+            {
+                <span class="contracts-overview__status is-upcoming"><i class='bx bx-time-five'></i> Inizia il @Model.Contract.startDate.ToString("dd/MM/yyyy")</span>
+            }
+            else
+            {
+                <span class="contracts-overview__period"><i class='bx bx-calendar'></i> @Model.Contract.startDate.ToString("dd/MM/yyyy") — @Model.Contract.endDate.ToString("dd/MM/yyyy")</span>
+            }
+        }
+    </div>
+
+    @if (Model.Contract != null)
+    {
+        var purchasedIuvCount = Model.Contract.totalPurchasedIuvCount > 0 ? Model.Contract.totalPurchasedIuvCount : Model.Contract.purchasedIuvCount;
+        var usedPercentage = purchasedIuvCount > 0
+            ? Math.Min(100, (int)Math.Round(Model.Contract.paidIuvCount * 100d / purchasedIuvCount))
+            : 0;
+        var isLow = Model.Contract.remainingIuvCount < purchasedIuvCount * .15;
+
+        @if (contractExpired)
+        {
+            <div class="contracts-overview__expired-notice"><i class='bx bx-error'></i><span><strong>Contratto scaduto</strong><small>Il contratto non è più attivo. Contatta l’assistenza per il rinnovo.</small></span></div>
+        }
+        else if (Model.Contract.exhausted)
+        {
+            <div class="contracts-overview__alert"><i class='bx bx-error-circle'></i><span><strong>Disponibilità IUV esaurita</strong><small>Non risultano più IUV disponibili sul contratto attivo. Contatta l’amministratore per integrare il contratto.</small></span></div>
+        }
+
+        <div class="contracts-overview__content">
+            <div class="contracts-overview__balance @(isLow ? "is-low" : "")">
+                <span>@(contractExpired ? "IUV residui alla scadenza" : "IUV disponibili")</span>
+                <strong>@Model.Contract.remainingIuvCount.ToString("N0", new System.Globalization.CultureInfo("it-IT"))</strong>
+                <small>@(contractExpired ? "Contratto non utilizzabile" : Model.Contract.exhausted ? "Disponibilità terminata" : isLow ? "Disponibilità in esaurimento" : "Contratto attivo")</small>
+            </div>
+            <div class="contracts-overview__metrics">
+                <div><span>Acquistati</span><strong>@purchasedIuvCount.ToString("N0", new System.Globalization.CultureInfo("it-IT"))</strong></div>
+                <div><span>Generati</span><strong>@Model.Contract.totalIuvCount.ToString("N0", new System.Globalization.CultureInfo("it-IT"))</strong></div>
+                <div><span>Rendicontati</span><strong>@Model.Contract.paidIuvCount.ToString("N0", new System.Globalization.CultureInfo("it-IT"))</strong></div>
+            </div>
+            <div class="contracts-overview__usage" aria-label="@usedPercentage% degli IUV acquistati rendicontati">
+                <span class="contracts-overview__track"><span style="width:@usedPercentage%"></span></span>
+                <small><span>Utilizzo</span><strong>@usedPercentage%</strong></small>
+                @if (Model.Contract.totalPrice.HasValue)
+                {
+                    <small><span>Valore contratto</span><strong>@Model.Contract.totalPrice.Value.ToString("C2", new System.Globalization.CultureInfo("it-IT"))</strong></small>
+                }
+            </div>
+        </div>
+    }
+    else if (!Model.ContractSummaryAvailable)
+    {
+        <div class="contracts-overview__empty"><i class='bx bx-cloud-off'></i><span><strong>Dati non disponibili</strong><small>Il riepilogo dei contratti non può essere caricato in questo momento.</small></span></div>
+    }
+    else
+    {
+        <div class="contracts-overview__empty"><i class='bx bx-info-circle'></i><span><strong>Nessun contratto configurato</strong><small>Contatta l’assistenza per verificare la disponibilità assegnata al tuo ente.</small></span></div>
+    }
 </section>
 
 <section class="quick-actions fade-in" aria-labelledby="quick-actions-title">
