@@ -1217,6 +1217,9 @@ body.app-body,.portal-app,.portal-container { margin:0!important; padding:0!impo
 .contracts-overview__track>span { display:block; height:100%; border-radius:inherit; background:#0878d1; }
 .contracts-overview__usage small { display:flex; justify-content:space-between; color:#758997; font-size:.66rem; }
 .contracts-overview__usage strong { color:#294a61; }
+.contracts-overview__usage.is-over-limit .contracts-overview__track { background:#f6d8d2; }
+.contracts-overview__usage.is-over-limit .contracts-overview__track>span { background:#c43e2b; }
+.contracts-overview__usage.is-over-limit small,.contracts-overview__usage.is-over-limit strong { color:#b33424; }
 .contracts-overview__empty { min-height:68px; display:flex; align-items:center; gap:11px; padding:13px 18px; background:#fbfdfe; color:#657d8e; }
 .contracts-overview__empty>i { width:34px; height:34px; display:grid; flex:0 0 34px; place-items:center; border-radius:9px; background:#eef5f9; color:#5f8095; font-size:1.05rem; }
 .contracts-overview__empty>span { display:flex; flex-direction:column; gap:2px; }

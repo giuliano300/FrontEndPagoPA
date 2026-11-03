@@ -43,8 +43,10 @@
     {
         var purchasedIuvCount = Model.Contract.totalPurchasedIuvCount > 0 ? Model.Contract.totalPurchasedIuvCount : Model.Contract.purchasedIuvCount;
         var usedPercentage = purchasedIuvCount > 0
-            ? Math.Min(100, (int)Math.Round(Model.Contract.paidIuvCount * 100d / purchasedIuvCount))
+            ? (int)Math.Round(Model.Contract.paidIuvCount * 100d / purchasedIuvCount)
             : 0;
+        var progressWidth = Math.Min(100, Math.Max(0, usedPercentage));
+        var isOverLimit = usedPercentage > 100;
         var isLow = Model.Contract.remainingIuvCount < purchasedIuvCount * .15;
 
         @if (contractExpired)
@@ -67,8 +69,8 @@
                 <div><span>Generati</span><strong>@Model.Contract.totalIuvCount.ToString("N0", new System.Globalization.CultureInfo("it-IT"))</strong></div>
                 <div><span>Rendicontati</span><strong>@Model.Contract.paidIuvCount.ToString("N0", new System.Globalization.CultureInfo("it-IT"))</strong></div>
             </div>
-            <div class="contracts-overview__usage" aria-label="@usedPercentage% degli IUV acquistati rendicontati">
-                <span class="contracts-overview__track"><span style="width:@usedPercentage%"></span></span>
+            <div class="contracts-overview__usage @(isOverLimit ? "is-over-limit" : "")" aria-label="@usedPercentage% degli IUV acquistati rendicontati">
+                <span class="contracts-overview__track"><span style="width:@progressWidth%"></span></span>
                 <small><span>Utilizzo</span><strong>@usedPercentage%</strong></small>
                 @if (Model.Contract.totalPrice.HasValue)
                 {
