@@ -96,6 +96,35 @@ function EliminaFiltro() {
     })
 };
 
+function DownloadHistoryCsv() {
+    $('.preload').show();
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    $.post('/Action/GeneraStoricoOperazioniCsv', {
+        dataInizio: $('#dataInizio').val(),
+        dataFine: $('#dataFine').val()
+    }, function (filePath) {
+        iframe.src = filePath;
+    }).always(function () {
+        $('.preload').hide();
+    });
+}
+
+function GetOperationDisplayTitle(operation) {
+    let title = typeof operation.title === 'string' ? operation.title.trim() : '';
+    if (title)
+        return title;
+
+    let operationMode = operation.bollettino === true ? "IUV + bollettino" : "Solo IUV";
+    let debtPositionCount = Number(operation.debtPositionCount);
+    if (Number.isFinite(debtPositionCount))
+        return "Operazione · " + debtPositionCount + (debtPositionCount === 1 ? " posizione debitoria" : " posizioni debitorie") + " · " + operationMode;
+
+    return "Operazione · " + operationMode;
+}
+
 
 function GetRichieste(r) {
     $('.operations-history').empty();
@@ -106,7 +135,7 @@ function GetRichieste(r) {
                 let options = { year: 'numeric', month: '2-digit', day: '2-digit' };
                 let insDateString = date.toLocaleDateString('it-IT', options);
                 var li = "<ul>" +
-                    "<li>" + r[i].title + "</li>" +
+                    "<li>" + GetOperationDisplayTitle(r[i]) + "</li>" +
                     "<li class='text-center'>" + insDateString + "</li>" +
                     "<li class='text-center'>" + r[i].operationType + "</li>";
 
@@ -126,9 +155,9 @@ function GetRichieste(r) {
                     }
                     else {
                         if (r[i].downloadableFile)
-                            li += "<li class='text-center' title='documento disponibile' onclick='GetZipFile(" + r[i].operationId + ")'><i class='las la-file-archive active-btn'></i></li>";
+                            li += "<li class='text-center'><button type='button' class='history-download-button' title='Scarica i bollettini' onclick='GetZipFile(" + r[i].operationId + ")'><i class='las la-file-archive'></i><span>Bollettini</span></button></li>";
                         else
-                            li += "<li class='text-center' title='documento non ancora disponibile'><i class='las la-file-archive not-active'></i></li>";
+                            li += "<li class='text-center' title='bollettini non ancora disponibili'>-</li>";
                     }
                 }
                 else {
@@ -138,7 +167,7 @@ function GetRichieste(r) {
                         li += "<li class='text-center' title='nessuna azione possibile'>-</li>";
                     }
                     else
-                        li += "<li class='text-center' title='documento non ancora disponibile'><i class='las la-file-archive not-active'></i></li>";
+                        li += "<li class='text-center' title='bollettini non ancora disponibili'>-</li>";
                 }
                 li += "</ul>";
 

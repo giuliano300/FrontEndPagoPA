@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Globalization;
 using System.IO.Compression;
 using System.Reflection;
@@ -540,25 +541,25 @@ namespace FrontEndPagoPA.Controllers
 
         public static void WriteCSVStoricoOperazioni(List<StoricoOperazioniViewModel> items, string filename)
         {
-            var csv = "Titolo;Rata;IUV;Tipologia;Data Scadenza;Importo;Anagrafica;Codice Fiscale;CAP;Comune;Provincia;Indirizzo\n";
+            var csv = "IUV;Codice Fiscale Debitore;Titolo;Rata;Tipologia;Data Scadenza;Importo;Anagrafica;CAP;Comune;Provincia;Indirizzo\n";
             foreach (var item in items)
             {
                 csv +=
+                    item.iuv + ";" +
+                    item.codiceIdentificativoUnivocoPagatore + ";" +
                     item.title + ";";
 
                 //per far visualizzare la descrizione delle multe e non 'Rata unica' senza poter distinguere se è il pagamento entro o dopo 5 giorni
-                if (item.description!.Contains("rata"))
+                if (item.description?.Contains("rata", StringComparison.OrdinalIgnoreCase) == true)
                     csv += (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";";
                 else
-                    csv += item.description + ";";
+                    csv += (item.description ?? (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString())) + ";";
 
-                csv += item.iuv + ";" +
-                GetOperationTypeString(item.operationTypeId) + ";" +
+                csv += GetOperationTypeString(item.operationTypeId) + ";" +
                 ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
                 string.Format("{0:0.00} €", item.price) + ";" +
                 item.anagraficaPagatore + ";" +
-                item.codiceIdentificativoUnivocoPagatore + ";" +
-                item.capPagatore!.PadLeft(5, '0') + ";" + 
+                (item.capPagatore ?? "").PadLeft(5, '0') + ";" +
                 item.comunePagatore + ";" +
                 item.provinciaPagatore + ";" +
                 item.indirizzoPagatore + ";" + "\n";
@@ -569,14 +570,14 @@ namespace FrontEndPagoPA.Controllers
 
         public static void WriteCSVRendicontazione(List<GetInstallmentsResult> items, string filename)
         {
-            var csv = "Nominativo;Codice Fiscale;Tipologia;IUV;Importo;Rata;Data Scadenza;Pagato;Data Pagamento\n";
+            var csv = "IUV;Codice Fiscale Debitore;Nominativo;Tipologia;Importo;Rata;Data Scadenza;Pagato;Data Pagamento\n";
             foreach (var item in items)
             {
                 csv +=
-                    item.anagraficaPagatore + ";" +
-                    item.codiceIdentificativoUnivocoPagatore + ";" +
-                    GetOperationTypeString(item.operationTypeId) + ";" +
                     item.iuv + ";" +
+                    item.codiceIdentificativoUnivocoPagatore + ";" +
+                    item.anagraficaPagatore + ";" +
+                    GetOperationTypeString(item.operationTypeId) + ";" +
                     string.Format("{0:0.00} €", item.price) + ";" +
                     (item.numeroRata == 0 ? "Rata unica" : item.numeroRata.ToString()) + ";" +
                     ' ' + item.expirationDate.ToString("dd/MM/yyyy") + ";" +
@@ -590,7 +591,7 @@ namespace FrontEndPagoPA.Controllers
 
         public static void WriteCSVRichiesteEsitate(List<GetInstallmentsResult> items, string filename)
         {
-            var csv = "Iuv;Codice Fiscale;Tipologia;Importo;Rata;Data Scadenza;Stato\n";
+            var csv = "IUV;Codice Fiscale Debitore;Tipologia;Importo;Rata;Data Scadenza;Stato\n";
             foreach (var item in items)
             {
                 csv +=
@@ -2109,6 +2110,56 @@ namespace FrontEndPagoPA.Controllers
             ResponseDto? response = await _actionService.GetIUVFromOperation(id);
             l = JsonConvert.DeserializeObject<List<StoricoOperazioniViewModel>>(response.Result!.ToString()!);
             WriteCSVStoricoOperazioni(l!, webRootPath + fileName);
+            return fileName;
+        }
+
+        [HttpPost]
+        public async Task<string> GeneraStoricoOperazioniCsv(IFormCollection fc)
+        {
+            Globals globals = new(_tokenProvider);
+            TokenDto token = globals.GetDeserializedToken();
+            string today = DateTime.Today.ToString();
+            string append = "";
+
+            string dataInizio = fc["dataInizio"]!;
+            string dataFine = fc["dataFine"]!;
+
+            if (!string.IsNullOrWhiteSpace(dataInizio))
+            {
+                append += "&dataInizio=" + DateTime.Parse(dataInizio).ToString("MM/dd/yyyy");
+                today = "";
+            }
+
+            if (!string.IsNullOrWhiteSpace(dataFine))
+            {
+                append += "&dataFine=" + DateTime.Parse(dataFine).ToString("MM/dd/yyyy");
+                today = "";
+            }
+
+            var operationsResponse = await _actionService.GetOperationsByUserId(token.sub, today, 1, 1_000_000_000, append);
+            var rows = new List<StoricoOperazioniViewModel>();
+
+            if (operationsResponse.IsSuccess && operationsResponse.Result is not null)
+            {
+                var operations = JArray.Parse(Convert.ToString(operationsResponse.Result) ?? "[]");
+                foreach (var operation in operations)
+                {
+                    int operationId = operation.Value<int?>("operationId") ?? operation.Value<int?>("id") ?? 0;
+                    if (operationId <= 0)
+                        continue;
+
+                    var iuvResponse = await _actionService.GetIUVFromOperation(operationId);
+                    if (!iuvResponse.IsSuccess || iuvResponse.Result is null)
+                        continue;
+
+                    var operationRows = JsonConvert.DeserializeObject<List<StoricoOperazioniViewModel>>(Convert.ToString(iuvResponse.Result) ?? "[]");
+                    if (operationRows is not null)
+                        rows.AddRange(operationRows);
+                }
+            }
+
+            string fileName = Globals.FolderDownloadCsv + DateTime.Now.Ticks + ".csv";
+            WriteCSVStoricoOperazioni(rows, Path.Combine(_webHostEnvironment.WebRootPath, fileName.TrimStart('/', '\\')));
             return fileName;
         }
 
