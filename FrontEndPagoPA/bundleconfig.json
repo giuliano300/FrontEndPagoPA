@@ -44,6 +44,28 @@
     "sourceMap": false
   },
   {
+    "outputFileName": "wwwroot/js/private/richiesteNonValidate.min.js",
+    "inputFiles": [
+      "wwwroot/js/private/RichiesteNonValidate.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/private/dashboard.min.js",
+    "inputFiles": [
+      "wwwroot/js/private/Dashboard.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
     "outputFileName": "wwwroot/js/private/storicoOperazioni.js",
     "inputFiles": [
       "wwwroot/js/private/StoricoOperazioni.js"

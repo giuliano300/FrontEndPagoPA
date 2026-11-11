@@ -490,6 +490,10 @@ body.app-body,.portal-app,.portal-container { margin:0!important; padding:0!impo
 .action-card--primary .action-card__content strong { color:#fff; }
 .action-card--primary .action-card__content small { color:rgba(255,255,255,.78); }
 .action-card--primary .action-card__arrow { background:rgba(255,255,255,.15); color:#fff; }
+.action-card--primary .action-card__arrow {
+  display:grid!important; visibility:visible!important; opacity:1!important; z-index:2;
+  border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.2)!important;
+}
 .action-card--primary:hover { box-shadow:0 18px 38px rgba(7,105,178,.3); }
 
 .report-card {
@@ -506,16 +510,47 @@ body.app-body,.portal-app,.portal-container { margin:0!important; padding:0!impo
 .report-card > i { width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:#f3f6f8; }
 .report-card--waiting::before { background:#df9a2d; }
 .report-card--success::before { background:#2a9d6f; }
+.report-card--error::before { background:#cf4e4e; }
+.report-card--error .report-card__icon { color:#b52f2f; background:#fff0f0; }
 .report-card--payments::before { background:#7c68cb; }
 
 @media(min-width:992px) {
-  .quick-actions__grid,.report-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
-  .quick-actions__grid > *:last-child,.report-grid > *:last-child { grid-column:auto; }
+  .quick-actions__grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .quick-actions__grid > *:last-child { grid-column:auto; }
+}
+.dashboard-reports .report-grid { grid-template-columns:repeat(3,minmax(0,1fr)); align-items:stretch; }
+.dashboard-reports .report-grid { gap:18px; }
+.dashboard-reports .report-grid > * { grid-column:auto!important; height:100%; min-height:118px; }
+.dashboard-reports .report-card {
+  overflow:hidden; padding:21px 22px; border-radius:16px;
+  background:linear-gradient(145deg,#fff 0%,#fbfdff 100%);
+  box-shadow:0 9px 25px rgba(20,52,77,.07);
+}
+.dashboard-reports .report-card::before { width:5px; border-radius:16px 0 0 16px; }
+.dashboard-reports .report-card__icon { width:50px; height:50px; font-size:1.5rem; }
+.dashboard-reports .report-card > span:nth-child(2) { gap:7px; }
+.dashboard-reports .report-card strong { font-size:1rem; line-height:1.25; }
+.dashboard-reports .report-card small { font-size:.81rem; line-height:1.45; }
+.dashboard-reports .report-card > i {
+  border:1px solid #e1e9ef; background:#fff; color:#7690a3;
+  transition:transform .2s ease,color .2s ease,border-color .2s ease;
+}
+.dashboard-reports .report-card:hover > i { transform:translateX(3px); color:#0878d1; border-color:#b9d8ef; }
+.dashboard-reports .report-card--waiting .report-card__icon { color:#a66300; background:#fff4df; }
+.dashboard-reports .report-card--success .report-card__icon { color:#168758; background:#e8f7f0; }
+.dashboard-reports .report-card--payments .report-card__icon { color:#7357c7; background:#f0edff; }
+.report-card--history::before { background:#3785b5; }
+.report-card--users::before { background:#d16e36; }
+.dashboard-reports .report-card--history .report-card__icon { color:#26739f; background:#eaf5fb; }
+.dashboard-reports .report-card--users .report-card__icon { color:#b85825; background:#fff1e8; }
+@media(max-width:991px) and (min-width:768px) {
+  .dashboard-reports .report-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media(max-width:767px) {
   .quick-actions__grid,.report-grid { gap:12px; }
   .action-card { min-height:138px; padding:19px; }
   .report-card { min-height:96px; }
+  .dashboard-reports .report-grid { grid-template-columns:1fr; }
 }
 
 /* V14 — generous navigation rhythm */
@@ -768,6 +803,14 @@ body.app-body,.portal-app,.portal-container { margin:0!important; padding:0!impo
 }
 .archive-list-accepted strong { background:#e9f8f1; color:#197451!important; }
 .archive-list-accepted strong[style*="#EA5555"] { background:#fff0f0; color:#c34545!important; }
+.archive-list-accepted .validation-status { flex-direction:column; align-items:flex-start!important; gap:5px; }
+.archive-list-accepted .validation-error-message { display:block; max-width:100%; color:#9f2f2f; font-size:.68rem; line-height:1.25; overflow-wrap:anywhere; }
+.report-card__count {
+  display:inline-flex; min-width:30px; min-height:22px; align-items:center; justify-content:center;
+  margin-left:5px; padding:2px 8px; border-radius:999px;
+  background:#c83f3f; color:#fff; font-size:.72rem; line-height:1;
+  box-shadow:0 3px 8px rgba(174,42,42,.2);
+}
 .operations-history .active-btn,.archive-payments button.expiration-action {
   width:34px; height:34px; display:inline-grid; place-items:center; border:1px solid #d4e5f1;
   border-radius:10px; background:#eef7fd; color:#0878d1; font-size:1.15rem;

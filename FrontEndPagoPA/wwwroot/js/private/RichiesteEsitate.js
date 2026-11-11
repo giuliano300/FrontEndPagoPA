@@ -25,6 +25,7 @@ function loadOperationTypes() {
 function CheckOperationTypeId(id) {
     return operationTypes[id] || '';
 }
+
 function DownloadList() {
     $('.preload').show();
 
@@ -195,11 +196,7 @@ function GetRichieste(r) {
 
                 li += "<li>" + expDateString + "</li>";
 
-                if (r[i].valid != true)
-                    li += "<li><strong style='color:#EA5555;'><i class='las la-times'></i>&nbsp;NON VALIDATA</strong></li>";
-
-                else
-                    li += "<li><strong><i class='las la-check'></i>&nbsp;ESITATA</strong></li>";
+                li += "<li><strong><i class='las la-check'></i>&nbsp;ESITATA</strong></li>";
 
 
                 li += "</ul>";

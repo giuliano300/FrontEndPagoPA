@@ -49,6 +49,11 @@ namespace FrontEndPagoPA.Controllers
             return View();
         }
 
+        public IActionResult RichiesteNonValidate()
+        {
+            return View();
+        }
+
         public async Task<string> GetRendicontazionePagamenti(int page = 1, int itemsPerPage = 100, bool paid = true, string nominativo = "", string dataInizio = "", string dataFine = "", string iuv = "", string codiceFiscale = "", string importoMin = "", string importoMax = "")
         {
             Globals g = new(_tokenProvider);
@@ -239,13 +244,45 @@ namespace FrontEndPagoPA.Controllers
             if (importoMax != null && importoMax != "")
                 append += "&importoMax=" + importoMax;
 
-            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, false, null, page, itemsPerPage, append);
+            ResponseDto? response = await _actionService.GetInstallmentsAsync(token.sub, true, today, false, true, page, itemsPerPage, append);
 
             if (response is not null && response.IsSuccess)
                 _cache.Set("richiesteEsitate", JsonConvert.DeserializeObject<List<GetInstallmentsResult>>(Convert.ToString(response.Result)!));
             else
                 _logger.Error(response?.Message);
 
+            return JsonConvert.SerializeObject(response);
+        }
+
+        public async Task<string> GetRichiesteNonValidate(int page = 1, int itemsPerPage = 100, string codiceFiscale = "", string iuv = "", string dataInizio = "", string dataFine = "", string importoMin = "", string importoMax = "")
+        {
+            string append = "";
+
+            if (!string.IsNullOrWhiteSpace(codiceFiscale))
+                append += "&codiceFiscale=" + Uri.EscapeDataString(codiceFiscale);
+
+            if (!string.IsNullOrWhiteSpace(iuv))
+                append += "&iuv=" + Uri.EscapeDataString(iuv);
+
+            if (!string.IsNullOrWhiteSpace(dataInizio))
+                append += "&dataInizio=" + DateTime.Parse(dataInizio).ToString("MM/dd/yyyy");
+
+            if (!string.IsNullOrWhiteSpace(dataFine))
+                append += "&dataFine=" + DateTime.Parse(dataFine).ToString("MM/dd/yyyy");
+
+            if (!string.IsNullOrWhiteSpace(importoMin))
+                append += "&importoMin=" + Uri.EscapeDataString(importoMin);
+
+            if (!string.IsNullOrWhiteSpace(importoMax))
+                append += "&importoMax=" + Uri.EscapeDataString(importoMax);
+
+            var response = await _actionService.GetNotValidatedInstallmentsAsync(page, itemsPerPage, append);
+            return JsonConvert.SerializeObject(response);
+        }
+
+        public async Task<string> GetRichiesteNonValidateCount()
+        {
+            var response = await _actionService.GetNotValidatedInstallmentsCountAsync();
             return JsonConvert.SerializeObject(response);
         }
 

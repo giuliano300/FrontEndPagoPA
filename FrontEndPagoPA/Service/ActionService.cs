@@ -25,6 +25,24 @@ namespace FrontEndPagoPA.Service
             });
         }
 
+        public async Task<ResponseDto> GetNotValidatedInstallmentsAsync(int page = 1, int itemsPerPage = 100, string append = "")
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = ApiType.GET,
+                Url = apiPagoPABase + $"/api/Installment/not-validated?page={page}&itemsPerPage={itemsPerPage}{append}"
+            });
+        }
+
+        public async Task<ResponseDto> GetNotValidatedInstallmentsCountAsync()
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                ApiType = ApiType.GET,
+                Url = apiPagoPABase + "/api/Installment/not-validated/count"
+            });
+        }
+
         public async Task<ResponseDto> GetRendicontazione(string userId, string? today, bool? paid, string append = "")
         {
             var queryString = $"?userId={userId}&today={today}&paid={paid}{append}";

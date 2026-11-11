@@ -16,5 +16,6 @@ namespace FrontEndPagoPA.Models
         public bool? paid { get; set; }
         public int operationTypeId { get; set; }
         public string description { get; set; }
+        public string? message { get; set; }
     }
 }

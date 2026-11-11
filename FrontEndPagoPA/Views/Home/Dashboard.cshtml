@@ -99,10 +99,15 @@
 </section>
 
 <section class="dashboard-reports fade-in" aria-labelledby="reports-title">
-    <div class="section-heading"><div><span class="eyebrow">Monitoraggio</span><h2 id="reports-title">Richieste e pagamenti</h2></div><a href="/Action/StoricoOperazioni" class="section-link">Vedi lo storico <i class='bx bx-right-arrow-alt'></i></a></div>
+    <div class="section-heading"><div><span class="eyebrow">Menu veloce</span><h2 id="reports-title">Gestione e monitoraggio</h2></div></div>
     <div class="report-grid">
         <a class="report-card report-card--waiting" href="/Action/RichiesteInAttesa"><span class="report-card__icon"><i class='bx bx-time-five'></i></span><span><strong>Richieste in attesa</strong><small>Controlla le operazioni da completare</small></span><i class='bx bx-chevron-right'></i></a>
         <a class="report-card report-card--success" href="/Action/RichiesteEsitate"><span class="report-card__icon"><i class='bx bx-check-circle'></i></span><span><strong>Richieste esitate</strong><small>Consulta gli esiti delle richieste inviate</small></span><i class='bx bx-chevron-right'></i></a>
+        <a class="report-card report-card--error" href="/Action/RichiesteNonValidate"><span class="report-card__icon"><i class='bx bx-error-circle'></i></span><span><strong>Richieste non valide <span id="invalid-iuv-count" class="report-card__count">—</span></strong><small>Consulta gli IUV rifiutati e il motivo dell’errore</small></span><i class='bx bx-chevron-right'></i></a>
         <a class="report-card report-card--payments" href="/Action/RendicontazionePagamenti"><span class="report-card__icon"><i class='bx bx-euro'></i></span><span><strong>Rendicontazione</strong><small>Verifica incassi e pagamenti ricevuti</small></span><i class='bx bx-chevron-right'></i></a>
+        <a class="report-card report-card--history" href="/Action/StoricoOperazioni"><span class="report-card__icon"><i class='bx bx-archive'></i></span><span><strong>Storico operazioni</strong><small>Consulta tutte le operazioni effettuate</small></span><i class='bx bx-chevron-right'></i></a>
+        <a class="report-card report-card--users" href="/User/UsersList"><span class="report-card__icon"><i class='bx bx-group'></i></span><span><strong>Utenti</strong><small>Gestisci gli utenti e le relative autorizzazioni</small></span><i class='bx bx-chevron-right'></i></a>
     </div>
 </section>
+
+<script src="~/js/private/Dashboard.js" asp-append-version="true"></script>

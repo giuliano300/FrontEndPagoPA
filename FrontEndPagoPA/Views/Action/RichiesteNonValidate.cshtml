@@ -1,0 +1,75 @@
+@{
+    ViewBag.Title = "Richieste Non Valide";
+}
+
+<div class="row">
+    <div class="col-lg-12 fade-in">
+        <h4>Archivio richieste</h4>
+        <h1>Richieste non valide</h1>
+    </div>
+</div>
+
+<div class="row fade-in">
+    <div class="col-md-12">
+        <div class="card request-archive">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>IUV rifiutati durante la validazione</h5>
+                    <p>Consulta il motivo restituito dal servizio e individua le posizioni da rigenerare.</p>
+                </div>
+            </div>
+            <div class="row form-site p-0">
+                <form class="archive-filter-form">
+                    <div class="archive-filter-grid archive-filter-grid--esitate">
+                        <label>Data scadenza da<input type="date" id="dataInizio" /></label>
+                        <label>Data scadenza a<input type="date" id="dataFine" /></label>
+                        <label>Codice fiscale<input type="text" id="codiceFiscale" /></label>
+                        <label>IUV<input type="text" id="iuv" /></label>
+                        <label>Importo min<input type="number" id="importoMinimo" min="0" step="0.01" /></label>
+                        <label>Importo max<input type="number" id="importoMassimo" min="0" step="0.01" /></label>
+                    </div>
+                    <div class="archive-filter-actions">
+                        <input type="button" id="filtraRichieste" value="CERCA" class="btn_filter" onclick="FiltraRichiesteNonValidate()" />
+                        <input type="button" value="SVUOTA" class="btn_filter" onclick="SvuotaFiltriNonValidati()" />
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="archive-list-accepted__header">
+                        <li>Id</li>
+                        <li>Codice fiscale</li>
+                        <li>IUV</li>
+                        <li>Tipologia</li>
+                        <li>Importo</li>
+                        <li>Rata</li>
+                        <li>Data scadenza</li>
+                        <li>Errore</li>
+                    </ul>
+                    <div class="preload preload-mini"><i class='bx bx-loader bx-spin'></i><br /><p>Attendere caricamento in corso...</p></div>
+                    <div class="archive-list-accepted archive-list-not-validated"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="divider"></div>
+                    <div class="table-footer-bar">
+                        <label class="table-page-size">
+                            <span>Record per pagina</span>
+                            <select onchange="CambiaElementiPerPaginaNonValidati(this.value)" aria-label="Record per pagina">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100" selected>100</option>
+                                <option value="200">200</option>
+                                <option value="500">500</option>
+                            </select>
+                        </label>
+                        <div class="pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/private/RichiesteNonValidate.js" asp-append-version="true"></script>
