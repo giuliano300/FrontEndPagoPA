@@ -1570,3 +1570,247 @@ body.app-body,.portal-app,.portal-container { margin:0!important; padding:0!impo
   .table-footer-bar { align-items:flex-start; flex-direction:column; }
   .table-footer-bar .pagination { width:100%; justify-content:flex-start!important; }
 }
+
+/* V31 — consolidated responsive shell, filters and data cards */
+.archive-filter-grid--waiting { grid-template-columns:repeat(4,minmax(150px,1fr)); }
+.archive-filter-grid--payments { grid-template-columns:repeat(4,minmax(150px,1fr)); }
+
+@media(max-width:991px) {
+  body.app-body { overflow-x:hidden; }
+  .header {
+    position:sticky!important; top:0; z-index:1200;
+    width:100%!important; height:60px; min-height:60px; margin:0!important; padding:0 12px!important;
+    border-bottom:1px solid #dfe8ee; box-shadow:0 4px 18px rgba(13,48,73,.07);
+  }
+  .header-inner { gap:8px; }
+  .header-start { min-width:0; }
+  .header-end { gap:6px; }
+  .mobile-menu-toggle {
+    width:40px; height:40px; flex:0 0 40px; margin:0 7px 0 0!important;
+    border-radius:10px; color:#26485f; font-size:1.45rem;
+  }
+  .mobile-menu-toggle:hover { background:#edf6fb; color:#0878d1; }
+  .header-title::before { height:20px; margin-right:10px; }
+  .header-title strong { max-width:calc(100vw - 170px)!important; font-size:.88rem; }
+  .header-primary-action,.user-menu-trigger { width:40px!important; height:40px; min-height:40px; }
+  .header-primary-action { padding:0!important; border-radius:10px; }
+  .header-create-chevron { display:none!important; }
+  .user-menu-trigger { justify-content:center; padding:0!important; }
+  .user-avatar { width:36px; height:36px; flex-basis:36px; }
+  .user-menu-trigger > .bx-chevron-down { display:none; }
+
+  .sidebar-column {
+    position:fixed!important; inset:0 auto 0 0!important; z-index:1400!important;
+    width:min(88vw,328px)!important; max-width:328px!important; height:100dvh!important;
+    transform:translateX(-104%); background:#082f52!important;
+    box-shadow:22px 0 55px rgba(2,20,36,.28); transition:transform .24s ease!important;
+  }
+  .nav-open .sidebar-column { transform:translateX(0)!important; }
+  .nav {
+    position:relative!important; width:100%!important; height:100dvh!important; min-height:100dvh!important;
+    padding:14px 16px 18px!important; overflow-x:hidden!important; overflow-y:auto!important;
+    overscroll-behavior:contain; background:linear-gradient(180deg,#08385f 0%,#082f52 48%,#06243e 100%)!important;
+  }
+  .sidebar-brand {
+    min-height:52px!important; display:flex!important; margin:0 48px 12px 0!important;
+    padding:4px 4px 12px!important; border-bottom:1px solid rgba(255,255,255,.1)!important;
+  }
+  .sidebar-brand img { width:38px!important; height:38px!important; }
+  .sidebar-brand span { color:#fff!important; font-size:1.05rem!important; }
+  .nav__mobile-head { top:13px!important; right:12px!important; z-index:2; }
+  .mobile-menu-close { width:40px!important; height:40px!important; border-radius:10px!important; }
+  .mobile-menu-close:hover { background:rgba(255,255,255,.09); }
+  .nav-workspace { margin:0 0 16px!important; }
+  .nav > ul > li.nav-label { margin-left:10px; }
+  .nav > ul > li:not(.nav-label) { margin:5px 0; }
+  .nav > ul > li:not(.nav-label) > a,
+  .nav > ul > li:not(.nav-label) > .nav-parent { min-height:48px!important; font-size:.81rem; }
+  .nav-trust { margin:18px 0 0!important; }
+  .nav-backdrop { z-index:1350!important; background:rgba(4,20,34,.62)!important; backdrop-filter:blur(2px); }
+  .nav-open { overflow:hidden!important; }
+
+  .portal-container > .row { min-height:calc(100vh - 60px); }
+  .content-column { width:100%!important; max-width:100%!important; padding:0!important; }
+  .main { width:100%; max-width:none; min-height:calc(100vh - 120px); padding:16px 14px 38px!important; }
+  .main > .row { margin-right:-5px; margin-left:-5px; }
+  .main > .row > [class*="col-"] { padding-right:5px; padding-left:5px; }
+  .main > .row:first-child:has(h1) {
+    min-height:0!important; margin-bottom:14px!important; padding:19px 18px!important;
+    border-radius:15px; box-shadow:0 6px 20px rgba(18,48,72,.045);
+  }
+  .main > .row:first-child:has(h1)::before { right:-135px; top:-125px; }
+  .main > .row:first-child:has(h1) h4 { margin-bottom:7px; font-size:.62rem; }
+  .main > .row:first-child:has(h1) h1 { font-size:1.65rem!important; line-height:1.12; }
+  .archive-filter-grid--payments { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .archive-table-card { border-radius:14px!important; }
+  .header_nav_user > ul { position:fixed!important; top:66px!important; right:10px!important; width:min(280px,calc(100vw - 20px)); min-width:0!important; }
+}
+
+@media(min-width:901px) {
+  .archive-table-card .col-md-12:has(> .archive-payments__header) {
+    overflow-x:auto!important; overflow-y:visible!important; padding-bottom:8px;
+    scrollbar-width:thin; scrollbar-color:#9db5c5 #edf3f6;
+  }
+  .archive-table-card .col-md-12:has(> .archive-payments__header)::-webkit-scrollbar { height:7px; }
+  .archive-table-card .col-md-12:has(> .archive-payments__header)::-webkit-scrollbar-track { border-radius:99px; background:#edf3f6; }
+  .archive-table-card .col-md-12:has(> .archive-payments__header)::-webkit-scrollbar-thumb { border-radius:99px; background:#9db5c5; }
+  .archive-payments__header,.archive-payments { min-width:1060px!important; }
+}
+
+@media(max-width:900px) {
+  .archive-filter-panel { border-radius:14px; }
+  .archive-filter-panel__summary { min-height:64px; padding:11px 12px; }
+  .archive-filter-panel__copy strong { font-size:.87rem; }
+  .archive-filter-panel__copy small { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .archive-filter-panel__state { width:32px; height:32px; flex-basis:32px; }
+  .archive-filter-panel__body { padding:14px 12px 16px!important; }
+  .archive-filter-grid,
+  .archive-filter-grid--history,
+  .archive-filter-grid--waiting,
+  .archive-filter-grid--esitate,
+  .archive-filter-grid--payments { grid-template-columns:1fr!important; gap:11px; }
+  .archive-filter-panel .form-site label { display:flex; flex-direction:column; gap:6px; }
+  .archive-filter-panel .form-site input:not([type="button"]),
+  .archive-filter-panel .form-site select { width:100%!important; min-height:44px; margin:0!important; }
+  .archive-filter-actions { display:grid!important; grid-template-columns:1fr 1fr; gap:9px; margin-top:14px; }
+  .archive-filter-actions .btn_filter { width:100%!important; min-width:0!important; height:44px!important; }
+  .archive-filter-actions .btn-download-list { grid-column:1/-1; }
+  .archive-table-toolbar { min-height:64px; padding:11px 12px; }
+  .archive-table-toolbar > span:last-child { min-width:0; }
+  .archive-table-toolbar strong { font-size:.88rem; }
+  .archive-table-toolbar small { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .archive-table-card > .row:not(:has(.pagination)) { padding:12px!important; }
+  .archive-table-card > .row:has(.pagination) { padding:0 12px 14px!important; }
+
+  .operations-history__header,
+  .archive-list-waiting__header,
+  .archive-list-accepted__header,
+  .archive-payments__header { display:none!important; }
+  .archive-table-card .col-md-12:has(> .operations-history__header),
+  .archive-table-card .col-md-12:has(> .archive-list-waiting__header),
+  .archive-table-card .col-md-12:has(> .archive-list-accepted__header),
+  .archive-table-card .col-md-12:has(> .archive-payments__header) { overflow:visible!important; padding:0!important; }
+  .operations-history,
+  .archive-list-waiting,
+  .archive-list-accepted,
+  .archive-payments {
+    width:100%!important; min-width:0!important; height:auto!important; max-height:none!important;
+    margin:0!important; overflow:visible!important; border:0!important; border-radius:0!important; background:transparent!important;
+  }
+  .operations-history > ul,
+  .archive-list-waiting > ul,
+  .archive-list-accepted > ul,
+  .archive-payments > ul {
+    width:100%!important; min-width:0!important; display:grid!important; grid-template-columns:1fr 1fr!important;
+    gap:0!important; margin:0 0 12px!important; overflow:hidden;
+    border:1px solid #dce7ee!important; border-radius:13px!important; background:#fff!important;
+    box-shadow:0 5px 16px rgba(18,48,72,.045);
+  }
+  .operations-history > ul > li,
+  .archive-list-waiting > ul > li,
+  .archive-list-accepted > ul > li,
+  .archive-payments > ul > li {
+    width:auto!important; min-width:0!important; min-height:58px; display:flex!important; align-items:flex-start!important;
+    justify-content:center!important; flex-direction:column; gap:4px; padding:10px 11px!important;
+    overflow-wrap:anywhere; border:0!important; border-bottom:1px solid #edf2f5!important;
+    color:#29475c; font-size:.75rem; line-height:1.35; text-align:left!important; white-space:normal!important;
+  }
+  .operations-history > ul > li:nth-child(odd),
+  .archive-list-waiting > ul > li:nth-child(odd),
+  .archive-list-accepted > ul > li:nth-child(odd),
+  .archive-payments > ul > li:nth-child(odd) { border-right:1px solid #edf2f5!important; }
+  .operations-history > ul > li::before,
+  .archive-list-waiting > ul > li::before,
+  .archive-list-accepted > ul > li::before,
+  .archive-payments > ul > li::before {
+    display:block; color:#8193a0; font-size:.58rem; font-weight:800; letter-spacing:.055em; text-transform:uppercase;
+  }
+  .operations-history > ul > li:first-child,
+  .archive-payments > ul > li:first-child { grid-column:1/-1; border-right:0!important; background:#f6fafc; }
+  .operations-history > ul > li:first-child { font-size:.82rem; font-weight:760; }
+  .operations-history > ul > li:nth-child(1)::before { content:'Operazione'; }
+  .operations-history > ul > li:nth-child(2)::before { content:'Data creazione'; }
+  .operations-history > ul > li:nth-child(3)::before { content:'Tipologia'; }
+  .operations-history > ul > li:nth-child(4)::before { content:'Tipo'; }
+  .operations-history > ul > li:nth-child(5)::before { content:'Avanzamento'; }
+  .operations-history > ul > li:nth-child(6)::before { content:'Scarica IUV'; }
+  .operations-history > ul > li:nth-child(7)::before { content:'Bollettini'; }
+  .archive-list-waiting > ul > li:nth-child(1)::before,
+  .archive-list-accepted > ul > li:nth-child(1)::before { content:'ID'; }
+  .archive-list-waiting > ul > li:nth-child(2)::before,
+  .archive-list-accepted > ul > li:nth-child(2)::before { content:'Codice fiscale'; }
+  .archive-list-waiting > ul > li:nth-child(3)::before,
+  .archive-list-accepted > ul > li:nth-child(3)::before { content:'IUV'; }
+  .archive-list-waiting > ul > li:nth-child(4)::before,
+  .archive-list-accepted > ul > li:nth-child(4)::before { content:'Tipologia'; }
+  .archive-list-waiting > ul > li:nth-child(5)::before,
+  .archive-list-accepted > ul > li:nth-child(5)::before { content:'Importo'; }
+  .archive-list-waiting > ul > li:nth-child(6)::before,
+  .archive-list-accepted > ul > li:nth-child(6)::before { content:'Rata'; }
+  .archive-list-waiting > ul > li:nth-child(7)::before,
+  .archive-list-accepted > ul > li:nth-child(7)::before { content:'Scadenza'; }
+  .archive-list-waiting > ul > li:nth-child(8)::before,
+  .archive-list-accepted > ul > li:nth-child(8)::before { content:'Stato'; }
+  .archive-payments > ul > li:nth-child(1)::before { content:'Nominativo'; }
+  .archive-payments > ul > li:nth-child(2)::before { content:'Codice fiscale'; }
+  .archive-payments > ul > li:nth-child(3)::before { content:'IUV'; }
+  .archive-payments > ul > li:nth-child(4)::before { content:'Tipologia'; }
+  .archive-payments > ul > li:nth-child(5)::before { content:'Importo'; }
+  .archive-payments > ul > li:nth-child(6)::before { content:'Rata'; }
+  .archive-payments > ul > li:nth-child(7)::before { content:'Scadenza'; }
+  .archive-payments > ul > li:nth-child(8)::before { content:'Pagamento'; }
+  .archive-payments > ul > li:nth-child(9)::before { content:'Data pagamento'; }
+  .archive-payments > ul > li:nth-child(10)::before { content:'Azioni'; }
+  .operations-history > ul:has(> li:only-child),
+  .archive-list-waiting > ul:has(> li:only-child),
+  .archive-list-accepted > ul:has(> li:only-child),
+  .archive-payments > ul:has(> li:only-child) { display:block!important; }
+  .operations-history > ul:has(> li:only-child) > li,
+  .archive-list-waiting > ul:has(> li:only-child) > li,
+  .archive-list-accepted > ul:has(> li:only-child) > li,
+  .archive-payments > ul:has(> li:only-child) > li { min-height:84px; align-items:center!important; text-align:center!important; }
+  .operations-history > ul:has(> li:only-child) > li::before,
+  .archive-list-waiting > ul:has(> li:only-child) > li::before,
+  .archive-list-accepted > ul:has(> li:only-child) > li::before,
+  .archive-payments > ul:has(> li:only-child) > li::before { display:none; }
+
+  .table-footer-bar { gap:12px; padding-top:2px; }
+  .table-page-size { width:100%; justify-content:space-between; }
+  .table-footer-bar .pagination,.pagination { width:100%; }
+  .pagination { gap:8px!important; }
+  .pagination-controls { max-width:100%; overflow-x:auto; }
+  .pagination-summary { align-self:flex-start; }
+  footer { padding:16px 14px; }
+  footer .row > div { align-items:flex-start; flex-direction:column; gap:4px; }
+}
+
+@media(min-width:768px) and (max-width:900px) {
+  .archive-filter-grid,
+  .archive-filter-grid--history,
+  .archive-filter-grid--waiting,
+  .archive-filter-grid--esitate,
+  .archive-filter-grid--payments { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+  .archive-filter-actions { display:flex!important; flex-wrap:wrap; }
+  .archive-filter-actions .btn_filter { width:auto!important; min-width:120px!important; }
+  .archive-filter-actions .btn-download-list { grid-column:auto; }
+  .operations-history > ul,
+  .archive-list-waiting > ul,
+  .archive-list-accepted > ul,
+  .archive-payments > ul { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+}
+
+@media(max-width:420px) {
+  .main { padding-right:10px!important; padding-left:10px!important; }
+  .header-title strong { max-width:calc(100vw - 158px)!important; }
+  .archive-filter-panel__copy small,.archive-table-toolbar small { max-width:190px; }
+  .operations-history > ul,
+  .archive-list-waiting > ul,
+  .archive-list-accepted > ul,
+  .archive-payments > ul { grid-template-columns:1fr!important; }
+  .operations-history > ul > li:nth-child(odd),
+  .archive-list-waiting > ul > li:nth-child(odd),
+  .archive-list-accepted > ul > li:nth-child(odd),
+  .archive-payments > ul > li:nth-child(odd) { border-right:0!important; }
+  .archive-filter-actions { grid-template-columns:1fr; }
+  .archive-filter-actions .btn-download-list { grid-column:auto; }
+}
