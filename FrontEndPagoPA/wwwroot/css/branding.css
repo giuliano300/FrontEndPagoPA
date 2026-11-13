@@ -1,0 +1,60 @@
+/* Portale PagoPA — official logo system */
+.portal-brand-logo {
+  display:block;
+  max-width:100%;
+  height:auto;
+  object-fit:contain;
+}
+
+.sidebar-brand {
+  justify-content:flex-start;
+}
+
+.sidebar-brand .portal-brand-logo {
+  width:178px!important;
+  height:auto!important;
+  max-height:44px;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+.login-brand .portal-brand-logo {
+  width:228px;
+  height:auto;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+
+.login-mobile-brand {
+  width:100%;
+}
+
+.login-mobile-brand .portal-brand-logo {
+  width:188px;
+  height:auto;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+
+.not-supported .portal-brand-logo {
+  width:150px;
+  max-width:42vw;
+  height:auto;
+}
+
+@media(max-width:991px) {
+  .sidebar-brand .portal-brand-logo {
+    width:186px!important;
+    max-height:46px;
+  }
+}
+
+@media(max-width:480px) {
+  .login-mobile-brand .portal-brand-logo {
+    width:166px;
+  }
+}

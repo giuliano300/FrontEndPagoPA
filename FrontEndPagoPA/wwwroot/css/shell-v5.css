@@ -1663,17 +1663,22 @@ body.app-body,.portal-app,.portal-container { margin:0!important; padding:0!impo
   .archive-filter-panel__copy strong { font-size:.87rem; }
   .archive-filter-panel__copy small { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .archive-filter-panel__state { width:32px; height:32px; flex-basis:32px; }
-  .archive-filter-panel__body { padding:14px 12px 16px!important; }
+  .archive-filter-panel__body { padding:12px!important; }
+  .archive-filter-form { width:100%; max-width:100%; min-width:0; overflow:hidden; }
   .archive-filter-grid,
   .archive-filter-grid--history,
   .archive-filter-grid--waiting,
   .archive-filter-grid--esitate,
-  .archive-filter-grid--payments { grid-template-columns:1fr!important; gap:11px; }
-  .archive-filter-panel .form-site label { display:flex; flex-direction:column; gap:6px; }
+  .archive-filter-grid--payments { width:100%; min-width:0; grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:9px; }
+  .archive-filter-grid--payments > label:nth-child(5) { grid-column:1/-1; }
+  .archive-filter-panel .form-site label { min-width:0; display:flex; flex-direction:column; gap:5px; font-size:.62rem; }
   .archive-filter-panel .form-site input:not([type="button"]),
-  .archive-filter-panel .form-site select { width:100%!important; min-height:44px; margin:0!important; }
-  .archive-filter-actions { display:grid!important; grid-template-columns:1fr 1fr; gap:9px; margin-top:14px; }
-  .archive-filter-actions .btn_filter { width:100%!important; min-width:0!important; height:44px!important; }
+  .archive-filter-panel .form-site select {
+    box-sizing:border-box!important; width:100%!important; max-width:100%!important; min-width:0!important;
+    min-height:40px; height:40px; margin:0!important; padding:7px 9px!important; font-size:.73rem;
+  }
+  .archive-filter-actions { width:100%; display:grid!important; grid-template-columns:1fr 1fr; gap:8px; margin-top:11px; }
+  .archive-filter-actions .btn_filter { width:100%!important; min-width:0!important; height:40px!important; padding:0 8px!important; font-size:.64rem!important; }
   .archive-filter-actions .btn-download-list { grid-column:1/-1; }
   .archive-table-toolbar { min-height:64px; padding:11px 12px; }
   .archive-table-toolbar > span:last-child { min-width:0; }
@@ -1811,6 +1816,13 @@ body.app-body,.portal-app,.portal-container { margin:0!important; padding:0!impo
   .archive-list-waiting > ul > li:nth-child(odd),
   .archive-list-accepted > ul > li:nth-child(odd),
   .archive-payments > ul > li:nth-child(odd) { border-right:0!important; }
-  .archive-filter-actions { grid-template-columns:1fr; }
-  .archive-filter-actions .btn-download-list { grid-column:auto; }
+  .archive-filter-panel__summary { gap:9px; padding:9px 10px; }
+  .archive-filter-panel__icon { width:34px; height:34px; flex-basis:34px; }
+  .archive-filter-panel__body { padding:10px!important; }
+  .archive-filter-panel__copy small { max-width:165px; }
+  .archive-filter-grid,
+  .archive-filter-grid--history,
+  .archive-filter-grid--waiting,
+  .archive-filter-grid--esitate,
+  .archive-filter-grid--payments { gap:8px; }
 }
